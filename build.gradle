@@ -55,6 +55,7 @@ dependencies {
     compile "org.grails.plugins:gsp"
     compile "org.grails.plugins:views-json"
     compile "org.grails.plugins:views-json-templates"
+    compile "org.imsglobal:basiclti-util:1.1.2"
     console "org.grails:grails-console"
     profile "org.grails.profiles:react-webpack"
     runtime "org.glassfish.web:el-impl:2.1.2-b03"
@@ -76,8 +77,8 @@ bootRun {
     systemProperty springProfilesActive, System.getProperty(springProfilesActive)
 }
 node {
-    version = '7.10.0'
-    yarnVersion = '0.21.3'
+    version = '8.11.1'
+    yarnVersion = '1.5.1'
     distBaseUrl = 'https://nodejs.org/dist'
     download = true
 }
