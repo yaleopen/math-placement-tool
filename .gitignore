@@ -31,3 +31,20 @@
 
 # "temporary" build files
 /target
+
+# mac, intellij, and misc
+.DS_Store
+.gradle
+build/
+.idea
+*.iml
+*.ipr
+*.iws
+.project
+.settings
+.classpath
+out/
+node_modules/
+yarn.lock
+yarn-error.log
+/grails-app/assets/javascripts/bundle.js
