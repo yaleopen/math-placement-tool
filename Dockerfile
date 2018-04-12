@@ -26,4 +26,4 @@ WORKDIR /app
 COPY . /app
 RUN grails package
 
-CMD ["java","-Djava.security.egd=file:/dev/./urandom", "-Dgrails.env=dev", "-jar","/app/build/libs/math-placement-tool-0.1.war"]
+CMD ["java","-Djava.security.egd=file:/dev/./urandom", "-jar","/app/build/libs/math-placement-tool-0.1.war"]

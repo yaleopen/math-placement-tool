@@ -1,5 +1,3 @@
-import grails.util.BuildSettings
-import grails.util.Environment
 import org.springframework.boot.logging.logback.ColorConverter
 import org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter
 
@@ -22,16 +20,5 @@ appender('STDOUT', ConsoleAppender) {
     }
 }
 
-def targetDir = BuildSettings.TARGET_DIR
-if (Environment.isDevelopmentMode() && targetDir != null) {
-    appender("FULL_STACKTRACE", FileAppender) {
-        file = "${targetDir}/stacktrace.log"
-        append = true
-        encoder(PatternLayoutEncoder) {
-            pattern = "%level %logger - %msg%n"
-        }
-    }
-    logger("StackTrace", ERROR, ['FULL_STACKTRACE'], false)
-    logger('math.placement.tool', DEBUG, ['STDOUT'], false)
-}
+logger('math.placement.tool', DEBUG, ['STDOUT'], false)
 root(ERROR, ['STDOUT'])
