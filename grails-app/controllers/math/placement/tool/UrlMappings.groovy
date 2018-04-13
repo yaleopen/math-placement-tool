@@ -10,5 +10,10 @@ class UrlMappings {
         }
 
         "/"(view: '/index')
+
+        group "/quizzes", {
+            "/"(controller:"quiz", action:"list", method: "GET")
+            "/$quizId"(controller:"quiz", action:"getOne", method: "GET")
+        }
     }
 }

@@ -21,4 +21,5 @@ appender('STDOUT', ConsoleAppender) {
 }
 
 logger('math.placement.tool', DEBUG, ['STDOUT'], false)
+logger('com.instructure.canvas', DEBUG, ['STDOUT'], false)
 root(ERROR, ['STDOUT'])
