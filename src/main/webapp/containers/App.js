@@ -14,7 +14,7 @@ class App extends Component {
                 <div>
                     <Switch>
                         <Route path='/mathplacement' component={InstructorHome}/>
-                        <Route path='/rubrics' component={RubricEditor}/>
+                        <Route path='/quizzes/:quizId' component={RubricEditor}/>
                         <Route render={function(){
                             return <p>Not Found</p>
                         }}/>

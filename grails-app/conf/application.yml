@@ -159,7 +159,7 @@ dataSources:
 
 canvas:
     oauthToken: '${CANVAS_API_TOKEN}'
-    canvasBaseUrl: 'https://yale.beta.instructure.com'
+    canvasBaseUrl: 'https://yale.test.instructure.com'
     ltiSecret: '${MATH_PLACEMENT_SECRET}'
     perPageLimit: 100
 

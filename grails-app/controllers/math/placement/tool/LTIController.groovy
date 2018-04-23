@@ -5,6 +5,7 @@ import org.imsglobal.lti.launch.LtiVerifier
 
 class LTIController {
 
+    @SuppressWarnings("GroovyAssignabilityCheck")
     def launch() {
         // Log incoming request
         log.debug("Request URL: " + request.getRequestURL().toString())
@@ -23,8 +24,8 @@ class LTIController {
             def ltiSecret = grailsApplication.config.getProperty('canvas.ltiSecret')
             LtiVerificationResult ltiResult = ltiVerifier.verify(request, ltiSecret)
             if(ltiResult.success){
-                //noinspection GroovyAssignabilityCheck
                 session["userId"] = params.custom_canvas_user_id
+                session["courseId"] = params.custom_canvas_course_id
                 render(view: "/index")
             }
             else{

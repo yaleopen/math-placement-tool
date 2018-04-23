@@ -7,17 +7,18 @@ import Button from '@instructure/ui-buttons/lib/components/Button'
 import Badge from '@instructure/ui-elements/lib/components/Badge'
 import { Link } from "react-router-dom"
 
-function QuizTableRow() {
+function QuizTableRow(props) {
+    const quiz = props.quiz;
     return (
         <tr>
-            <td><IconPublish title="Published" style={{color: '#00AC18'}}/></td>
+            <td>{quiz.published && <IconPublish title="Published" style={{color: '#00AC18'}}/>}</td>
             <td>
-                <Link to={`/rubrics`}>
-                    <Button variant="link">Test Quiz</Button>
+                <Link to={`/quizzes/${quiz.id}`}>
+                    <Button variant="link">{quiz.title}</Button>
                 </Link>
             </td>
             <td style={{whiteSpace: "nowrap", textAlign: "center"}}>
-                <Badge standalone count={6} />
+                <Badge standalone count={quiz.question_count} />
             </td>
             <td style={{whiteSpace: "nowrap", textAlign: "center"}}>
                 <Badge standalone count={2} />
@@ -26,7 +27,7 @@ function QuizTableRow() {
     )
 }
 
-function QuizTable() {
+function QuizTable(props) {
     return (
         <Container
             as="div"
@@ -46,7 +47,7 @@ function QuizTable() {
                 </tr>
                 </thead>
                 <tbody>
-                    <QuizTableRow/>
+                    {props.quizzes.map((quiz) => <QuizTableRow key={quiz.id} quiz={quiz}/>)}
                 </tbody>
             </Table>
         </Container>

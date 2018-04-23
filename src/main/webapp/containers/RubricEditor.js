@@ -7,13 +7,45 @@ import IconEdit from '@instructure/ui-icons/lib/Line/IconEdit'
 import Tooltip from '@instructure/ui-overlays/lib/components/Tooltip'
 import Button from '@instructure/ui-buttons/lib/components/Button'
 import EditRubricModal from "../components/EditRubricModal";
+import api from "../api";
+import Loading from "../components/Loading";
+import NavigationBar from "../components/NavigationBar";
+import { Link } from "react-router-dom"
+import Breadcrumb, {BreadcrumbLink} from '@instructure/ui-breadcrumb/lib/components/Breadcrumb'
 
 class RubricEditor extends Component {
     constructor(props){
         super(props);
         this.state = {
-            showEditRubricModal: false
+            showEditRubricModal: false,
+            rubrics: [
+                {
+                    title: 'Math 115 - Option 1',
+                    placement: 'Math 115',
+                    feedback:'We recommend that you take MATH 115, questions can be...',
+                    equations: {
+                        "and" : [
+                                {"<" : [ { "var" : "first" }, 110 ]},
+                                {"==" : [ { "var" : "second" }, "apple" ] }
+                            ]
+                    }
+
+                }
+            ],
+            targetRubric: null,
+            quiz: null,
+            isLoaded: false
         }
+    }
+
+    componentDidMount(){
+        const { quizId } = this.props.match.params;
+        api.fetchSingleQuiz(sessionStorage.courseId,quizId).then((response) => {
+            this.setState({
+                quiz: response.data,
+                isLoaded: true
+            })
+        })
     }
 
     handleEditRubricOpen = () => {
@@ -29,6 +61,13 @@ class RubricEditor extends Component {
     };
 
     render() {
+        const { error, isLoaded, quiz, showEditRubricModal } = this.state;
+        const breadcrumbs = (
+            <Breadcrumb size="large" label="You are here:">
+                <Link to="/mathplacement"><BreadcrumbLink onClick={() => {}}>Placement Calculator</BreadcrumbLink></Link>
+                <BreadcrumbLink onClick={function () {}}>{quiz ? quiz.title : ''}</BreadcrumbLink>
+            </Breadcrumb>
+        );
         return (
             <ApplyTheme theme={ApplyTheme.generateTheme('canvas', {
                     'ic-brand-primary': '#00356b',
@@ -43,7 +82,9 @@ class RubricEditor extends Component {
                     textAlign="start"
                     margin="small"
                 >
-                    <EditRubricModal show={this.state.showEditRubricModal} onDismiss={this.handleEditRubricClose}/>
+                    <NavigationBar breadcrumbs={breadcrumbs}/>
+                    <Loading isLoading={!isLoaded}/>
+                    <EditRubricModal show={showEditRubricModal} onDismiss={this.handleEditRubricClose}/>
                     <RubricTable onEditRubricOpen={this.handleEditRubricOpen}/>
                 </Container>
             </ApplyTheme>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {Component} from 'react'
 import CloseButton from '@instructure/ui-buttons/lib/components/CloseButton'
 import Button from '@instructure/ui-buttons/lib/components/Button'
 import Modal, {ModalHeader,ModalBody,ModalFooter} from '@instructure/ui-overlays/lib/components/Modal'
