@@ -6,18 +6,23 @@ import Table from '@instructure/ui-elements/lib/components/Table'
 import IconEdit from '@instructure/ui-icons/lib/Line/IconEdit'
 import Tooltip from '@instructure/ui-overlays/lib/components/Tooltip'
 import Button from '@instructure/ui-buttons/lib/components/Button'
-import EditRubricModal from "../components/EditRubricModal";
+import RubricModal from "../components/RubricModal";
 import api from "../api";
 import Loading from "../components/Loading";
 import NavigationBar from "../components/NavigationBar";
 import { Link } from "react-router-dom"
 import Breadcrumb, {BreadcrumbLink} from '@instructure/ui-breadcrumb/lib/components/Breadcrumb'
+import IconPlus from '@instructure/ui-icons/lib/Line/IconPlus'
+import Grid, {GridRow,GridCol} from '@instructure/ui-layout/lib/components/Grid'
 
 class RubricEditor extends Component {
     constructor(props){
         super(props);
         this.state = {
+            showNewRubricModal: false,
             showEditRubricModal: false,
+            quiz: null,
+            isLoaded: false,
             rubrics: [
                 {
                     title: 'Math 115 - Option 1',
@@ -25,16 +30,13 @@ class RubricEditor extends Component {
                     feedback:'We recommend that you take MATH 115, questions can be...',
                     equations: {
                         "and" : [
-                                {"<" : [ { "var" : "first" }, 110 ]},
-                                {"==" : [ { "var" : "second" }, "apple" ] }
-                            ]
+                            {"<" : [ { "var" : "first" }, 110 ]},
+                            {"==" : [ { "var" : "second" }, "apple" ] }
+                        ]
                     }
 
                 }
-            ],
-            targetRubric: null,
-            quiz: null,
-            isLoaded: false
+            ]
         }
     }
 
@@ -60,8 +62,20 @@ class RubricEditor extends Component {
         })
     };
 
+    handleNewRubricOpen = () => {
+        this.setState({
+            showNewRubricModal: true
+        })
+    };
+
+    handleNewRubricClose = () => {
+        this.setState({
+            showNewRubricModal: false
+        })
+    };
+
     render() {
-        const { error, isLoaded, quiz, showEditRubricModal } = this.state;
+        const { error, isLoaded, quiz, showEditRubricModal, showNewRubricModal } = this.state;
         const breadcrumbs = (
             <Breadcrumb size="large" label="You are here:">
                 <Link to="/mathplacement"><BreadcrumbLink onClick={() => {}}>Placement Calculator</BreadcrumbLink></Link>
@@ -84,7 +98,21 @@ class RubricEditor extends Component {
                 >
                     <NavigationBar breadcrumbs={breadcrumbs}/>
                     <Loading isLoading={!isLoaded}/>
-                    <EditRubricModal show={showEditRubricModal} onDismiss={this.handleEditRubricClose}/>
+                    <RubricModal
+                        heading="New Rubric"
+                        show={showNewRubricModal}
+                        onDismiss={this.handleNewRubricClose}
+                        submitText="Submit"
+                    />
+                    <RubricModal
+                        heading="Edit Rubric"
+                        show={showEditRubricModal}
+                        onDismiss={this.handleEditRubricClose}
+                        submitText="Save Changes"
+                    />
+                    <Button margin="small 0" onClick={this.handleNewRubricOpen}>
+                        <IconPlus /> Rubric
+                    </Button>
                     <RubricTable onEditRubricOpen={this.handleEditRubricOpen}/>
                 </Container>
             </ApplyTheme>
@@ -98,7 +126,7 @@ function RubricTable(props) {
             as="div"
             size="auto"
             textAlign="start"
-            margin="small"
+            margin="0"
         >
             <Table
                 caption={<ScreenReaderContent>List of Rubrics</ScreenReaderContent>}
