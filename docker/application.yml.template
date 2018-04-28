@@ -166,6 +166,7 @@ environments:
             oauthToken: ${canvas_api_key}
             canvasBaseUrl: ${canvas_url}
             ltiSecret: ${lti_secret}
+            perPageLimit: ${per_page_limit}
         dataSources:
             dataSource:
                 dbCreate: update

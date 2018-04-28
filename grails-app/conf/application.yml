@@ -159,9 +159,9 @@ dataSources:
 
 canvas:
     oauthToken: '${CANVAS_API_TOKEN}'
-    canvasBaseUrl: 'https://yale.beta.instructure.com'
+    canvasBaseUrl: 'https://yale.test.instructure.com'
     ltiSecret: '${MATH_PLACEMENT_SECRET}'
-    manageCalendarRoles: 5,6,9,12,25,30
+    perPageLimit: 100
 
 environments:
     development:
