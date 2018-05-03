@@ -7,22 +7,21 @@ import RubricEditor from "./RubricEditor";
 theme.use();
 
 class App extends Component {
-
-    render() {
-        return (
-            <BrowserRouter>
-                <div>
-                    <Switch>
-                        <Route path='/mathplacement' component={InstructorHome}/>
-                        <Route path='/quizzes/:quizId' component={RubricEditor}/>
-                        <Route render={function(){
-                            return <p>Not Found</p>
-                        }}/>
-                    </Switch>
-                </div>
-            </BrowserRouter>
-        );
-    }
+  render() {
+    return (
+        <BrowserRouter>
+          <div>
+            <Switch>
+              <Route path='/mathplacement' component={InstructorHome}/>
+              <Route path='/quizzes/:quizId' component={RubricEditor}/>
+              <Route render={function () {
+                return <p>Not Found</p>
+              }}/>
+            </Switch>
+          </div>
+        </BrowserRouter>
+    );
+  }
 }
 
 export default App;

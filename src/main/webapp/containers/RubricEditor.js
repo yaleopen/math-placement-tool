@@ -1,18 +1,15 @@
 import React, {Component} from "react";
 import ApplyTheme from "@instructure/ui-themeable/lib/components/ApplyTheme/index";
 import View from '@instructure/ui-layout/lib/components/View'
-import ScreenReaderContent from '@instructure/ui-a11y/lib/components/ScreenReaderContent'
-import Table from '@instructure/ui-elements/lib/components/Table'
-import IconEdit from '@instructure/ui-icons/lib/Line/IconEdit'
-import Tooltip from '@instructure/ui-overlays/lib/components/Tooltip'
 import Button from '@instructure/ui-buttons/lib/components/Button'
-import RubricModal from "../components/RubricModal";
+import RubricModal from "./RubricModal";
 import api from "../api";
 import Loading from "../components/Loading";
 import NavigationBar from "../components/NavigationBar";
 import {Link} from "react-router-dom"
 import Breadcrumb, {BreadcrumbLink} from '@instructure/ui-breadcrumb/lib/components/Breadcrumb'
 import IconPlus from '@instructure/ui-icons/lib/Line/IconPlus'
+import RubricTable from "../components/RubricTable";
 
 class RubricEditor extends Component {
   constructor(props) {
@@ -83,7 +80,7 @@ class RubricEditor extends Component {
           id: "1",
           rule: {
             "and": [
-              {"==": [{"var": "q1"}, 'b']}
+              {"==": [{"var": "question_78573"}, 'answer_2277']}
             ]
           }
         },
@@ -91,14 +88,198 @@ class RubricEditor extends Component {
           id: "2",
           rule: {
             "or": [
-              {"<=": [{'+': [{"var": "q1"}]}, 110]},
-              {">=": [{"+": [{"var": "q1"}, {"var": "q2"}]}, 50]},
-              {"==": [{"var": "q3"}, 'c']}
+              {"<=": [{'+': [{"var": "question_group_1666"},{"var": "question_group_1667"}]}, 110]},
+              {">=": [{"+": [{"var": "question_group_1666"}, {"var": "question_group_1667"}]}, 50]},
+              {"==": [{"var": "question_78572"}, 'answer_6641']}
             ]
           }
         }
       ]
     };
+    const questionGroups = [
+      {
+        "id": 1666,
+        "quiz_id": 11415,
+        "name": "Plcmt Group 1",
+        "pick_count": 1,
+        "question_points": 5,
+        "position": 3,
+        "assessment_question_bank_id": null
+      },
+      {
+        "id": 1667,
+        "quiz_id": 11415,
+        "name": "Plcmt Group 2",
+        "pick_count": 1,
+        "question_points": 5,
+        "position": 4,
+        "assessment_question_bank_id": null
+      }
+    ];
+    const questions = [
+      {
+        "matching_answer_incorrect_matches": null,
+        "quiz_id": 11415,
+        "quiz_group_id": null,
+        "variables": null,
+        "question_type": "multiple_choice_question",
+        "correct_comments_html": "",
+        "formulas": null,
+        "formula_decimal_places": null,
+        "answers": [
+          {
+            "comments_html": "",
+            "comments": "",
+            "weight": 100,
+            "html": "",
+            "id": 2754,
+            "text": "Score 5"
+          },
+          {
+            "comments_html": "",
+            "comments": "",
+            "weight": 0,
+            "html": "",
+            "id": 2996,
+            "text": "Score 4"
+          },
+          {
+            "comments_html": "",
+            "comments": "",
+            "weight": 0,
+            "html": "",
+            "id": 5259,
+            "text": "Score 3"
+          },
+          {
+            "comments_html": "",
+            "comments": "",
+            "weight": 0,
+            "html": "",
+            "id": 6472,
+            "text": "Score 2"
+          },
+          {
+            "comments_html": "",
+            "comments": "",
+            "weight": 0,
+            "html": "",
+            "id": 304,
+            "text": "Score 1"
+          },
+          {
+            "comments_html": "",
+            "comments": "",
+            "weight": 0,
+            "html": "",
+            "id": 6641,
+            "text": "Score 0"
+          },
+          {
+            "comments_html": "",
+            "comments": "",
+            "weight": 0,
+            "html": "",
+            "id": 9757,
+            "text": "I didn't take the AP Calculus AB test"
+          }
+        ],
+        "incorrect_comments": "",
+        "matches": null,
+        "incorrect_comments_html": "",
+        "question_text": "<p><span>Did you take the AP Calculus AB test? If so, please enter your </span><br><span>score.</span></p>",
+        "assessment_question_id": 200710,
+        "answer_tolerance": null,
+        "question_name": "Question",
+        "points_possible": 5,
+        "neutral_comments_html": "",
+        "neutral_comments": "",
+        "id": 78572,
+        "position": 1,
+        "correct_comments": ""
+      },
+      {
+        "matching_answer_incorrect_matches": null,
+        "quiz_id": 11415,
+        "quiz_group_id": null,
+        "variables": null,
+        "question_type": "multiple_choice_question",
+        "correct_comments_html": "",
+        "formulas": null,
+        "formula_decimal_places": null,
+        "answers": [
+          {
+            "comments_html": "",
+            "comments": "",
+            "weight": 100,
+            "html": "",
+            "id": 5688,
+            "text": "Score 5"
+          },
+          {
+            "comments_html": "",
+            "comments": "",
+            "weight": 0,
+            "html": "",
+            "id": 9321,
+            "text": "Score 4"
+          },
+          {
+            "comments_html": "",
+            "comments": "",
+            "weight": 0,
+            "html": "",
+            "id": 2277,
+            "text": "Score 3"
+          },
+          {
+            "comments_html": "",
+            "comments": "",
+            "weight": 0,
+            "html": "",
+            "id": 2938,
+            "text": "Score 2"
+          },
+          {
+            "comments_html": "",
+            "comments": "",
+            "weight": 0,
+            "html": "",
+            "id": 6324,
+            "text": "Score 1"
+          },
+          {
+            "comments_html": "",
+            "comments": "",
+            "weight": 0,
+            "html": "",
+            "id": 2359,
+            "text": "Score 0"
+          },
+          {
+            "comments_html": "",
+            "comments": "",
+            "weight": 0,
+            "html": "",
+            "id": 3652,
+            "text": "I didn't take the AP Calculus BC test"
+          }
+        ],
+        "incorrect_comments": "",
+        "matches": null,
+        "incorrect_comments_html": "",
+        "question_text": "<p><span>Did you take the AP Calculus BC test? If so, please enter your </span><br><span>score.</span></p>",
+        "assessment_question_id": 200711,
+        "answer_tolerance": null,
+        "question_name": "Question",
+        "points_possible": 1,
+        "neutral_comments_html": "",
+        "neutral_comments": "",
+        "id": 78573,
+        "position": 2,
+        "correct_comments": ""
+      }
+    ];
     return (
         <ApplyTheme theme={ApplyTheme.generateTheme('canvas', {
               'ic-brand-primary': '#00356b',
@@ -125,6 +306,8 @@ class RubricEditor extends Component {
                 show={showEditRubricModal}
                 equations={testEquationData.equations}
                 equationJoinType={testEquationData.equationJoinType}
+                questions={questions}
+                questionGroups={questionGroups}
                 rubric={testRubricData[0]}
                 onDismiss={this.handleEditRubricClose}
                 submitText="Save Changes"
@@ -137,49 +320,6 @@ class RubricEditor extends Component {
         </ApplyTheme>
     );
   }
-}
-
-function RubricTable(props) {
-  return (
-      <View
-          as="div"
-          textAlign="start"
-          margin="0"
-      >
-        <Table
-            caption={<ScreenReaderContent>List of Rubrics</ScreenReaderContent>}
-        >
-          <thead>
-          <tr>
-            <th scope="col">Rubric Name</th>
-            <th scope="col">Course Placement</th>
-            <th width="1"/>
-          </tr>
-          </thead>
-          <tbody>
-          {props.rubrics.map((rubric,index) => <RubricTableRow key={`rubric${index}`} rubric={rubric} onEditRubricOpen={props.onEditRubricOpen}/>)}
-
-          </tbody>
-        </Table>
-      </View>
-  )
-}
-
-function RubricTableRow(props) {
-  const {rubric} = props;
-  return (
-      <tr>
-        <td>{rubric.title}</td>
-        <td>{rubric.placement}</td>
-        <td style={{whiteSpace: "nowrap", textAlign: "center"}}>
-          <Tooltip tip="Edit Rubric">
-            <Button variant="icon" onClick={props.onEditRubricOpen}>
-              <IconEdit title="Edit Rubric"/>
-            </Button>
-          </Tooltip>
-        </td>
-      </tr>
-  )
 }
 
 export default RubricEditor;

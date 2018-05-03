@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-module.exports = {
+export default {
     fetchCourseQuizzes: function(courseId){
         return axios.get(`/mathplacement/courses/${courseId}/quizzes`).then((response) => { return response })
     },
