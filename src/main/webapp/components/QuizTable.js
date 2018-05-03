@@ -1,5 +1,5 @@
 import React from 'react'
-import Container from '@instructure/ui-container/lib/components/Container'
+import View from '@instructure/ui-layout/lib/components/View'
 import Table from '@instructure/ui-elements/lib/components/Table'
 import ScreenReaderContent from '@instructure/ui-a11y/lib/components/ScreenReaderContent'
 import IconPublish from '@instructure/ui-icons/lib/Solid/IconPublish'
@@ -29,9 +29,8 @@ function QuizTableRow(props) {
 
 function QuizTable(props) {
     return (
-        <Container
+        <View
             as="div"
-            size="auto"
             textAlign="start"
             margin="small"
         >
@@ -50,7 +49,7 @@ function QuizTable(props) {
                     {props.quizzes.map((quiz) => <QuizTableRow key={quiz.id} quiz={quiz}/>)}
                 </tbody>
             </Table>
-        </Container>
+        </View>
     );
 }
 

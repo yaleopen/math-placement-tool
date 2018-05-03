@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import Container from '@instructure/ui-container/lib/components/Container'
+import View from '@instructure/ui-layout/lib/components/View'
 import ApplyTheme from '@instructure/ui-themeable/lib/components/ApplyTheme'
 import QuizTable from "../components/QuizTable";
 import api from "../api";
@@ -48,16 +48,15 @@ class InstructorHome extends Component {
                 }
             )}
             >
-                <Container
+                <View
                     as="div"
-                    size="auto"
                     textAlign="start"
                     margin="small"
                 >
                     <NavigationBar breadcrumbs={breadcrumbs}/>
                     <Loading isLoading={!isLoaded}/>
                     <QuizTable quizzes={quizzes}/>
-                </Container>
+                </View>
             </ApplyTheme>
         );
     }
