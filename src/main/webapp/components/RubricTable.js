@@ -3,6 +3,7 @@ import View from '@instructure/ui-layout/lib/components/View'
 import ScreenReaderContent from '@instructure/ui-a11y/lib/components/ScreenReaderContent'
 import Table from '@instructure/ui-elements/lib/components/Table'
 import IconEdit from '@instructure/ui-icons/lib/Line/IconEdit'
+import IconTrash from '@instructure/ui-icons/lib/Line/IconTrash'
 import Tooltip from '@instructure/ui-overlays/lib/components/Tooltip'
 import Button from '@instructure/ui-buttons/lib/components/Button'
 
@@ -35,14 +36,20 @@ function RubricTable(props) {
 
 function RubricTableRow(props) {
   const {rubric, onEditRubricOpen} = props;
+  console.log(rubric);
   return (
       <tr>
         <td>{rubric.title}</td>
         <td>{rubric.placement}</td>
         <td style={{whiteSpace: "nowrap", textAlign: "center"}}>
-          <Tooltip tip="Edit Rubric">
-            <Button variant="icon" onClick={onEditRubricOpen}>
-              <IconEdit title="Edit Rubric"/>
+          <Tooltip tip="Edit">
+            <Button variant="icon" onClick={onEditRubricOpen.bind(this,rubric)}>
+              <IconEdit title="Edit"/>
+            </Button>
+          </Tooltip>
+          <Tooltip tip="Delete">
+            <Button variant="icon">
+              <IconTrash title="Delete" style={{color: '#EE0612'}}/>
             </Button>
           </Tooltip>
         </td>

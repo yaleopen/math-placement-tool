@@ -23,49 +23,92 @@ class RubricEditor extends Component {
       groupQuestions: [],
       equations: [],
       isLoaded: false,
-      rubrics: []
+      rubrics: [],
+      targetRubric: null
     }
   }
 
   componentDidMount() {
     const {quizId} = this.props.match.params;
-    axios.all([api.fetchSingleQuiz(sessionStorage.courseId, quizId),api.fetchQuizQuestions(sessionStorage.courseId, quizId)])
-        .then(axios.spread((quizResponse,quizGroupResponse) => {
+    axios.all(
+        [api.fetchSingleQuiz(sessionStorage.courseId, quizId), api.fetchQuizQuestions(sessionStorage.courseId, quizId),
+            api.listRubrics(sessionStorage.courseId, quizId)])
+        .then(axios.spread((quizResponse,quizGroupResponse,rubricResponse) => {
           this.setState({
             quiz: quizResponse.data,
             singleQuestions: quizGroupResponse.data.singles,
             groupQuestions: quizGroupResponse.data.groups,
+            rubrics: rubricResponse.data,
             isLoaded: true
           })
     }));
   }
 
-  handleEditRubricOpen = () => {
+  handleEditRubricOpen = (rubric) => {
     this.setState({
-      showEditRubricModal: true
+      showEditRubricModal: true,
+      targetRubric: rubric
     })
   };
 
   handleEditRubricClose = () => {
     this.setState({
-      showEditRubricModal: false
+      showEditRubricModal: false,
+      targetRubric: null
     })
   };
 
   handleNewRubricOpen = () => {
     this.setState({
-      showNewRubricModal: true
+      showNewRubricModal: true,
+      targetRubric: null
     })
   };
 
   handleNewRubricClose = () => {
     this.setState({
-      showNewRubricModal: false
+      showNewRubricModal: false,
+      targetRubric: null
     })
   };
 
+  handleNewRubricSubmit = (rubric) => {
+    console.log(rubric);
+    this.setState({
+      isLoaded: false
+    });
+    api.createNewRubric(sessionStorage.courseId, this.state.quiz.id, rubric)
+        .then((response) => {
+          console.log(response.data);
+          this.setState({
+            rubrics: this.state.rubrics.concat(response.data),
+            isLoaded: true,
+            showNewRubricModal: false
+          })
+        })
+  };
+
+  handleSaveRubricSubmit = (rubric) => {
+    console.log(rubric);
+    this.setState({
+      isLoaded: false
+    });
+    api.updateRubric(sessionStorage.courseId, this.state.quiz.id, rubric)
+        .then((response) => {
+          console.log(response.data);
+          const rubrics = this.state.rubrics.slice();
+          const indexOfRubric = this.state.rubrics.find((oldRubric) => oldRubric.id === rubric.id);
+          this.setState({
+            rubrics: rubrics.splice(indexOfRubric, 1, response.data),
+            isLoaded: true,
+            showEditRubricModal: false
+          })
+        })
+  };
+
   render() {
-    const {error, isLoaded, quiz, showEditRubricModal, showNewRubricModal, singleQuestions, groupQuestions} = this.state;
+    const {error, isLoaded, quiz, showEditRubricModal, showNewRubricModal, singleQuestions,
+      rubrics, groupQuestions, targetRubric} = this.state;
     const breadcrumbs = (
         <Breadcrumb size="large" label="You are here:">
           <Link to="/mathplacement"><BreadcrumbLink onClick={() => {
@@ -74,35 +117,6 @@ class RubricEditor extends Component {
           }}>{quiz ? quiz.title : ''}</BreadcrumbLink>
         </Breadcrumb>
     );
-    const testRubricData = [{
-      id: '1',
-      title: 'Math 115 - Option 1',
-      placement: 'Math 115',
-      feedback: 'We recommend that you take MATH 115, questions can be...',
-    }];
-    const testEquationData = {
-      equationJoinType: 'or',
-      equations: [
-        {
-          id: "1",
-          rule: {
-            "and": [
-              {"==": [{"var": "question_78573"}, 'answer_2277']}
-            ]
-          }
-        },
-        {
-          id: "2",
-          rule: {
-            "or": [
-              {"<=": [{'+': [{"var": "question_group_1666"},{"var": "question_group_1667"}]}, 110]},
-              {">=": [{"+": [{"var": "question_group_1666"}, {"var": "question_group_1667"}]}, 50]},
-              {"==": [{"var": "question_78572"}, 'answer_6641']}
-            ]
-          }
-        }
-      ]
-    };
     return (
         <ApplyTheme theme={ApplyTheme.generateTheme('canvas', {
               'ic-brand-primary': '#00356b',
@@ -120,27 +134,29 @@ class RubricEditor extends Component {
             <Loading isLoading={!isLoaded}/>
             <RubricModal
                 heading="New Rubric"
+                isNewRubric={true}
                 show={showNewRubricModal}
-                onDismiss={this.handleNewRubricClose}
                 questions={singleQuestions}
                 questionGroups={groupQuestions}
+                rubric={targetRubric}
                 submitText="Submit"
+                onDismiss={this.handleNewRubricClose}
+                onNewRubricSubmit={this.handleNewRubricSubmit}
             />
             <RubricModal
                 heading="Edit Rubric"
                 show={showEditRubricModal}
-                equations={testEquationData.equations}
-                equationJoinType={testEquationData.equationJoinType}
                 questions={singleQuestions}
                 questionGroups={groupQuestions}
-                rubric={testRubricData[0]}
-                onDismiss={this.handleEditRubricClose}
+                rubric={targetRubric}
                 submitText="Save Changes"
+                onDismiss={this.handleEditRubricClose}
+                onSaveRubricSubmit={this.handleSaveRubricSubmit}
             />
             <Button margin="small 0" onClick={this.handleNewRubricOpen}>
               <IconPlus/> Rubric
             </Button>
-            <RubricTable rubrics={testRubricData} onEditRubricOpen={this.handleEditRubricOpen}/>
+            <RubricTable rubrics={rubrics} onEditRubricOpen={this.handleEditRubricOpen}/>
           </View>
         </ApplyTheme>
     );

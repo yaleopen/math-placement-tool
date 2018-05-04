@@ -14,9 +14,22 @@ class UrlMappings {
         group "/courses/$courseId", {
             group "/quizzes", {
                 "/"(controller:"quiz", action:"list", method: "GET")
-                "/$quizId"(controller:"quiz", action:"getOne", method: "GET")
-                "/$quizId/questions"(controller:"quiz", action:"listQuestions", method: "GET")
-                "/$quizId/submissions"(controller:"quiz", action:"listSubmissions", method: "GET")
+                group "/$quizId", {
+                    "/"(controller:"quiz", action:"getOne", method: "GET")
+                    "/questions"(controller:"quiz", action:"listQuestions", method: "GET")
+                    "/submissions"(controller:"quiz", action:"listSubmissions", method: "GET")
+                    group "/rubrics", {
+                        "/"(controller:"rubric", action:"list", method: "GET")
+                        "/"(controller:"rubric", action:"create", method: "POST")
+                        group "/$rubricId", {
+                            "/"(controller:"rubric", action:"update", method: "PUT")
+                            "/"(controller:"rubric", action:"delete", method: "DELETE")
+                            group "/equations/$equationId", {
+                                "/"(controller:"rubric", action:"deleteEquation", method: "DELETE")
+                            }
+                        }
+                    }
+                }
             }
         }
     }

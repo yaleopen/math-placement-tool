@@ -12,13 +12,23 @@ class RubricModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: this.props.rubric && this.props.rubric.title,
-      placement: this.props.rubric && this.props.rubric.placement,
-      feedback: this.props.rubric && this.props.rubric.feedback,
-      equationJoinType: this.props.equationJoinType,
-      equations: this.props.equations ? this.props.equations : [],
+      title: this.props.rubric ? this.props.rubric.title : '',
+      placement: this.props.rubric ? this.props.rubric.placement : '',
+      feedback: this.props.rubric ? this.props.rubric.feedback : '',
+      equationJoinType: this.props.rubric ? this.props.rubric.equationJoinType : 'and',
+      equations: this.props.rubric ? this.props.rubric.equations : [],
       newEquations: []
     };
+  }
+
+  static getDerivedStateFromProps(nextProps) {
+    return {
+      title: nextProps.rubric ? nextProps.rubric.title : '',
+      placement: nextProps.rubric ? nextProps.rubric.placement : '',
+      feedback: nextProps.rubric ? nextProps.rubric.feedback : '',
+      equationJoinType: nextProps.rubric ? nextProps.rubric.equationJoinType : 'and',
+      equations: nextProps.rubric ? nextProps.rubric.equations : [],
+    }
   }
 
   handleTextChange = (event) => {
@@ -137,7 +147,7 @@ class RubricModal extends Component {
   handleAnswerSelectChange = (equationId, equationType, ruleIndex, ruleOperator, ruleJoinType, event, option) => {
     const equations = equationType === 'new' ? this.state.newEquations : this.state.equations;
     const equationIndex = equations.findIndex(equation => equation.id === equationId);
-    const updatedEquations = update(equations, {[equationIndex]: {rule: {[ruleJoinType]: {[ruleIndex]: {[ruleOperator]: {1: {$set: option}}}}}}});
+    const updatedEquations = update(equations, {[equationIndex]: {rule: {[ruleJoinType]: {[ruleIndex]: {[ruleOperator]: {1: {$set: option ? option.id : ''}}}}}}});
     if (equationType === 'new') {
       this.setState({
         newEquations: updatedEquations
@@ -217,15 +227,19 @@ class RubricModal extends Component {
   };
 
   render() {
-    const {show, onDismiss, heading, submitText, questions, questionGroups} = this.props;
+    const {show, onDismiss, heading, submitText, questions, questionGroups, onNewRubricSubmit, onSaveRubricSubmit,
+      isNewRubric} = this.props;
     const {title, placement, feedback, equations, newEquations, equationJoinType} = this.state;
     const existingEquations = equations.map((equation) => {
-      const joinType = Object.keys(equation.rule)[0];
-      const rules = equation.rule[joinType];
+      console.log("Render Equation", equation);
+      const parsedEquation = {id: equation.id, rule: JSON.parse(equation.rule)};
+      console.log(parsedEquation);
+      const joinType = Object.keys(parsedEquation.rule)[0];
+      const rules = parsedEquation.rule[joinType];
       return (
           <Equation
-              key={`equation${equation.id}`}
-              equation={equation}
+              key={`equation${parsedEquation.id}`}
+              equation={parsedEquation}
               equationType="existing"
               joinType={joinType}
               rules={rules}
@@ -270,6 +284,21 @@ class RubricModal extends Component {
       )
     });
     const equationCount = equations.length + newEquations.length;
+    const newRubric = {
+      title: title,
+      placement: placement,
+      feedback: feedback,
+      equations: newEquations.map(equation => JSON.stringify(equation.rule)),
+      equationJoinType: equationJoinType
+    };
+    const editRubric = {
+      id: this.props.rubric ? this.props.rubric.id : null,
+      title: title,
+      placement: placement,
+      feedback: feedback,
+      equations: newEquations.map(equation => JSON.stringify(equation.rule)),
+      equationJoinType: equationJoinType
+    };
     return (
         <div>
           <Modal
@@ -302,7 +331,13 @@ class RubricModal extends Component {
             </ModalBody>
             <ModalFooter>
               <Button onClick={onDismiss}>Close</Button>&nbsp;
-              <Button onClick={onDismiss} variant="primary">{submitText}</Button>
+              <Button
+                  onClick={isNewRubric ? onNewRubricSubmit.bind(this, newRubric):
+                          onSaveRubricSubmit.bind(this, editRubric)}
+                  variant="primary"
+              >
+                {submitText}
+              </Button>
             </ModalFooter>
           </Modal>
         </div>
