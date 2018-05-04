@@ -6,6 +6,7 @@ import groovy.transform.CompileStatic
 class QuizQuestion {
     String id
     String quiz_id
+    String quiz_group_id
     String position
     String question_name
     String question_type

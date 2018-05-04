@@ -3,10 +3,13 @@ package math.placement.tool
 class Rubric {
 
     String quizId
-    String name
+    String courseId
+    String title
     String placement
     String feedback
-    String equation
+    String equationJoinType
+
+    static hasMany = [equations: Equation]
 
     static constraints = {
     }
@@ -14,6 +17,5 @@ class Rubric {
     static mapping = {
         version false
         feedback type: 'text'
-        equation type: 'text'
     }
 }
