@@ -5,7 +5,9 @@ import RuleFooter from "./RuleFooter";
 import Rule from "./Rule";
 
 function Equation(props) {
-  const {equation, equationType, joinType, questions, questionGroups, rules, onCreditRuleQuestionChange, onAnswerRuleQuestionChange, onOperatorChange, onNewCreditRuleClick, onAnswerSelectChange, onCreditInputChange, onRuleJoinChange} = props;
+  const {equation, equationType, joinType, questions, questionGroups, rules, onCreditRuleQuestionChange,
+    onAnswerRuleQuestionChange, onOperatorChange, onNewCreditRuleClick, onAnswerSelectChange, onCreditInputChange,
+    onRuleJoinChange, onNewAnswerRuleClick, onDeleteEquationClick, onDeleteRuleClick} = props;
   return (
       <View
           as="div"
@@ -19,6 +21,8 @@ function Equation(props) {
             equationType={equationType}
             ruleJoinType={joinType}
             onNewCreditRuleClick={onNewCreditRuleClick}
+            onNewAnswerRuleClick={onNewAnswerRuleClick}
+            onDeleteEquationClick={onDeleteEquationClick}
         />
         {rules.map((rule, index) => {
           return (
@@ -36,6 +40,7 @@ function Equation(props) {
                   onAnswerSelectChange={onAnswerSelectChange}
                   onCreditInputChange={onCreditInputChange}
                   onOperatorChange={onOperatorChange}
+                  onDeleteRuleClick={onDeleteRuleClick}
               />
           )
         })}

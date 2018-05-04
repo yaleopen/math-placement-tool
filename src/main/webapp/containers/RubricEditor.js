@@ -299,6 +299,8 @@ class RubricEditor extends Component {
                 heading="New Rubric"
                 show={showNewRubricModal}
                 onDismiss={this.handleNewRubricClose}
+                questions={questions}
+                questionGroups={questionGroups}
                 submitText="Submit"
             />
             <RubricModal

@@ -6,11 +6,12 @@ import Grid, {GridRow, GridCol} from '@instructure/ui-layout/lib/components/Grid
 import Select from '@instructure/ui-forms/lib/components/Select'
 import NumberInput from '@instructure/ui-forms/lib/components/NumberInput'
 import ScreenReaderContent from '@instructure/ui-a11y/lib/components/ScreenReaderContent'
-import Tooltip from '@instructure/ui-overlays/lib/components/Tooltip'
+import Badge from '@instructure/ui-elements/lib/components/Badge'
 import IconCheck from '@instructure/ui-icons/lib/Line/IconCheck'
 
 function Rule(props) {
-  const {rule, equationId, equationType, ruleIndex, ruleJoinType, questions, questionGroups, onCreditRuleQuestionChange, onAnswerRuleQuestionChange, onOperatorChange, onAnswerSelectChange, onCreditInputChange} = props;
+  const {rule, equationId, equationType, ruleIndex, ruleJoinType, questions, questionGroups, onCreditRuleQuestionChange,
+    onAnswerRuleQuestionChange, onOperatorChange, onAnswerSelectChange, onCreditInputChange, onDeleteRuleClick} = props;
   const ruleOperator = Object.keys(rule)[0];
   const ruleValue = rule[ruleOperator];
   const ruleVariable = ruleValue[0];
@@ -27,7 +28,8 @@ function Rule(props) {
   }
   else {
     questionIds.push(ruleVariableValue);
-    answers = questions.find((question) => ruleVariableValue === `question_${question.id}`).answers
+    const question = questions.find((question) => ruleVariableValue === `question_${question.id}`);
+    answers = question ? question.answers : [];
   }
   return (
       <View
@@ -87,7 +89,11 @@ function Rule(props) {
               }
             </GridCol>
             <GridCol width="auto">
-              <Button variant="icon" margin="0">
+              <Button
+                  onClick={onDeleteRuleClick.bind(this, equationId, equationType, ruleIndex, ruleJoinType)}
+                  variant="icon"
+                  margin="0"
+              >
                 <IconX/>
               </Button>
             </GridCol>
@@ -159,12 +165,12 @@ function QuizQuestionSelect(props) {
   const options = [];
   questions.forEach((question) => {
     options.push(<option key={`question_${question.id}`} value={`question_${question.id}`}>{`Q${question.position}`}</option>);
-    questionTips[`question_${question.id}`] =  `Max points = ${question.points_possible}`
+    questionTips[`question_${question.id}`] =  question.points_possible
   });
   if(ruleType === 'credit'){
     questionGroups.forEach((questionGroup) => {
       options.push(<option key={`question_group_${questionGroup.id}`} value={`question_group_${questionGroup.id}`}>{questionGroup.name}</option>);
-      questionTips[`question_group_${questionGroup.id}`] =  `Max points (${questionGroup.pick_count} picked x ${questionGroup.question_points} pts/q) = ${questionGroup.pick_count * questionGroup.question_points}`
+      questionTips[`question_group_${questionGroup.id}`] =  questionGroup.pick_count * questionGroup.question_points
     });
   }
   const value = ruleType === 'credit' ? questionIds : questionIds[0];
@@ -175,9 +181,10 @@ function QuizQuestionSelect(props) {
           editable
           formatSelectedOption={option => {
             return (
-                <Tooltip tip={questionTips[option.value]}>
+                <span>
+                  <Badge standalone margin="0 xx-small xxx-small 0" count={questionTips[option.value]}/>
                   {option.label}
-                </Tooltip>
+                </span>
             )
           }
           }

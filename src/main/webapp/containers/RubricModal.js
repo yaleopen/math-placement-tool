@@ -64,6 +64,23 @@ class RubricModal extends Component {
     }
   };
 
+  handleNewAnswerRuleClick = (equationId, equationType, ruleJoinType) => {
+    const equations = equationType === 'new' ? this.state.newEquations : this.state.equations;
+    const equationIndex = equations.findIndex(equation => equation.id === equationId);
+    const answerRuleTemplate = [{"==": [{'var': ''}, '']}];
+    const updatedEquations = update(equations, {[equationIndex]: {rule: {[ruleJoinType]: {$push: answerRuleTemplate}}}});
+    if (equationType === 'new') {
+      this.setState({
+        newEquations: updatedEquations
+      })
+    }
+    else if (equationType === 'existing') {
+      this.setState({
+        equations: updatedEquations
+      })
+    }
+  };
+
   handleCreditRuleQuestionChange = (equationId, equationType, ruleIndex, ruleOperator, ruleJoinType, event, options) => {
     const equations = equationType === 'new' ? this.state.newEquations : this.state.equations;
     const equationIndex = equations.findIndex(equation => equation.id === equationId);
@@ -86,7 +103,7 @@ class RubricModal extends Component {
   handleAnswerRuleQuestionChange = (equationId, equationType, ruleIndex, ruleOperator, ruleJoinType, event, option) => {
     const equations = equationType === 'new' ? this.state.newEquations : this.state.equations;
     const equationIndex = equations.findIndex(equation => equation.id === equationId);
-    const updatedEquations = update(equations, {[equationIndex]: {rule: {[ruleJoinType]: {[ruleIndex]: {[ruleOperator]: {0: {'var': {$set: option.id}}}}}}}});
+    const updatedEquations = update(equations, {[equationIndex]: {rule: {[ruleJoinType]: {[ruleIndex]: {[ruleOperator]: {0: {'var': {$set: option ? option.id : ''}}}}}}}});
     if (equationType === 'new') {
       this.setState({
         newEquations: updatedEquations
@@ -154,6 +171,38 @@ class RubricModal extends Component {
     const equationIndex = equations.findIndex(equation => equation.id === equationId);
     const updatedEquation = {[value]: equations[equationIndex].rule[ruleJoinType]};
     const updatedEquations = update(equations, {[equationIndex]: {rule: {$set: updatedEquation}}});
+    if (equationType === 'new') {
+      this.setState({
+        newEquations: updatedEquations
+      })
+    }
+    else if (equationType === 'existing') {
+      this.setState({
+        equations: updatedEquations
+      })
+    }
+  };
+
+  handleDeleteEquationClick = (equationId, equationType) => {
+    const equations = equationType === 'new' ? this.state.newEquations : this.state.equations;
+    const equationIndex = equations.findIndex(equation => equation.id === equationId);
+    const updatedEquations = update(equations, {$splice: [[[equationIndex], 1]]});
+    if (equationType === 'new') {
+      this.setState({
+        newEquations: updatedEquations
+      })
+    }
+    else if (equationType === 'existing') {
+      this.setState({
+        equations: updatedEquations
+      })
+    }
+  };
+
+  handleDeleteRuleClick = (equationId, equationType, ruleIndex, ruleJoinType) => {
+    const equations = equationType === 'new' ? this.state.newEquations : this.state.equations;
+    const equationIndex = equations.findIndex(equation => equation.id === equationId);
+    const updatedEquations = update(equations, {[equationIndex]: {rule: {[ruleJoinType]: {$splice: [[[ruleIndex], 1]]}}}});
     console.log(updatedEquations);
     if (equationType === 'new') {
       this.setState({
@@ -183,12 +232,15 @@ class RubricModal extends Component {
               questions={questions}
               questionGroups={questionGroups}
               onNewCreditRuleClick={this.handleNewCreditRuleClick}
+              onNewAnswerRuleClick={this.handleNewAnswerRuleClick}
               onCreditRuleQuestionChange={this.handleCreditRuleQuestionChange}
               onAnswerRuleQuestionChange={this.handleAnswerRuleQuestionChange}
               onAnswerSelectChange={this.handleAnswerSelectChange}
               onCreditInputChange={this.handleCreditInputChange}
               onOperatorChange={this.handleOperatorChange}
               onRuleJoinChange={this.handleRuleJoinChange}
+              onDeleteEquationClick={this.handleDeleteEquationClick}
+              onDeleteRuleClick={this.handleDeleteRuleClick}
           />
       )
     });
@@ -205,12 +257,15 @@ class RubricModal extends Component {
               questions={questions}
               questionGroups={questionGroups}
               onNewCreditRuleClick={this.handleNewCreditRuleClick}
+              onNewAnswerRuleClick={this.handleNewAnswerRuleClick}
               onCreditRuleQuestionChange={this.handleCreditRuleQuestionChange}
               onAnswerRuleQuestionChange={this.handleAnswerRuleQuestionChange}
               onAnswerSelectChange={this.handleAnswerSelectChange}
               onCreditInputChange={this.handleCreditInputChange}
               onOperatorChange={this.handleOperatorChange}
               onRuleJoinChange={this.handleRuleJoinChange}
+              onDeleteEquationClick={this.handleDeleteEquationClick}
+              onDeleteRuleClick={this.handleDeleteRuleClick}
           />
       )
     });
