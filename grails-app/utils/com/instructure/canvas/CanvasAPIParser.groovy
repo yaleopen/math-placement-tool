@@ -5,7 +5,7 @@ import groovy.transform.CompileStatic
 import org.grails.web.json.JSONElement
 
 @CompileStatic
-class QuizParser {
+class CanvasAPIParser {
 
     @CompileDynamic
     static Quiz quizFromJsonElement(JSONElement json){
@@ -20,5 +20,19 @@ class QuizParser {
             speedgrader_url = json.speedgrader_url
         }
         quiz
+    }
+
+    @CompileDynamic
+    static QuizGroup quizGroupFromJsonElement(JSONElement json){
+        QuizGroup quizGroup = new QuizGroup()
+        quizGroup.with{
+            id = json.id
+            quiz_id = json.quiz_id
+            name = json.name
+            pick_count = json.pick_count
+            question_points = json.question_points
+            position = json.position
+        }
+        quizGroup
     }
 }

@@ -10,6 +10,7 @@ import {Link} from "react-router-dom"
 import Breadcrumb, {BreadcrumbLink} from '@instructure/ui-breadcrumb/lib/components/Breadcrumb'
 import IconPlus from '@instructure/ui-icons/lib/Line/IconPlus'
 import RubricTable from "../components/RubricTable";
+import axios from "axios";
 
 class RubricEditor extends Component {
   constructor(props) {
@@ -18,6 +19,9 @@ class RubricEditor extends Component {
       showNewRubricModal: false,
       showEditRubricModal: false,
       quiz: null,
+      singleQuestions: [],
+      groupQuestions: [],
+      equations: [],
       isLoaded: false,
       rubrics: []
     }
@@ -25,12 +29,15 @@ class RubricEditor extends Component {
 
   componentDidMount() {
     const {quizId} = this.props.match.params;
-    api.fetchSingleQuiz(sessionStorage.courseId, quizId).then((response) => {
-      this.setState({
-        quiz: response.data,
-        isLoaded: true
-      })
-    })
+    axios.all([api.fetchSingleQuiz(sessionStorage.courseId, quizId),api.fetchQuizQuestions(sessionStorage.courseId, quizId)])
+        .then(axios.spread((quizResponse,quizGroupResponse) => {
+          this.setState({
+            quiz: quizResponse.data,
+            singleQuestions: quizGroupResponse.data.singles,
+            groupQuestions: quizGroupResponse.data.groups,
+            isLoaded: true
+          })
+    }));
   }
 
   handleEditRubricOpen = () => {
@@ -58,7 +65,7 @@ class RubricEditor extends Component {
   };
 
   render() {
-    const {error, isLoaded, quiz, showEditRubricModal, showNewRubricModal} = this.state;
+    const {error, isLoaded, quiz, showEditRubricModal, showNewRubricModal, singleQuestions, groupQuestions} = this.state;
     const breadcrumbs = (
         <Breadcrumb size="large" label="You are here:">
           <Link to="/mathplacement"><BreadcrumbLink onClick={() => {
@@ -96,190 +103,6 @@ class RubricEditor extends Component {
         }
       ]
     };
-    const questionGroups = [
-      {
-        "id": 1666,
-        "quiz_id": 11415,
-        "name": "Plcmt Group 1",
-        "pick_count": 1,
-        "question_points": 5,
-        "position": 3,
-        "assessment_question_bank_id": null
-      },
-      {
-        "id": 1667,
-        "quiz_id": 11415,
-        "name": "Plcmt Group 2",
-        "pick_count": 1,
-        "question_points": 5,
-        "position": 4,
-        "assessment_question_bank_id": null
-      }
-    ];
-    const questions = [
-      {
-        "matching_answer_incorrect_matches": null,
-        "quiz_id": 11415,
-        "quiz_group_id": null,
-        "variables": null,
-        "question_type": "multiple_choice_question",
-        "correct_comments_html": "",
-        "formulas": null,
-        "formula_decimal_places": null,
-        "answers": [
-          {
-            "comments_html": "",
-            "comments": "",
-            "weight": 100,
-            "html": "",
-            "id": 2754,
-            "text": "Score 5"
-          },
-          {
-            "comments_html": "",
-            "comments": "",
-            "weight": 0,
-            "html": "",
-            "id": 2996,
-            "text": "Score 4"
-          },
-          {
-            "comments_html": "",
-            "comments": "",
-            "weight": 0,
-            "html": "",
-            "id": 5259,
-            "text": "Score 3"
-          },
-          {
-            "comments_html": "",
-            "comments": "",
-            "weight": 0,
-            "html": "",
-            "id": 6472,
-            "text": "Score 2"
-          },
-          {
-            "comments_html": "",
-            "comments": "",
-            "weight": 0,
-            "html": "",
-            "id": 304,
-            "text": "Score 1"
-          },
-          {
-            "comments_html": "",
-            "comments": "",
-            "weight": 0,
-            "html": "",
-            "id": 6641,
-            "text": "Score 0"
-          },
-          {
-            "comments_html": "",
-            "comments": "",
-            "weight": 0,
-            "html": "",
-            "id": 9757,
-            "text": "I didn't take the AP Calculus AB test"
-          }
-        ],
-        "incorrect_comments": "",
-        "matches": null,
-        "incorrect_comments_html": "",
-        "question_text": "<p><span>Did you take the AP Calculus AB test? If so, please enter your </span><br><span>score.</span></p>",
-        "assessment_question_id": 200710,
-        "answer_tolerance": null,
-        "question_name": "Question",
-        "points_possible": 5,
-        "neutral_comments_html": "",
-        "neutral_comments": "",
-        "id": 78572,
-        "position": 1,
-        "correct_comments": ""
-      },
-      {
-        "matching_answer_incorrect_matches": null,
-        "quiz_id": 11415,
-        "quiz_group_id": null,
-        "variables": null,
-        "question_type": "multiple_choice_question",
-        "correct_comments_html": "",
-        "formulas": null,
-        "formula_decimal_places": null,
-        "answers": [
-          {
-            "comments_html": "",
-            "comments": "",
-            "weight": 100,
-            "html": "",
-            "id": 5688,
-            "text": "Score 5"
-          },
-          {
-            "comments_html": "",
-            "comments": "",
-            "weight": 0,
-            "html": "",
-            "id": 9321,
-            "text": "Score 4"
-          },
-          {
-            "comments_html": "",
-            "comments": "",
-            "weight": 0,
-            "html": "",
-            "id": 2277,
-            "text": "Score 3"
-          },
-          {
-            "comments_html": "",
-            "comments": "",
-            "weight": 0,
-            "html": "",
-            "id": 2938,
-            "text": "Score 2"
-          },
-          {
-            "comments_html": "",
-            "comments": "",
-            "weight": 0,
-            "html": "",
-            "id": 6324,
-            "text": "Score 1"
-          },
-          {
-            "comments_html": "",
-            "comments": "",
-            "weight": 0,
-            "html": "",
-            "id": 2359,
-            "text": "Score 0"
-          },
-          {
-            "comments_html": "",
-            "comments": "",
-            "weight": 0,
-            "html": "",
-            "id": 3652,
-            "text": "I didn't take the AP Calculus BC test"
-          }
-        ],
-        "incorrect_comments": "",
-        "matches": null,
-        "incorrect_comments_html": "",
-        "question_text": "<p><span>Did you take the AP Calculus BC test? If so, please enter your </span><br><span>score.</span></p>",
-        "assessment_question_id": 200711,
-        "answer_tolerance": null,
-        "question_name": "Question",
-        "points_possible": 1,
-        "neutral_comments_html": "",
-        "neutral_comments": "",
-        "id": 78573,
-        "position": 2,
-        "correct_comments": ""
-      }
-    ];
     return (
         <ApplyTheme theme={ApplyTheme.generateTheme('canvas', {
               'ic-brand-primary': '#00356b',
@@ -299,8 +122,8 @@ class RubricEditor extends Component {
                 heading="New Rubric"
                 show={showNewRubricModal}
                 onDismiss={this.handleNewRubricClose}
-                questions={questions}
-                questionGroups={questionGroups}
+                questions={singleQuestions}
+                questionGroups={groupQuestions}
                 submitText="Submit"
             />
             <RubricModal
@@ -308,8 +131,8 @@ class RubricEditor extends Component {
                 show={showEditRubricModal}
                 equations={testEquationData.equations}
                 equationJoinType={testEquationData.equationJoinType}
-                questions={questions}
-                questionGroups={questionGroups}
+                questions={singleQuestions}
+                questionGroups={groupQuestions}
                 rubric={testRubricData[0]}
                 onDismiss={this.handleEditRubricClose}
                 submitText="Save Changes"
