@@ -7,6 +7,7 @@ class ClientRubric implements Validateable{
     String title
     String placement
     String feedback
-    List<String> equations
+    List<String> newEquations
+    List<String> existingEquations
     String equationJoinType
 }

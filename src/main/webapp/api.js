@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from 'axios';
 
 export default {
   fetchCourseQuizzes: (courseId) => {
@@ -23,6 +23,10 @@ export default {
   },
   listRubrics: (courseId, quizId) => {
     return axios.get(`/mathplacement/courses/${courseId}/quizzes/${quizId}/rubrics`)
+        .then(response => response)
+  },
+  deleteRubric: (courseId, quizId, rubricId) => {
+    return axios.delete(`/mathplacement/courses/${courseId}/quizzes/${quizId}/rubrics/${rubricId}`)
         .then(response => response)
   }
 };
