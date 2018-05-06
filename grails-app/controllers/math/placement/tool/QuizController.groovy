@@ -12,6 +12,10 @@ class QuizController {
     def list(){
         def quizzes = quizService.listQuizzesInCourse(params.courseId as String)
         if(quizzes != null){
+            quizzes.each{quiz->
+                def quizSubmissions = quizSubmissionService.listQuizSubmissions(params.courseId as String, quiz.id as String)
+                quiz.submission_count = quizSubmissions.user_id.unique().size()
+            }
             respond quizzes
         }
         else{

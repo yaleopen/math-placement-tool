@@ -43,4 +43,5 @@ class Quiz {
     String version_number
     List<String> question_types
     Boolean anonymous_submissions
+    Integer submission_count
 }

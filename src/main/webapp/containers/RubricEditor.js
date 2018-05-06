@@ -149,6 +149,7 @@ class RubricEditor extends Component {
             <NavigationBar breadcrumbs={breadcrumbs}/>
             <Loading isLoading={!isLoaded}/>
             <RubricModal
+                key="newRubricModal"
                 heading="New Rubric"
                 isNewRubric={true}
                 show={showNewRubricModal}
@@ -161,6 +162,7 @@ class RubricEditor extends Component {
                 onNewRubricSubmit={this.handleNewRubricSubmit}
             />
             <RubricModal
+                key="editRubricModal"
                 heading="Edit Rubric"
                 show={showEditRubricModal}
                 questions={singleQuestions}

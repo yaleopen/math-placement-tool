@@ -6,6 +6,7 @@ import IconPublish from '@instructure/ui-icons/lib/Solid/IconPublish'
 import Button from '@instructure/ui-buttons/lib/components/Button'
 import Badge from '@instructure/ui-elements/lib/components/Badge'
 import {Link} from "react-router-dom"
+import UserSubmissionBadge from "./UserSubmissionBadge";
 
 function QuizTableRow(props) {
   const {quiz} = props;
@@ -21,7 +22,7 @@ function QuizTableRow(props) {
           <Badge standalone count={quiz.question_count}/>
         </td>
         <td style={{whiteSpace: "nowrap", textAlign: "center"}}>
-          <Badge standalone count={2}/>
+          <UserSubmissionBadge count={quiz.submission_count} />
         </td>
       </tr>
   )
@@ -43,7 +44,7 @@ function QuizTable(props) {
             <th width="1"/>
             <th/>
             <th width="1" scope="col">Questions</th>
-            <th width="1" scope="col">Submissions</th>
+            <th width="1" scope="col">Placements</th>
           </tr>
           </thead>
           <tbody>
