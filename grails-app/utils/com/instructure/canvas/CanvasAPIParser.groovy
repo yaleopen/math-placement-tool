@@ -17,7 +17,8 @@ class CanvasAPIParser {
             question_count = json.question_count
             published = json.published
             unpublishable = json.unpublishable
-            speedgrader_url = json.speedgrader_url
+            assignment_id = json.assignment_id
+            speed_grader_url = json.speed_grader_url
         }
         quiz
     }

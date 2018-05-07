@@ -173,7 +173,11 @@ class RubricEditor extends Component {
                 onDismiss={this.handleEditRubricClose}
                 onSaveRubricSubmit={this.handleSaveRubricSubmit}
             />
-            <Button margin="small 0" onClick={this.handleNewRubricOpen}>
+            <Button
+                margin="small 0"
+                disabled={sessionStorage.isCoursePublished === 'true'}
+                onClick={this.handleNewRubricOpen}
+            >
               <IconPlus/> Rubric
             </Button>
             <RubricTable

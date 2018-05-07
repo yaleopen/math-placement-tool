@@ -12,6 +12,7 @@ class UrlMappings {
         "/"(view: '/index')
 
         group "/courses/$courseId", {
+            "/students"(controller:"course", action:"listStudents", method: "GET")
             group "/quizzes", {
                 "/"(controller:"quiz", action:"list", method: "GET")
                 group "/$quizId", {
@@ -24,9 +25,6 @@ class UrlMappings {
                         group "/$rubricId", {
                             "/"(controller:"rubric", action:"update", method: "PUT")
                             "/"(controller:"rubric", action:"delete", method: "DELETE")
-                            group "/equations/$equationId", {
-                                "/"(controller:"rubric", action:"deleteEquation", method: "DELETE")
-                            }
                         }
                     }
                 }

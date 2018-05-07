@@ -9,7 +9,11 @@ function EquationHeader(props) {
   return (
       <Flex padding="small 0">
         <FlexItem grow shrink>
-          <Button onClick={onNewEquationClick} margin="0">
+          <Button
+              onClick={onNewEquationClick}
+              margin="0"
+              disabled={sessionStorage.isCoursePublished === 'true'}
+          >
             <IconPlus/> Equation
           </Button>
         </FlexItem>

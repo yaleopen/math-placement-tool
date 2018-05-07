@@ -8,6 +8,8 @@ class QuizController {
     def quizQuestionService
     def quizSubmissionService
     def quizQuestionGroupService
+    def quizSubmissionQuestionService
+    def submissionService
 
     def list(){
         def quizzes = quizService.listQuizzesInCourse(params.courseId as String)
@@ -35,8 +37,9 @@ class QuizController {
 
     def listQuestions(){
         def quizQuestions = quizQuestionService.listQuizQuestions(params.courseId as String, params.quizId as String)
+        quizQuestions = quizQuestions ? quizQuestions : []
         //find group questions
-        def quizGroupIds = quizQuestions.quiz_group_id.unique()
+        def quizGroupIds = quizQuestions.quiz_group_id ? quizQuestions.quiz_group_id.unique() : []
         quizGroupIds.removeAll{it == null}
         def quizGroups = quizGroupIds.collect{quizGroupId ->
             quizQuestionGroupService.getSingleQuizGroup(params.courseId as String, params.quizId as String, quizGroupId as String)
@@ -52,8 +55,29 @@ class QuizController {
     }
 
     def listSubmissions(){
+        def quiz = quizService.getSingleQuiz(params.courseId as String, params.quizId as String)
         def quizSubmissions = quizSubmissionService.listQuizSubmissions(params.courseId as String, params.quizId as String)
+        def submissions = submissionService.listAssignmentSubmissions(params.courseId as String, quiz.assignment_id)
         if(quizSubmissions != null){
+            def submissionDataList = submissions.collect{it.submission_history[0]}
+            quizSubmissions.each{quizSubmission->
+                def quizSubmissionQuestions = quizSubmissionQuestionService.listQuizSubmissionQuestions(quizSubmission.id as String)
+                quizSubmission.questions = quizSubmissionQuestions
+                quizSubmission.submission_data = submissionDataList.find{it.id == quizSubmission.id}.submission_data
+                def placementData = [:]
+                quizSubmission.submission_data.each{submissionItem->
+                    //check if group question
+                    def question = quizSubmission.questions.find{it.id == submissionItem.question_id}
+                    if(question.quiz_group_id){
+                        def existingData = placementData["question_group_${question.quiz_group_id}"]
+                        placementData["question_group_${question.quiz_group_id}"] =  existingData ? existingData + submissionItem.points : submissionItem.points
+                    }
+                    else{
+                        placementData["question_${question.id}"] = [answer: "answer_${submissionItem.answer_id}", points: submissionItem.points]
+                    }
+                }
+                quizSubmission.placement_data = placementData
+            }
             respond quizSubmissions
         }
         else{

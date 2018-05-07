@@ -16,4 +16,5 @@ class QuizQuestion {
     String incorrect_comments
     String neutral_comments
     List<Answer> answers
+    Boolean correct
 }

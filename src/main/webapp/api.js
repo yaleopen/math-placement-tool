@@ -28,5 +28,13 @@ export default {
   deleteRubric: (courseId, quizId, rubricId) => {
     return axios.delete(`/mathplacement/courses/${courseId}/quizzes/${quizId}/rubrics/${rubricId}`)
         .then(response => response)
+  },
+  listStudents: (courseId) => {
+    return axios.get(`/mathplacement/courses/${courseId}/students`)
+        .then(response => response)
+  },
+  listSubmissions: (courseId, quizId) => {
+    return axios.get(`/mathplacement/courses/${courseId}/quizzes/${quizId}/submissions`)
+        .then(response => response)
   }
 };

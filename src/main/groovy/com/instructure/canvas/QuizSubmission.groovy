@@ -48,5 +48,8 @@ class QuizSubmission {
     String workflow_state
     // Indicates whether the quiz submission is overdue and needs submission
     Boolean overdue_and_needs_submission
-
+    List<QuizQuestion> questions
+    List<SubmissionData> submission_data
+    List<QuizSubmission> submission_history
+    def placement_data
 }

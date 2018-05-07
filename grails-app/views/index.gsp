@@ -12,6 +12,8 @@
         <g:javascript>
             sessionStorage.userId = ${session.userId};
             sessionStorage.courseId = ${session.courseId};
+            sessionStorage.userRole = '${session.userRole}';
+            sessionStorage.isCoursePublished = ${session.isCoursePublished};
         </g:javascript>
         <asset:javascript src="bundle.js"/>
     </body>

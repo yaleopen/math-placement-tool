@@ -12,6 +12,7 @@ function RuleHeader(props) {
         <FlexItem grow shrink>
           <Button
               onClick={onNewCreditRuleClick.bind(this, equation.id, equationType, ruleJoinType)}
+              disabled={sessionStorage.isCoursePublished === 'true'}
               size="small"
               margin="0 xx-small 0 0"
           >
@@ -19,6 +20,7 @@ function RuleHeader(props) {
           </Button>
           <Button
               onClick={onNewAnswerRuleClick.bind(this, equation.id, equationType, ruleJoinType)}
+              disabled={sessionStorage.isCoursePublished === 'true'}
               size="small"
               margin="0 xx-small 0 0"
           >
@@ -26,7 +28,12 @@ function RuleHeader(props) {
           </Button>
         </FlexItem>
         <FlexItem>
-          <Button onClick={onDeleteEquationClick.bind(this, equation.id, equationType)} variant="icon" margin="0">
+          <Button
+              onClick={onDeleteEquationClick.bind(this, equation.id, equationType)}
+              disabled={sessionStorage.isCoursePublished === 'true'}
+              variant="icon"
+              margin="0"
+          >
             <IconTrash style={{color: '#EE0612'}}/>
           </Button>
         </FlexItem>

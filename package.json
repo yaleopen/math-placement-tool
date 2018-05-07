@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@instructure/ui-a11y": "5.5.0",
+    "@instructure/ui-alerts": "5.5.0",
     "@instructure/ui-breadcrumb": "5.5.0",
     "@instructure/ui-buttons": "5.5.0",
     "@instructure/ui-elements": "5.5.0",

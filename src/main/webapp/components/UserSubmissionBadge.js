@@ -7,7 +7,7 @@ function UserSubmissionBadge(props) {
   return (
       <Badge
           count={props.count}
-          pulse={props.count >0}
+          pulse={props.count > 0}
           margin="small 0 0 0"
       >
         <Button

@@ -57,7 +57,11 @@ function RubricTableRow(props) {
             </Button>
           </Tooltip>
           <Tooltip tip="Delete">
-            <Button variant="icon" onClick={onRubricDelete.bind(this,rubric.id)}>
+            <Button
+                variant="icon"
+                onClick={onRubricDelete.bind(this,rubric.id)}
+                disabled={sessionStorage.isCoursePublished === 'true'}
+            >
               <IconTrash style={{color: '#EE0612'}}/>
             </Button>
           </Tooltip>

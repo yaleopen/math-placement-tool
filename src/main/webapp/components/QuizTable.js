@@ -14,7 +14,7 @@ function QuizTableRow(props) {
       <tr>
         <td>{quiz.published && <IconPublish title="Published" style={{color: '#00AC18'}}/>}</td>
         <td>
-          <Link to={`/quizzes/${quiz.id}`}>
+          <Link to={`/quizzes/${quiz.id}/rubrics`}>
             <Button variant="link">{quiz.title}</Button>
           </Link>
         </td>
@@ -22,7 +22,12 @@ function QuizTableRow(props) {
           <Badge standalone count={quiz.question_count}/>
         </td>
         <td style={{whiteSpace: "nowrap", textAlign: "center"}}>
-          <UserSubmissionBadge count={quiz.submission_count} />
+          {quiz.submission_count > 0 ?
+            <Link to={`/quizzes/${quiz.id}/placements`}>
+              <UserSubmissionBadge count={quiz.submission_count} />
+            </Link> :
+            <UserSubmissionBadge count={quiz.submission_count} />
+          }
         </td>
       </tr>
   )
@@ -42,7 +47,7 @@ function QuizTable(props) {
           <thead>
           <tr>
             <th width="1"/>
-            <th/>
+            <th scope="col">Quiz Rubrics</th>
             <th width="1" scope="col">Questions</th>
             <th width="1" scope="col">Placements</th>
           </tr>

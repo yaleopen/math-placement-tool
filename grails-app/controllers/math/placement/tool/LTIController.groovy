@@ -24,8 +24,22 @@ class LTIController {
             def ltiSecret = grailsApplication.config.getProperty('canvas.ltiSecret')
             LtiVerificationResult ltiResult = ltiVerifier.verify(request, ltiSecret)
             if(ltiResult.success){
+                //find user's role
+                def roles = params.custom_membership_roles as String
+                def roleList = roles.split(',')
+                def role = 'unauthorized'
+                if(roleList.contains('Instructor') || roleList.contains('Sandbox Instructor')){
+                    role = 'instructor'
+                }
+                else if(roleList.contains('StudentEnrollment')){
+                    role = 'student'
+                }
+
+                //set session variables
                 session["userId"] = params.custom_canvas_user_id
                 session["courseId"] = params.custom_canvas_course_id
+                session["userRole"] = role
+                session["isCoursePublished"] = params.custom_canvas_workflow_state == 'available'
                 render(view: "/index")
             }
             else{

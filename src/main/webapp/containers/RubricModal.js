@@ -333,6 +333,7 @@ class RubricModal extends Component {
                   onClick={isNewRubric ? onNewRubricSubmit.bind(this, newRubric):
                           onSaveRubricSubmit.bind(this, editRubric)}
                   variant="primary"
+                  disabled={sessionStorage.isCoursePublished === 'true'}
               >
                 {submitText}
               </Button>
