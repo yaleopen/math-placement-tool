@@ -13,6 +13,7 @@ function JoinConditionRadio(props) {
           variant="toggle"
           disabled={disabled}
           onChange={onChange}
+          readOnly={sessionStorage.isCoursePublished === 'true'}
       >
         <RadioInput label="And" value="and"/>
         <RadioInput label="Or" value="or"/>

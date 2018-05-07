@@ -1,9 +1,9 @@
-import React, {Component} from 'react'
-import Button from '@instructure/ui-buttons/lib/components/Button'
-import Modal, {ModalHeader, ModalBody, ModalFooter} from '@instructure/ui-overlays/lib/components/Modal'
-import Heading from '@instructure/ui-elements/lib/components/Heading'
-import update from 'immutability-helper'
-import Equation from '../components/Equation'
+import React, {Component} from 'react';
+import Button from '@instructure/ui-buttons/lib/components/Button';
+import Modal, {ModalHeader, ModalBody, ModalFooter} from '@instructure/ui-overlays/lib/components/Modal';
+import Heading from '@instructure/ui-elements/lib/components/Heading';
+import update from 'immutability-helper';
+import Equation from '../components/Equation';
 import CloseModalButton from "../components/CloseModalButton";
 import EquationHeader from "../components/EquationHeader";
 import RubricTextInputs from "../components/RubricTextInputs";
@@ -17,7 +17,7 @@ class RubricModal extends Component {
       feedback: this.props.rubric ? this.props.rubric.feedback : '',
       equationJoinType: this.props.rubric ? this.props.rubric.equationJoinType : 'and',
       equations: this.props.rubric ? this.props.rubric.equations : [],
-      newEquations: []
+      newEquations: this.props.newEquations
     };
   }
 
@@ -28,6 +28,7 @@ class RubricModal extends Component {
       feedback: nextProps.rubric ? nextProps.rubric.feedback : '',
       equationJoinType: nextProps.rubric ? nextProps.rubric.equationJoinType : 'and',
       equations: nextProps.rubric ? nextProps.rubric.equations : [],
+      newEquations: nextProps.newEquations
     }
   }
 
@@ -111,6 +112,7 @@ class RubricModal extends Component {
   };
 
   handleAnswerRuleQuestionChange = (equationId, equationType, ruleIndex, ruleOperator, ruleJoinType, event, option) => {
+    console.log(option);
     const equations = equationType === 'new' ? this.state.newEquations : this.state.equations;
     const equationIndex = equations.findIndex(equation => equation.id === equationId);
     const updatedEquations = update(equations, {[equationIndex]: {rule: {[ruleJoinType]: {[ruleIndex]: {[ruleOperator]: {0: {'var': {$set: option ? option.id : ''}}}}}}}});
@@ -213,7 +215,6 @@ class RubricModal extends Component {
     const equations = equationType === 'new' ? this.state.newEquations : this.state.equations;
     const equationIndex = equations.findIndex(equation => equation.id === equationId);
     const updatedEquations = update(equations, {[equationIndex]: {rule: {[ruleJoinType]: {$splice: [[[ruleIndex], 1]]}}}});
-    console.log(updatedEquations);
     if (equationType === 'new') {
       this.setState({
         newEquations: updatedEquations
@@ -231,15 +232,12 @@ class RubricModal extends Component {
       isNewRubric} = this.props;
     const {title, placement, feedback, equations, newEquations, equationJoinType} = this.state;
     const existingEquations = equations.map((equation) => {
-      console.log("Render Equation", equation);
-      const parsedEquation = {id: equation.id, rule: JSON.parse(equation.rule)};
-      console.log(parsedEquation);
-      const joinType = Object.keys(parsedEquation.rule)[0];
-      const rules = parsedEquation.rule[joinType];
+      const joinType = Object.keys(equation.rule)[0];
+      const rules = equation.rule[joinType];
       return (
           <Equation
-              key={`equation${parsedEquation.id}`}
-              equation={parsedEquation}
+              key={`equation${equation.id}`}
+              equation={equation}
               equationType="existing"
               joinType={joinType}
               rules={rules}
@@ -288,7 +286,7 @@ class RubricModal extends Component {
       title: title,
       placement: placement,
       feedback: feedback,
-      equations: newEquations.map(equation => JSON.stringify(equation.rule)),
+      newEquations: newEquations.map(equation => JSON.stringify(equation.rule)),
       equationJoinType: equationJoinType
     };
     const editRubric = {
@@ -296,7 +294,8 @@ class RubricModal extends Component {
       title: title,
       placement: placement,
       feedback: feedback,
-      equations: newEquations.map(equation => JSON.stringify(equation.rule)),
+      newEquations: newEquations.map(equation => JSON.stringify(equation.rule)),
+      existingEquations: equations.map(equation => JSON.stringify(equation)),
       equationJoinType: equationJoinType
     };
     return (
@@ -335,6 +334,7 @@ class RubricModal extends Component {
                   onClick={isNewRubric ? onNewRubricSubmit.bind(this, newRubric):
                           onSaveRubricSubmit.bind(this, editRubric)}
                   variant="primary"
+                  disabled={sessionStorage.isCoursePublished === 'true'}
               >
                 {submitText}
               </Button>

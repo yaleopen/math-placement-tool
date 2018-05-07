@@ -27,8 +27,9 @@ function Rule(props) {
     });
   }
   else {
+    console.log(ruleVariableValue);
     questionIds.push(ruleVariableValue);
-    const question = questions.find((question) => ruleVariableValue === `question_${question.id}`);
+    const question = questions.find((question) => ruleVariableValue === `question_${question.id}.answer`);
     answers = question ? question.answers : [];
   }
   return (
@@ -91,6 +92,7 @@ function Rule(props) {
             <GridCol width="auto">
               <Button
                   onClick={onDeleteRuleClick.bind(this, equationId, equationType, ruleIndex, ruleJoinType)}
+                  disabled={sessionStorage.isCoursePublished === 'true'}
                   variant="icon"
                   margin="0"
               >
@@ -108,6 +110,7 @@ function RuleOperatorSelect(props) {
   return (
       <Select
           value={operator}
+          readOnly={sessionStorage.isCoursePublished === 'true'}
           onChange={onChange.bind(this, equationId, equationType, ruleIndex, operator, ruleJoinType)}
           label={<ScreenReaderContent>Rule Operator Select</ScreenReaderContent>}
       >
@@ -124,6 +127,7 @@ function RuleCreditInput(props) {
       <NumberInput
           min={0}
           value={criteria}
+          readOnly={sessionStorage.isCoursePublished === 'true'}
           onChange={onChange.bind(this, equationId, equationType, ruleIndex, ruleOperator, ruleJoinType)}
           showArrows={false}
           label={<ScreenReaderContent>Rule Credit Input</ScreenReaderContent>}
@@ -139,6 +143,7 @@ function RuleAnswerSelect(props) {
   return (
       <Select
           value={criteria}
+          readOnly={sessionStorage.isCoursePublished === 'true'}
           onChange={onChange.bind(this, equationId, equationType, ruleIndex, ruleOperator, ruleJoinType)}
           label={<ScreenReaderContent>Rule Answer Select</ScreenReaderContent>}
       >
@@ -164,8 +169,8 @@ function QuizQuestionSelect(props) {
   const {equationId, equationType, ruleIndex, ruleType, ruleOperator, ruleJoinType, questionIds, questions, questionGroups, onChange} = props;
   const options = [];
   questions.forEach((question) => {
-    options.push(<option key={`question_${question.id}`} value={`question_${question.id}`}>{`Q${question.position}`}</option>);
-    questionTips[`question_${question.id}`] =  question.points_possible
+    options.push(<option key={`question_${question.id}`} value={ruleType === 'credit' ? `question_${question.id}.points` : `question_${question.id}.answer`}>{`Q${question.position}`}</option>);
+    questionTips[`question_${question.id}.points`] =  question.points_possible
   });
   if(ruleType === 'credit'){
     questionGroups.forEach((questionGroup) => {
@@ -178,6 +183,7 @@ function QuizQuestionSelect(props) {
       <Select
           label={<ScreenReaderContent>Quiz Question Select</ScreenReaderContent>}
           value={value}
+          readOnly={sessionStorage.isCoursePublished === 'true'}
           editable
           formatSelectedOption={option => {
             return (

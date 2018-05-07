@@ -30,9 +30,28 @@ class QuizService extends CanvasAPIBaseService{
             auth("Bearer ${oauthToken}")
             urlVariables(params)
         }
+        println resp.json
         log.debug("ACTION=External_API DESCRIPTION=Get Single Quiz REQUEST_URL=${url} HTTP_STATUS=${resp.status}")
         if(resp.status == 200 && resp.json){
             return CanvasAPIParser.quizFromJsonElement(resp.json)
+        }
+        null
+    }
+
+    List<Assignment> listQuizAssignmentsForUser(String courseId, String userId){
+        def url = "${canvasBaseURL}/api/v1/courses/{course_id}/assignments?include[]=submission&per_page={per_page_limit}&as_user_id={user_id}"
+        def params = [course_id: courseId, user_id: userId, per_page_limit: perPageLimit]
+        def resp = restClient.get(url){
+            auth("Bearer ${oauthToken}")
+            urlVariables(params)
+        }
+        log.debug("ACTION=External_API DESCRIPTION=List Quiz Assignments For User REQUEST_URL=${url} HTTP_STATUS=${resp.status}")
+        if(resp.status == 200 && resp.json){
+            JSONArray respArr = (JSONArray) resp.json
+            List<Assignment> resultList = new ArrayList<Assignment>(respArr)
+            processResponsePages(resp,resultList)
+            resultList.removeAll{it.quiz_id == null}
+            return resultList
         }
         null
     }

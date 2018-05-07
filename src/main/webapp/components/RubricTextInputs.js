@@ -10,6 +10,7 @@ function RubricTextInputs(props) {
           <GridCol>
             <TextInput
                 onChange={onTextChange}
+                readOnly={sessionStorage.isCoursePublished === 'true'}
                 name="title"
                 label="Title"
                 value={title}
@@ -18,6 +19,7 @@ function RubricTextInputs(props) {
           <GridCol>
             <TextInput
                 onChange={onTextChange}
+                readOnly={sessionStorage.isCoursePublished === 'true'}
                 name="placement"
                 label="Course Placement"
                 value={placement}
@@ -28,6 +30,7 @@ function RubricTextInputs(props) {
           <GridCol>
             <TextInput
                 onChange={onTextChange}
+                readOnly={sessionStorage.isCoursePublished === 'true'}
                 name="feedback"
                 label="Feedback"
                 value={feedback}

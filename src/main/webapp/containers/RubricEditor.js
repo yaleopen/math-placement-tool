@@ -1,16 +1,17 @@
 import React, {Component} from "react";
 import ApplyTheme from "@instructure/ui-themeable/lib/components/ApplyTheme/index";
-import View from '@instructure/ui-layout/lib/components/View'
-import Button from '@instructure/ui-buttons/lib/components/Button'
+import View from '@instructure/ui-layout/lib/components/View';
+import Button from '@instructure/ui-buttons/lib/components/Button';
 import RubricModal from "./RubricModal";
 import api from "../api";
 import Loading from "../components/Loading";
 import NavigationBar from "../components/NavigationBar";
-import {Link} from "react-router-dom"
-import Breadcrumb, {BreadcrumbLink} from '@instructure/ui-breadcrumb/lib/components/Breadcrumb'
-import IconPlus from '@instructure/ui-icons/lib/Line/IconPlus'
+import {Link} from "react-router-dom";
+import Breadcrumb, {BreadcrumbLink} from '@instructure/ui-breadcrumb/lib/components/Breadcrumb';
+import IconPlus from '@instructure/ui-icons/lib/Line/IconPlus';
 import RubricTable from "../components/RubricTable";
 import axios from "axios";
+import update from 'immutability-helper';
 
 class RubricEditor extends Component {
   constructor(props) {
@@ -22,6 +23,7 @@ class RubricEditor extends Component {
       singleQuestions: [],
       groupQuestions: [],
       equations: [],
+      newEquations: [],
       isLoaded: false,
       rubrics: [],
       targetRubric: null
@@ -54,7 +56,8 @@ class RubricEditor extends Component {
   handleEditRubricClose = () => {
     this.setState({
       showEditRubricModal: false,
-      targetRubric: null
+      targetRubric: null,
+      newEquations: []
     })
   };
 
@@ -68,20 +71,20 @@ class RubricEditor extends Component {
   handleNewRubricClose = () => {
     this.setState({
       showNewRubricModal: false,
-      targetRubric: null
+      targetRubric: null,
+      newEquations: []
     })
   };
 
   handleNewRubricSubmit = (rubric) => {
-    console.log(rubric);
     this.setState({
       isLoaded: false
     });
     api.createNewRubric(sessionStorage.courseId, this.state.quiz.id, rubric)
         .then((response) => {
-          console.log(response.data);
+          const updatedRubrics = update(this.state.rubrics, {$push:[response.data]});
           this.setState({
-            rubrics: this.state.rubrics.concat(response.data),
+            rubrics: updatedRubrics,
             isLoaded: true,
             showNewRubricModal: false
           })
@@ -89,26 +92,39 @@ class RubricEditor extends Component {
   };
 
   handleSaveRubricSubmit = (rubric) => {
-    console.log(rubric);
     this.setState({
       isLoaded: false
     });
     api.updateRubric(sessionStorage.courseId, this.state.quiz.id, rubric)
         .then((response) => {
-          console.log(response.data);
-          const rubrics = this.state.rubrics.slice();
-          const indexOfRubric = this.state.rubrics.find((oldRubric) => oldRubric.id === rubric.id);
+          const indexOfRubric = this.state.rubrics.findIndex((oldRubric) => oldRubric.id === rubric.id);
+          const updatedRubrics = update(this.state.rubrics, {[indexOfRubric]: {$set:response.data}});
           this.setState({
-            rubrics: rubrics.splice(indexOfRubric, 1, response.data),
+            rubrics: updatedRubrics,
             isLoaded: true,
             showEditRubricModal: false
           })
         })
   };
 
+  handleDeleteRubricClick = (rubricId) => {
+    this.setState({
+      isLoaded: false
+    });
+    api.deleteRubric(sessionStorage.courseId, this.state.quiz.id, rubricId)
+        .then((response) => {
+          const indexOfRubric = this.state.rubrics.findIndex((oldRubric) => oldRubric.id === rubricId);
+          const updatedRubrics = update(this.state.rubrics, {$splice: [[[indexOfRubric],1]]});
+          this.setState({
+            rubrics: updatedRubrics,
+            isLoaded: true
+          })
+        })
+  };
+
   render() {
     const {error, isLoaded, quiz, showEditRubricModal, showNewRubricModal, singleQuestions,
-      rubrics, groupQuestions, targetRubric} = this.state;
+      rubrics, groupQuestions, targetRubric, newEquations} = this.state;
     const breadcrumbs = (
         <Breadcrumb size="large" label="You are here:">
           <Link to="/mathplacement"><BreadcrumbLink onClick={() => {
@@ -133,30 +149,42 @@ class RubricEditor extends Component {
             <NavigationBar breadcrumbs={breadcrumbs}/>
             <Loading isLoading={!isLoaded}/>
             <RubricModal
+                key="newRubricModal"
                 heading="New Rubric"
                 isNewRubric={true}
                 show={showNewRubricModal}
                 questions={singleQuestions}
                 questionGroups={groupQuestions}
                 rubric={targetRubric}
+                newEquations={newEquations}
                 submitText="Submit"
                 onDismiss={this.handleNewRubricClose}
                 onNewRubricSubmit={this.handleNewRubricSubmit}
             />
             <RubricModal
+                key="editRubricModal"
                 heading="Edit Rubric"
                 show={showEditRubricModal}
                 questions={singleQuestions}
                 questionGroups={groupQuestions}
                 rubric={targetRubric}
+                newEquations={newEquations}
                 submitText="Save Changes"
                 onDismiss={this.handleEditRubricClose}
                 onSaveRubricSubmit={this.handleSaveRubricSubmit}
             />
-            <Button margin="small 0" onClick={this.handleNewRubricOpen}>
+            <Button
+                margin="small 0"
+                disabled={sessionStorage.isCoursePublished === 'true'}
+                onClick={this.handleNewRubricOpen}
+            >
               <IconPlus/> Rubric
             </Button>
-            <RubricTable rubrics={rubrics} onEditRubricOpen={this.handleEditRubricOpen}/>
+            <RubricTable
+                rubrics={rubrics}
+                onEditRubricOpen={this.handleEditRubricOpen}
+                onRubricDelete={this.handleDeleteRubricClick}
+            />
           </View>
         </ApplyTheme>
     );

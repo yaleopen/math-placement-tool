@@ -36,11 +36,13 @@ class Quiz {
     Boolean locked_for_user
     def lock_info
     String lock_explanation
-    String speedgrader_url
+    String speed_grader_url
     String quiz_extensions_url
     def permissions
     def all_dates
     String version_number
     List<String> question_types
     Boolean anonymous_submissions
+    Integer submission_count
+    String assignment_id
 }

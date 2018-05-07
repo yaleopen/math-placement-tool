@@ -8,7 +8,7 @@ import Tooltip from '@instructure/ui-overlays/lib/components/Tooltip'
 import Button from '@instructure/ui-buttons/lib/components/Button'
 
 function RubricTable(props) {
-  const {rubrics, onEditRubricOpen} = props;
+  const {rubrics, onEditRubricOpen, onRubricDelete} = props;
   return (
       <View
           as="div"
@@ -26,8 +26,18 @@ function RubricTable(props) {
           </tr>
           </thead>
           <tbody>
-          {rubrics.map((rubric, index) => <RubricTableRow key={`rubric${index}`} rubric={rubric}
-                                                          onEditRubricOpen={onEditRubricOpen}/>)}
+          {rubrics.map(
+              (rubric, index) => {
+                return(
+                    <RubricTableRow
+                        key={`rubric${index}`}
+                        rubric={rubric}
+                        onEditRubricOpen={onEditRubricOpen}
+                        onRubricDelete={onRubricDelete}
+                    />
+                )
+              })
+          }
           </tbody>
         </Table>
       </View>
@@ -35,8 +45,7 @@ function RubricTable(props) {
 }
 
 function RubricTableRow(props) {
-  const {rubric, onEditRubricOpen} = props;
-  console.log(rubric);
+  const {rubric, onEditRubricOpen, onRubricDelete} = props;
   return (
       <tr>
         <td>{rubric.title}</td>
@@ -44,12 +53,16 @@ function RubricTableRow(props) {
         <td style={{whiteSpace: "nowrap", textAlign: "center"}}>
           <Tooltip tip="Edit">
             <Button variant="icon" onClick={onEditRubricOpen.bind(this,rubric)}>
-              <IconEdit title="Edit"/>
+              <IconEdit />
             </Button>
           </Tooltip>
           <Tooltip tip="Delete">
-            <Button variant="icon">
-              <IconTrash title="Delete" style={{color: '#EE0612'}}/>
+            <Button
+                variant="icon"
+                onClick={onRubricDelete.bind(this,rubric.id)}
+                disabled={sessionStorage.isCoursePublished === 'true'}
+            >
+              <IconTrash style={{color: '#EE0612'}}/>
             </Button>
           </Tooltip>
         </td>
