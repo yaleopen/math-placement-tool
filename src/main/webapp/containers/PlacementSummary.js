@@ -9,14 +9,13 @@ import Breadcrumb, {BreadcrumbLink} from '@instructure/ui-breadcrumb/lib/compone
 import axios from "axios";
 import jsonLogic from "json-logic-js";
 import PlacementTable from "../components/PlacementTable";
+import PlacementCSV from "../components/PlacementCSV";
 
 class PlacementSummary extends Component {
   constructor(props) {
     super(props);
     this.state = {
       quiz: null,
-      singleQuestions: [],
-      groupQuestions: [],
       rubrics: [],
       placements: [],
       students: [],
@@ -25,7 +24,6 @@ class PlacementSummary extends Component {
   }
 
   handleSpeedGraderClick = (url) => {
-    console.log(url);
     window.top.location.href = url;
   };
 
@@ -33,45 +31,45 @@ class PlacementSummary extends Component {
     const placements = [];
     students.forEach((student) => {
       const submission = submissions.find(submission => submission.user_id === student.id);
-      console.log(submission);
       if(submission){
-        rubrics.forEach((rubric) => {
-          console.log(rubric);
-          let rubricSatisfied = false;
+        let placedRubric = rubrics ? rubrics[rubrics.length - 1] : null;
+        for(const rubric of rubrics){
+          let rubricSatisfied = null;
           rubric.equations.forEach((equation) => {
             const rule = equation.rule;
             const data = submission.placement_data;
-            console.log(rule);
-            console.log(data);
-            if(jsonLogic.apply(rule, data)){
-              rubricSatisfied = true;
+            const appliedRuleResult = jsonLogic.apply(rule, data);
+            if(rubric.equationJoinType === 'and'){
+              rubricSatisfied = rubricSatisfied != null ? rubricSatisfied && appliedRuleResult : appliedRuleResult;
+            }
+            else{
+              rubricSatisfied = rubricSatisfied != null ? rubricSatisfied || appliedRuleResult : appliedRuleResult;
             }
           });
           if(rubricSatisfied){
-            placements.push({student: student, rubric: rubric});
+            placedRubric = rubric;
+            break;
           }
-        })
+        }
+        placements.push({student: student, rubric: placedRubric});
       }
+      //no submissions
       else{
         placements.push({student: student, rubric: null});
       }
     });
-    console.log(placements);
     return placements;
   };
 
   componentDidMount() {
     const {quizId} = this.props.match.params;
     axios.all(
-        [api.fetchSingleQuiz(sessionStorage.courseId, quizId), api.fetchQuizQuestions(sessionStorage.courseId, quizId),
-          api.listRubrics(sessionStorage.courseId, quizId),api.listStudents(sessionStorage.courseId),
-            api.listSubmissions(sessionStorage.courseId, quizId)
+        [api.fetchSingleQuiz(sessionStorage.courseId, quizId), api.listRubrics(sessionStorage.courseId, quizId),
+          api.listStudents(sessionStorage.courseId), api.listSubmissions(sessionStorage.courseId, quizId)
         ])
-        .then(axios.spread((quiz,questions,rubrics,students,submissions) => {
+        .then(axios.spread((quiz,rubrics,students,submissions) => {
           this.setState({
             quiz: quiz.data,
-            singleQuestions: questions.data.singles,
-            groupQuestions: questions.data.groups,
             rubrics: rubrics.data,
             students: students.data,
             placements: this.calculatePlacements(submissions.data, students.data, rubrics.data),
@@ -81,7 +79,7 @@ class PlacementSummary extends Component {
   }
 
   render() {
-    const {isLoaded, quiz, singleQuestions, rubrics, groupQuestions, placements, students} = this.state;
+    const {isLoaded, quiz, placements} = this.state;
     const breadcrumbs = (
         <Breadcrumb size="large" label="You are here:">
           <Link to="/mathplacement"><BreadcrumbLink onClick={() => {
@@ -105,6 +103,7 @@ class PlacementSummary extends Component {
           >
             <NavigationBar breadcrumbs={breadcrumbs}/>
             <Loading isLoading={!isLoaded}/>
+            <PlacementCSV placements={placements}/>
             <PlacementTable
                 placements={placements}
                 onSpeedGraderClick={this.handleSpeedGraderClick.bind(this,quiz && quiz.speed_grader_url)}
