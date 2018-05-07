@@ -21,6 +21,20 @@ class RubricController {
         }
     }
 
+    def listForCourse() {
+        def jsonSlurper = new JsonSlurper()
+        def rubrics = Rubric.findAllByCourseId(params.courseId as String)
+        def collectedRubrics = rubrics.collect{rubric ->
+            def equations = rubric.equations.collect{equation ->
+                [id: equation.id, rule: jsonSlurper.parseText(equation.rule)]
+            }
+            [id: rubric.id, quizId: rubric.quizId, courseId: rubric.courseId,
+             title: rubric.title, placement: rubric.placement, feedback: rubric.feedback,
+             equationJoinType: rubric.equationJoinType, equations: equations]
+        }
+        respond collectedRubrics.groupBy {rubric -> rubric.quizId}
+    }
+
     def create(ClientRubricWrapper createRubricRq) {
         def jsonSlurper = new JsonSlurper()
         def rubric = new Rubric()

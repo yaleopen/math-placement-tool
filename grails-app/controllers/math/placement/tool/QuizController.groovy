@@ -85,5 +85,44 @@ class QuizController {
         }
     }
 
+    def listPlacementDataForUser(){
+        def assignments = quizService.listQuizAssignmentsForUser(params.courseId as String, params.userId as String)
+        if(assignments != null){
+            def result = [:]
+            assignments.each{assignment->
+                def quizSubmission = assignment.submission
+                if(quizSubmission && quizSubmission.workflow_state != 'unsubmitted'){
+                    def submissions = submissionService.listAssignmentSubmissions(params.courseId as String, assignment.id as String)
+                    def submissionHistory = submissions.find{it.id == quizSubmission.id}.submission_history[0]
+                    def quizSubmissionQuestions = quizSubmissionQuestionService.listQuizSubmissionQuestions(submissionHistory.id as String)
+                    quizSubmission.questions = quizSubmissionQuestions
+                    quizSubmission.submission_data = submissionHistory.submission_data
+                    def placementData = [:]
+                    quizSubmission.submission_data.each{submissionItem->
+                        //check if group question
+                        def question = quizSubmission.questions.find{it.id == submissionItem.question_id}
+                        if(question == null){
+                            return
+                        }
+                        if(question.quiz_group_id){
+                            def existingData = placementData["question_group_${question.quiz_group_id}"]
+                            placementData["question_group_${question.quiz_group_id}"] =  existingData ? existingData + submissionItem.points : submissionItem.points
+                        }
+                        else{
+                            placementData["question_${question.id}"] = [answer: "answer_${submissionItem.answer_id}", points: submissionItem.points]
+                        }
+                    }
+                    quizSubmission.placement_data = placementData
+                }
+                quizSubmission.quiz_name = assignment.name
+                result.put(assignment.quiz_id, quizSubmission)
+            }
+            respond result
+        }
+        else{
+            respond([errorMessage: "Error Retrieving Student Submissions"], status: 500)
+        }
+    }
+
 
 }

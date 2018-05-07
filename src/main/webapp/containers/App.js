@@ -10,6 +10,7 @@ import NavigationBar from "../components/NavigationBar";
 import {Link} from "react-router-dom"
 import Breadcrumb, {BreadcrumbLink} from '@instructure/ui-breadcrumb/lib/components/Breadcrumb'
 import PlacementSummary from "./PlacementSummary";
+import StudentHome from "./StudentHome";
 
 theme.use();
 
@@ -37,6 +38,9 @@ const Home = () => {
   let homeForRole = <UnauthorizedHome/>;
   if(role === 'instructor') {
     homeForRole = <InstructorHome/>;
+  }
+  else if(role === 'student'){
+    homeForRole = <StudentHome userId={sessionStorage.userId}/>;
   }
   return homeForRole;
 };

@@ -103,7 +103,10 @@ class PlacementSummary extends Component {
           >
             <NavigationBar breadcrumbs={breadcrumbs}/>
             <Loading isLoading={!isLoaded}/>
-            <PlacementCSV placements={placements}/>
+            <PlacementCSV
+                placements={placements}
+                quizName={quiz && quiz.title}
+            />
             <PlacementTable
                 placements={placements}
                 onSpeedGraderClick={this.handleSpeedGraderClick.bind(this,quiz && quiz.speed_grader_url)}

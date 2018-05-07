@@ -52,4 +52,5 @@ class QuizSubmission {
     List<SubmissionData> submission_data
     List<QuizSubmission> submission_history
     def placement_data
+    String quiz_name
 }

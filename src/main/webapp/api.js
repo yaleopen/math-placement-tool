@@ -25,6 +25,10 @@ export default {
     return axios.get(`/mathplacement/courses/${courseId}/quizzes/${quizId}/rubrics`)
         .then(response => response)
   },
+  listRubricsForCourse: (courseId) => {
+    return axios.get(`/mathplacement/courses/${courseId}/rubrics`)
+        .then(response => response)
+  },
   deleteRubric: (courseId, quizId, rubricId) => {
     return axios.delete(`/mathplacement/courses/${courseId}/quizzes/${quizId}/rubrics/${rubricId}`)
         .then(response => response)
@@ -35,6 +39,10 @@ export default {
   },
   listSubmissions: (courseId, quizId) => {
     return axios.get(`/mathplacement/courses/${courseId}/quizzes/${quizId}/submissions`)
+        .then(response => response)
+  },
+  listSubmissionsForUser: (courseId, userId) => {
+    return axios.get(`/mathplacement/courses/${courseId}/students/${userId}`)
         .then(response => response)
   }
 };
