@@ -3,9 +3,9 @@ import View from '@instructure/ui-layout/lib/components/View';
 import ScreenReaderContent from '@instructure/ui-a11y/lib/components/ScreenReaderContent';
 import Table from '@instructure/ui-elements/lib/components/Table';
 import IconEdit from '@instructure/ui-icons/lib/Line/IconEdit';
-import IconTrash from '@instructure/ui-icons/lib/Line/IconTrash';
 import Tooltip from '@instructure/ui-overlays/lib/components/Tooltip';
 import Button from '@instructure/ui-buttons/lib/components/Button';
+import DeleteRubricPopover from "./DeleteRubricPopover";
 
 function RubricTable(props) {
   const {rubrics, onEditRubricOpen, onRubricDelete} = props;
@@ -56,15 +56,7 @@ function RubricTableRow(props) {
               <IconEdit />
             </Button>
           </Tooltip>
-          <Tooltip tip="Delete">
-            <Button
-                variant="icon"
-                onClick={onRubricDelete.bind(this,rubric.id)}
-                disabled={sessionStorage.isCoursePublished === 'true'}
-            >
-              <IconTrash style={{color: '#EE0612'}}/>
-            </Button>
-          </Tooltip>
+          <DeleteRubricPopover onContentSubmit={onRubricDelete.bind(this,rubric.id)} />
         </td>
       </tr>
   )
