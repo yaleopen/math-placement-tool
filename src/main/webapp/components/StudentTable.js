@@ -2,15 +2,24 @@ import React from 'react';
 import View from '@instructure/ui-layout/lib/components/View';
 import Table from '@instructure/ui-elements/lib/components/Table';
 import ScreenReaderContent from '@instructure/ui-a11y/lib/components/ScreenReaderContent';
+import FeedbackPopover from "./FeedbackPopover";
+import IconWarning from '@instructure/ui-icons/lib/Solid/IconWarning';
+import Tooltip from '@instructure/ui-overlays/lib/components/Tooltip';
 
 function StudentTableRow(props) {
   const {placement} = props;
   return (
       <tr>
-        <td></td>
+        <td>
+          {placement.rubric == null &&
+            <Tooltip tip="You have not completed this quiz">
+              <IconWarning style={{color: '#FC5E13'}}/>
+            </Tooltip>
+          }
+        </td>
         <td>{placement.quizName}</td>
         <td>{placement.rubric && placement.rubric.placement}</td>
-        <td>{placement.rubric && placement.rubric.feedback}</td>
+        <td>{placement.rubric && <FeedbackPopover feedback={placement.rubric.feedback}/>}</td>
       </tr>
   )
 }
