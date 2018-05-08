@@ -1,6 +1,6 @@
-import React from 'react'
-import TextInput from '@instructure/ui-forms/lib/components/TextInput'
-import Grid, {GridRow, GridCol} from '@instructure/ui-layout/lib/components/Grid'
+import React from 'react';
+import TextInput from '@instructure/ui-forms/lib/components/TextInput';
+import Grid, {GridRow, GridCol} from '@instructure/ui-layout/lib/components/Grid';
 
 function RubricTextInputs(props) {
   const {title, placement, feedback, onTextChange} = props;

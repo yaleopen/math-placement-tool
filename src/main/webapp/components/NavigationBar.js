@@ -1,5 +1,5 @@
-import React from 'react'
-import Grid, {GridRow, GridCol} from '@instructure/ui-layout/lib/components/Grid'
+import React from 'react';
+import Grid, {GridRow, GridCol} from '@instructure/ui-layout/lib/components/Grid';
 
 function NavigationBar(props) {
   const {breadcrumbs} = props;

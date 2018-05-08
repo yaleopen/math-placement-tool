@@ -1,7 +1,7 @@
-import React from 'react'
-import Spinner from '@instructure/ui-elements/lib/components/Spinner'
-import Overlay from '@instructure/ui-overlays/lib/components/Overlay'
-import Mask from '@instructure/ui-overlays/lib/components/Mask'
+import React from 'react';
+import Spinner from '@instructure/ui-elements/lib/components/Spinner';
+import Overlay from '@instructure/ui-overlays/lib/components/Overlay';
+import Mask from '@instructure/ui-overlays/lib/components/Mask';
 
 function Loading(props) {
   const {isLoading} = props;

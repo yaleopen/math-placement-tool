@@ -1,11 +1,11 @@
-import React from 'react'
-import View from '@instructure/ui-layout/lib/components/View'
-import Table from '@instructure/ui-elements/lib/components/Table'
-import ScreenReaderContent from '@instructure/ui-a11y/lib/components/ScreenReaderContent'
-import IconPublish from '@instructure/ui-icons/lib/Solid/IconPublish'
-import Button from '@instructure/ui-buttons/lib/components/Button'
-import Badge from '@instructure/ui-elements/lib/components/Badge'
-import {Link} from "react-router-dom"
+import React from 'react';
+import View from '@instructure/ui-layout/lib/components/View';
+import Table from '@instructure/ui-elements/lib/components/Table';
+import ScreenReaderContent from '@instructure/ui-a11y/lib/components/ScreenReaderContent';
+import IconPublish from '@instructure/ui-icons/lib/Solid/IconPublish';
+import Button from '@instructure/ui-buttons/lib/components/Button';
+import Badge from '@instructure/ui-elements/lib/components/Badge';
+import {Link} from "react-router-dom";
 import UserSubmissionBadge from "./UserSubmissionBadge";
 
 function QuizTableRow(props) {

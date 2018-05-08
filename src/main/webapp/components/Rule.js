@@ -1,13 +1,13 @@
-import React from 'react'
-import Button from '@instructure/ui-buttons/lib/components/Button'
-import View from '@instructure/ui-layout/lib/components/View'
-import IconX from '@instructure/ui-icons/lib/Line/IconX'
-import Grid, {GridRow, GridCol} from '@instructure/ui-layout/lib/components/Grid'
-import Select from '@instructure/ui-forms/lib/components/Select'
-import NumberInput from '@instructure/ui-forms/lib/components/NumberInput'
-import ScreenReaderContent from '@instructure/ui-a11y/lib/components/ScreenReaderContent'
-import Badge from '@instructure/ui-elements/lib/components/Badge'
-import IconCheck from '@instructure/ui-icons/lib/Line/IconCheck'
+import React from 'react';
+import Button from '@instructure/ui-buttons/lib/components/Button';
+import View from '@instructure/ui-layout/lib/components/View';
+import IconX from '@instructure/ui-icons/lib/Line/IconX';
+import Grid, {GridRow, GridCol} from '@instructure/ui-layout/lib/components/Grid';
+import Select from '@instructure/ui-forms/lib/components/Select';
+import NumberInput from '@instructure/ui-forms/lib/components/NumberInput';
+import ScreenReaderContent from '@instructure/ui-a11y/lib/components/ScreenReaderContent';
+import Badge from '@instructure/ui-elements/lib/components/Badge';
+import IconCheck from '@instructure/ui-icons/lib/Line/IconCheck';
 
 function Rule(props) {
   const {rule, equationId, equationType, ruleIndex, ruleJoinType, questions, questionGroups, onCreditRuleQuestionChange,

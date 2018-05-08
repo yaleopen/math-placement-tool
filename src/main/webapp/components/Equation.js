@@ -1,5 +1,5 @@
-import React from 'react'
-import View from '@instructure/ui-layout/lib/components/View'
+import React from 'react';
+import View from '@instructure/ui-layout/lib/components/View';
 import RuleHeader from "./RuleHeader";
 import RuleFooter from "./RuleFooter";
 import Rule from "./Rule";

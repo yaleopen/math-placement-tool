@@ -1,14 +1,14 @@
-import {Switch, Route, BrowserRouter} from 'react-router-dom'
-import React, {Component} from 'react'
-import InstructorHome from './InstructorHome'
-import theme from '@instructure/ui-themes/lib/canvas'
+import React, {Component} from 'react';
+import {Switch, Route, BrowserRouter} from 'react-router-dom';
+import InstructorHome from './InstructorHome';
+import theme from '@instructure/ui-themes/lib/canvas';
 import RubricEditor from "./RubricEditor";
-import ApplyTheme from '@instructure/ui-themeable/lib/components/ApplyTheme'
-import View from '@instructure/ui-layout/lib/components/View'
+import ApplyTheme from '@instructure/ui-themeable/lib/components/ApplyTheme';
+import View from '@instructure/ui-layout/lib/components/View';
 import Alert from '@instructure/ui-alerts/lib/components/Alert';
 import NavigationBar from "../components/NavigationBar";
-import {Link} from "react-router-dom"
-import Breadcrumb, {BreadcrumbLink} from '@instructure/ui-breadcrumb/lib/components/Breadcrumb'
+import {Link} from "react-router-dom";
+import Breadcrumb, {BreadcrumbLink} from '@instructure/ui-breadcrumb/lib/components/Breadcrumb';
 import PlacementSummary from "./PlacementSummary";
 import StudentHome from "./StudentHome";
 

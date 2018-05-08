@@ -1,11 +1,11 @@
-import React, {Component} from 'react'
-import View from '@instructure/ui-layout/lib/components/View'
-import ApplyTheme from '@instructure/ui-themeable/lib/components/ApplyTheme'
+import React, {Component} from 'react';
+import View from '@instructure/ui-layout/lib/components/View';
+import ApplyTheme from '@instructure/ui-themeable/lib/components/ApplyTheme';
 import api from "../api";
 import Loading from "../components/Loading";
 import NavigationBar from "../components/NavigationBar";
-import {Link} from "react-router-dom"
-import Breadcrumb, {BreadcrumbLink} from '@instructure/ui-breadcrumb/lib/components/Breadcrumb'
+import {Link} from "react-router-dom";
+import Breadcrumb, {BreadcrumbLink} from '@instructure/ui-breadcrumb/lib/components/Breadcrumb';
 import StudentTable from "../components/StudentTable";
 import axios from "axios/index";
 import jsonLogic from "json-logic-js";
