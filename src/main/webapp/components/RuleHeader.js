@@ -1,8 +1,8 @@
-import React from 'react'
-import IconTrash from '@instructure/ui-icons/lib/Line/IconTrash'
-import Button from '@instructure/ui-buttons/lib/components/Button'
-import Flex, {FlexItem} from '@instructure/ui-layout/lib/components/Flex'
-import IconPlus from '@instructure/ui-icons/lib/Line/IconPlus'
+import React from 'react';
+import IconTrash from '@instructure/ui-icons/lib/Line/IconTrash';
+import Button from '@instructure/ui-buttons/lib/components/Button';
+import Flex, {FlexItem} from '@instructure/ui-layout/lib/components/Flex';
+import IconPlus from '@instructure/ui-icons/lib/Line/IconPlus';
 
 function RuleHeader(props) {
   const {onNewCreditRuleClick, equation, equationType, ruleJoinType, onNewAnswerRuleClick,

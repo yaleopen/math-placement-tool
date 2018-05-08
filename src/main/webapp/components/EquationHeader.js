@@ -1,7 +1,7 @@
-import React from 'react'
-import Button from '@instructure/ui-buttons/lib/components/Button'
-import Flex, {FlexItem} from '@instructure/ui-layout/lib/components/Flex'
-import IconPlus from '@instructure/ui-icons/lib/Line/IconPlus'
+import React from 'react';
+import Button from '@instructure/ui-buttons/lib/components/Button';
+import Flex, {FlexItem} from '@instructure/ui-layout/lib/components/Flex';
+import IconPlus from '@instructure/ui-icons/lib/Line/IconPlus';
 import JoinConditionRadio from "./JoinConditionRadio";
 
 function EquationHeader(props) {

@@ -1,5 +1,5 @@
-import React from 'react'
-import Flex, {FlexItem} from '@instructure/ui-layout/lib/components/Flex'
+import React from 'react';
+import Flex, {FlexItem} from '@instructure/ui-layout/lib/components/Flex';
 import JoinConditionRadio from "./JoinConditionRadio";
 
 function RuleFooter(props) {

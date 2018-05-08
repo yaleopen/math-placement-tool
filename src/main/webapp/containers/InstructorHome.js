@@ -1,12 +1,12 @@
-import React, {Component} from 'react'
-import View from '@instructure/ui-layout/lib/components/View'
-import ApplyTheme from '@instructure/ui-themeable/lib/components/ApplyTheme'
+import React, {Component} from 'react';
+import View from '@instructure/ui-layout/lib/components/View';
+import ApplyTheme from '@instructure/ui-themeable/lib/components/ApplyTheme';
 import QuizTable from "../components/QuizTable";
 import api from "../api";
 import Loading from "../components/Loading";
 import NavigationBar from "../components/NavigationBar";
-import {Link} from "react-router-dom"
-import Breadcrumb, {BreadcrumbLink} from '@instructure/ui-breadcrumb/lib/components/Breadcrumb'
+import {Link} from "react-router-dom";
+import Breadcrumb, {BreadcrumbLink} from '@instructure/ui-breadcrumb/lib/components/Breadcrumb';
 
 class InstructorHome extends Component {
   constructor(props) {

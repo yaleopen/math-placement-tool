@@ -1,11 +1,11 @@
-import React, {Component} from 'react'
-import View from '@instructure/ui-layout/lib/components/View'
-import ApplyTheme from '@instructure/ui-themeable/lib/components/ApplyTheme'
+import React, {Component} from 'react';
+import View from '@instructure/ui-layout/lib/components/View';
+import ApplyTheme from '@instructure/ui-themeable/lib/components/ApplyTheme';
 import api from "../api";
 import Loading from "../components/Loading";
 import NavigationBar from "../components/NavigationBar";
-import {Link} from "react-router-dom"
-import Breadcrumb, {BreadcrumbLink} from '@instructure/ui-breadcrumb/lib/components/Breadcrumb'
+import {Link} from "react-router-dom";
+import Breadcrumb, {BreadcrumbLink} from '@instructure/ui-breadcrumb/lib/components/Breadcrumb';
 import StudentTable from "../components/StudentTable";
 import axios from "axios/index";
 import jsonLogic from "json-logic-js";
@@ -24,35 +24,38 @@ class StudentHome extends Component {
 
   calculatePlacements = (submissions, rubrics) => {
     const placements = [];
-    Object.keys(submissions).forEach((quizId) => {
-        const quizRubrics = rubrics[quizId];
-        const submission = submissions[quizId];
-        if(submission.workflow_state === 'graded'){
-          let placedRubric = quizRubrics ? quizRubrics[quizRubrics.length - 1] : null;
-          for(const quizRubric of quizRubrics){
-            let rubricSatisfied = null;
-            quizRubric.equations.forEach((equation) => {
-              const rule = equation.rule;
-              const data = submission.placement_data;
-              const appliedRuleResult = jsonLogic.apply(rule, data);
-              if(quizRubric.equationJoinType === 'and'){
-                rubricSatisfied = rubricSatisfied != null ? rubricSatisfied && appliedRuleResult : appliedRuleResult;
-              }
-              else{
-                rubricSatisfied = rubricSatisfied != null ? rubricSatisfied || appliedRuleResult : appliedRuleResult;
-              }
-            });
-            if(rubricSatisfied){
-              placedRubric = quizRubric;
-              break;
+    for(const quizId in submissions){
+      let quizRubrics = null;
+      if(rubrics.hasOwnProperty(quizId)){
+        quizRubrics = rubrics[quizId]
+      }
+      const submission = submissions[quizId];
+      if(submission.workflow_state === 'graded' && quizRubrics != null){
+        let placedRubric = quizRubrics ? quizRubrics[quizRubrics.length - 1] : null;
+        for(const quizRubric of quizRubrics){
+          let rubricSatisfied = null;
+          quizRubric.equations.forEach((equation) => {
+            const rule = equation.rule;
+            const data = submission.placement_data;
+            const appliedRuleResult = jsonLogic.apply(rule, data);
+            if(quizRubric.equationJoinType === 'and'){
+              rubricSatisfied = rubricSatisfied != null ? rubricSatisfied && appliedRuleResult : appliedRuleResult;
             }
+            else{
+              rubricSatisfied = rubricSatisfied != null ? rubricSatisfied || appliedRuleResult : appliedRuleResult;
+            }
+          });
+          if(rubricSatisfied){
+            placedRubric = quizRubric;
+            break;
           }
-          placements.push({quizName: submission.quiz_name, rubric: placedRubric});
         }
-        else{
-          placements.push({quizName: submission.quiz_name, rubric: null});
-        }
-    });
+        placements.push({quizName: submission.quiz_name, rubric: placedRubric});
+      }
+      else{
+        placements.push({quizName: submission.quiz_name, rubric: null});
+      }
+    }
     return placements;
   };
 
@@ -71,7 +74,7 @@ class StudentHome extends Component {
   }
 
   render() {
-    const {error, isLoaded, quizzes} = this.state;
+    const {error, isLoaded, placements} = this.state;
     const breadcrumbs = (
         <Breadcrumb size="large" label="You are here:">
           <Link to="/mathplacement"><BreadcrumbLink onClick={() => {
@@ -93,7 +96,7 @@ class StudentHome extends Component {
           >
             <NavigationBar breadcrumbs={breadcrumbs}/>
             <Loading isLoading={!isLoaded}/>
-            <StudentTable quizzes={[]}/>
+            <StudentTable placements={placements}/>
           </View>
         </ApplyTheme>
     );

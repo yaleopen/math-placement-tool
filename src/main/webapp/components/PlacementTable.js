@@ -5,9 +5,7 @@ import Table from '@instructure/ui-elements/lib/components/Table';
 import IconSpeedGrader from '@instructure/ui-icons/lib/Solid/IconSpeedGrader';
 import Tooltip from '@instructure/ui-overlays/lib/components/Tooltip';
 import Button from '@instructure/ui-buttons/lib/components/Button';
-import Popover, {PopoverContent,PopoverTrigger} from '@instructure/ui-overlays/lib/components/Popover';
-import Text from '@instructure/ui-elements/lib/components/Text';
-import Pill from '@instructure/ui-elements/lib/components/Pill';
+import FeedbackPopover from "./FeedbackPopover";
 
 function PlacementTable(props) {
   const {placements, speedGraderUrl, onSpeedGraderClick} = props;
@@ -68,21 +66,6 @@ function PlacementTableRow(props) {
           }
         </td>
       </tr>
-  )
-}
-
-function FeedbackPopover(props){
-  return(
-      <Popover>
-        <PopoverTrigger>
-          <Pill text={props.feedback}/>
-        </PopoverTrigger>
-        <PopoverContent>
-          <View padding="small" display="inline-block">
-            <Text>{props.feedback}</Text>
-          </View>
-        </PopoverContent>
-      </Popover>
   )
 }
 

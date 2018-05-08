@@ -11,7 +11,7 @@ import Breadcrumb, {BreadcrumbLink} from '@instructure/ui-breadcrumb/lib/compone
 import IconPlus from '@instructure/ui-icons/lib/Line/IconPlus';
 import RubricTable from "../components/RubricTable";
 import axios from "axios";
-import update from 'immutability-helper';
+import Alert from '@instructure/ui-alerts/lib/components/Alert';
 
 class RubricEditor extends Component {
   constructor(props) {
@@ -26,7 +26,10 @@ class RubricEditor extends Component {
       newEquations: [],
       isLoaded: false,
       rubrics: [],
-      targetRubric: null
+      targetRubric: null,
+      showAlert: false,
+      alertMessage: '',
+      error: false
     }
   }
 
@@ -78,53 +81,83 @@ class RubricEditor extends Component {
 
   handleNewRubricSubmit = (rubric) => {
     this.setState({
-      isLoaded: false
+      isLoaded: false,
+      showAlert: false,
     });
     api.createNewRubric(sessionStorage.courseId, this.state.quiz.id, rubric)
         .then((response) => {
-          const updatedRubrics = update(this.state.rubrics, {$push:[response.data]});
           this.setState({
-            rubrics: updatedRubrics,
+            rubrics: response.data,
             isLoaded: true,
-            showNewRubricModal: false
+            showNewRubricModal: false,
+            showAlert: true,
+            alertMessage: 'New Rubric Created',
+            error: false
+          })
+        }).catch(() => {
+          this.setState({
+            isLoaded: true,
+            showNewRubricModal: false,
+            showAlert: true,
+            alertMessage: 'Error Creating Rubric',
+            error: true
           })
         })
   };
 
   handleSaveRubricSubmit = (rubric) => {
     this.setState({
-      isLoaded: false
+      isLoaded: false,
+      showAlert: false
     });
     api.updateRubric(sessionStorage.courseId, this.state.quiz.id, rubric)
         .then((response) => {
-          const indexOfRubric = this.state.rubrics.findIndex((oldRubric) => oldRubric.id === rubric.id);
-          const updatedRubrics = update(this.state.rubrics, {[indexOfRubric]: {$set:response.data}});
           this.setState({
-            rubrics: updatedRubrics,
+            rubrics: response.data,
             isLoaded: true,
-            showEditRubricModal: false
+            showEditRubricModal: false,
+            showAlert: true,
+            alertMessage: 'Rubric Saved',
+            error: false
+          })
+        }).catch(() => {
+          this.setState({
+            isLoaded: true,
+            showEditRubricModal: false,
+            showAlert: true,
+            alertMessage: 'Error Saving Rubric',
+            error: true
           })
         })
   };
 
   handleDeleteRubricClick = (rubricId) => {
     this.setState({
-      isLoaded: false
+      isLoaded: false,
+      showAlert: false
     });
     api.deleteRubric(sessionStorage.courseId, this.state.quiz.id, rubricId)
         .then((response) => {
-          const indexOfRubric = this.state.rubrics.findIndex((oldRubric) => oldRubric.id === rubricId);
-          const updatedRubrics = update(this.state.rubrics, {$splice: [[[indexOfRubric],1]]});
           this.setState({
-            rubrics: updatedRubrics,
-            isLoaded: true
+            rubrics: response.data,
+            isLoaded: true,
+            showAlert: true,
+            alertMessage: 'Rubric Deleted',
+            error:false
+          })
+        }).catch(() => {
+          this.setState({
+            isLoaded: true,
+            showAlert: true,
+            alertMessage: 'Error Deleting Rubric',
+            error: true
           })
         })
   };
 
   render() {
     const {error, isLoaded, quiz, showEditRubricModal, showNewRubricModal, singleQuestions,
-      rubrics, groupQuestions, targetRubric, newEquations} = this.state;
+      rubrics, groupQuestions, targetRubric, newEquations, showAlert, alertMessage} = this.state;
     const breadcrumbs = (
         <Breadcrumb size="large" label="You are here:">
           <Link to="/mathplacement"><BreadcrumbLink onClick={() => {
@@ -148,6 +181,15 @@ class RubricEditor extends Component {
           >
             <NavigationBar breadcrumbs={breadcrumbs}/>
             <Loading isLoading={!isLoaded}/>
+            {showAlert &&
+              <Alert
+                  variant={error ? 'error' : 'success'}
+                  margin="small"
+                  timeout={5000}
+              >
+                {alertMessage}
+              </Alert>
+            }
             <RubricModal
                 key="newRubricModal"
                 heading="New Rubric"
