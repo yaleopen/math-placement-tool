@@ -42,7 +42,6 @@ export default {
         .then(response => response)
   },
   listSubmissionsForUser: (courseId, userId) => {
-    console.log(userId);
     return axios.get(`/mathplacement/courses/${courseId}/students/${userId}`)
         .then(response => response)
   }

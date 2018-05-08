@@ -9,7 +9,7 @@ import Breadcrumb, {BreadcrumbLink} from '@instructure/ui-breadcrumb/lib/compone
 import axios from "axios";
 import jsonLogic from "json-logic-js";
 import PlacementTable from "../components/PlacementTable";
-import PlacementCSV from "../components/PlacementCSV";
+import PlacementSummaryNavigation from "../components/PlacementSummaryNavigation";
 
 class PlacementSummary extends Component {
   constructor(props) {
@@ -19,12 +19,26 @@ class PlacementSummary extends Component {
       rubrics: [],
       placements: [],
       students: [],
-      isLoaded: false
+      isLoaded: false,
+      filterText: '',
+      filterIncomplete: false
     }
   }
 
   handleSpeedGraderClick = (url) => {
     window.top.location.href = url;
+  };
+
+  handleFilterTextChange = (e) => {
+    this.setState({
+      filterText: e.target.value
+    });
+  };
+
+  handleFilterIncompleteChange = (e) => {
+    this.setState({
+      filterIncomplete: e.target.checked
+    });
   };
 
   handleSortPlacements = (column) => {
@@ -163,7 +177,7 @@ class PlacementSummary extends Component {
   }
 
   render() {
-    const {isLoaded, quiz, placements} = this.state;
+    const {isLoaded, quiz, placements, filterText, filterIncomplete} = this.state;
     const breadcrumbs = (
         <Breadcrumb size="large" label="You are here:">
           <Link to="/mathplacement"><BreadcrumbLink onClick={() => {
@@ -187,12 +201,18 @@ class PlacementSummary extends Component {
           >
             <NavigationBar breadcrumbs={breadcrumbs}/>
             <Loading isLoading={!isLoaded}/>
-            <PlacementCSV
-                placements={placements}
-                quizName={quiz && quiz.title}
+            <PlacementSummaryNavigation
+              placements={placements}
+              quizName={quiz && quiz.title}
+              filterText={filterText}
+              filterIncomplete={filterIncomplete}
+              onFilterTextChange={this.handleFilterTextChange}
+              onFilterIncompleteChange={this.handleFilterIncompleteChange}
             />
             <PlacementTable
                 placements={placements}
+                filterText={filterText}
+                filterIncomplete={filterIncomplete}
                 onColumnSort={this.handleSortPlacements}
                 onSpeedGraderClick={this.handleSpeedGraderClick.bind(this,quiz && quiz.speed_grader_url)}
             />

@@ -8,7 +8,28 @@ import Button from '@instructure/ui-buttons/lib/components/Button';
 import FeedbackPopover from "./FeedbackPopover";
 
 function PlacementTable(props) {
-  const {placements, onSpeedGraderClick, onColumnSort} = props;
+  const {placements, onSpeedGraderClick, onColumnSort, filterText, filterIncomplete} = props;
+  const rows = [];
+  placements.forEach((placement, index) => {
+    if(filterIncomplete && placement.rubric != null){
+      return;
+    }
+    const noStudentMatch = placement.student.name.indexOf(filterText) === -1 &&
+        placement.student.login_id.indexOf(filterText) === -1;
+    const noRubricMatch = placement.rubric != null ? placement.rubric.title.indexOf(filterText) === -1 &&
+        placement.rubric.placement.indexOf(filterText) === -1 &&
+        placement.rubric.feedback.indexOf(filterText) === -1 : true;
+    if(noStudentMatch && noRubricMatch){
+      return;
+    }
+    rows.push(
+        <PlacementTableRow
+            key={`placement${index}`}
+            placement={placement}
+            onSpeedGraderClick={onSpeedGraderClick}
+        />
+    )
+  });
   return (
       <View
           as="div"
@@ -30,17 +51,7 @@ function PlacementTable(props) {
           </tr>
           </thead>
           <tbody>
-          {placements.map(
-              (placement, index) => {
-                return(
-                    <PlacementTableRow
-                        key={`placement${index}`}
-                        placement={placement}
-                        onSpeedGraderClick={onSpeedGraderClick}
-                    />
-                )
-              })
-          }
+          {rows}
           </tbody>
         </Table>
       </View>

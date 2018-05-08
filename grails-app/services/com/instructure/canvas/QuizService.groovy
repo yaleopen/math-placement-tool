@@ -30,7 +30,6 @@ class QuizService extends CanvasAPIBaseService{
             auth("Bearer ${oauthToken}")
             urlVariables(params)
         }
-        println resp.json
         log.debug("ACTION=External_API DESCRIPTION=Get Single Quiz REQUEST_URL=${url} HTTP_STATUS=${resp.status}")
         if(resp.status == 200 && resp.json){
             return CanvasAPIParser.quizFromJsonElement(resp.json)
