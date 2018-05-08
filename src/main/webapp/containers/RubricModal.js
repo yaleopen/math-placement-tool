@@ -112,7 +112,6 @@ class RubricModal extends Component {
   };
 
   handleAnswerRuleQuestionChange = (equationId, equationType, ruleIndex, ruleOperator, ruleJoinType, event, option) => {
-    console.log(option);
     const equations = equationType === 'new' ? this.state.newEquations : this.state.equations;
     const equationIndex = equations.findIndex(equation => equation.id === equationId);
     const updatedEquations = update(equations, {[equationIndex]: {rule: {[ruleJoinType]: {[ruleIndex]: {[ruleOperator]: {0: {'var': {$set: option ? option.id : ''}}}}}}}});

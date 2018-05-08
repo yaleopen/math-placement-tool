@@ -8,8 +8,28 @@ import Button from '@instructure/ui-buttons/lib/components/Button';
 import FeedbackPopover from "./FeedbackPopover";
 
 function PlacementTable(props) {
-  const {placements, speedGraderUrl, onSpeedGraderClick} = props;
-  console.log(speedGraderUrl);
+  const {placements, onSpeedGraderClick, onColumnSort, filterText, filterIncomplete} = props;
+  const rows = [];
+  placements.forEach((placement, index) => {
+    if(filterIncomplete && placement.rubric != null){
+      return;
+    }
+    const noStudentMatch = placement.student.name.indexOf(filterText) === -1 &&
+        placement.student.login_id.indexOf(filterText) === -1;
+    const noRubricMatch = placement.rubric != null ? placement.rubric.title.indexOf(filterText) === -1 &&
+        placement.rubric.placement.indexOf(filterText) === -1 &&
+        placement.rubric.feedback.indexOf(filterText) === -1 : true;
+    if(noStudentMatch && noRubricMatch){
+      return;
+    }
+    rows.push(
+        <PlacementTableRow
+            key={`placement${index}`}
+            placement={placement}
+            onSpeedGraderClick={onSpeedGraderClick}
+        />
+    )
+  });
   return (
       <View
           as="div"
@@ -17,30 +37,21 @@ function PlacementTable(props) {
           margin="small"
       >
         <Table
+            striped="columns"
             caption={<ScreenReaderContent>List of Placements</ScreenReaderContent>}
         >
           <thead>
           <tr>
-            <th scope="col">Name</th>
-            <th scope="col">NetID</th>
-            <th scope="col">Rubric</th>
-            <th scope="col">Placement</th>
-            <th scope="col">Feedback</th>
+            <th scope="col" onClick={onColumnSort.bind(this,'name')} style={{cursor:'pointer'}}>Name</th>
+            <th scope="col" onClick={onColumnSort.bind(this,'netid')} style={{cursor:'pointer'}}>NetID</th>
+            <th scope="col" onClick={onColumnSort.bind(this,'rubricTitle')} style={{cursor:'pointer'}}>Rubric</th>
+            <th scope="col" onClick={onColumnSort.bind(this,'rubricPlacement')} style={{cursor:'pointer'}}>Placement</th>
+            <th scope="col" onClick={onColumnSort.bind(this,'rubricFeedback')} style={{cursor:'pointer'}}>Feedback</th>
             <th width="1"/>
           </tr>
           </thead>
           <tbody>
-          {placements.map(
-              (placement, index) => {
-                return(
-                    <PlacementTableRow
-                        key={`placement${index}`}
-                        placement={placement}
-                        onSpeedGraderClick={onSpeedGraderClick}
-                    />
-                )
-              })
-          }
+          {rows}
           </tbody>
         </Table>
       </View>

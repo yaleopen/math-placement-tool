@@ -27,7 +27,6 @@ function Rule(props) {
     });
   }
   else {
-    console.log(ruleVariableValue);
     questionIds.push(ruleVariableValue);
     const question = questions.find((question) => ruleVariableValue === `question_${question.id}.answer`);
     answers = question ? question.answers : [];

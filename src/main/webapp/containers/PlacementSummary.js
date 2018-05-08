@@ -9,7 +9,7 @@ import Breadcrumb, {BreadcrumbLink} from '@instructure/ui-breadcrumb/lib/compone
 import axios from "axios";
 import jsonLogic from "json-logic-js";
 import PlacementTable from "../components/PlacementTable";
-import PlacementCSV from "../components/PlacementCSV";
+import PlacementSummaryNavigation from "../components/PlacementSummaryNavigation";
 
 class PlacementSummary extends Component {
   constructor(props) {
@@ -19,12 +19,110 @@ class PlacementSummary extends Component {
       rubrics: [],
       placements: [],
       students: [],
-      isLoaded: false
+      isLoaded: false,
+      filterText: '',
+      filterIncomplete: false
     }
   }
 
   handleSpeedGraderClick = (url) => {
     window.top.location.href = url;
+  };
+
+  handleFilterTextChange = (e) => {
+    this.setState({
+      filterText: e.target.value
+    });
+  };
+
+  handleFilterIncompleteChange = (e) => {
+    this.setState({
+      filterIncomplete: e.target.checked
+    });
+  };
+
+  handleSortPlacements = (column) => {
+    const placements = this.state.placements.slice();
+    switch(column) {
+      case 'name':
+        placements.sort(this.sortPlacementByName);
+        break;
+      case 'netid':
+        placements.sort(this.sortPlacementByNetID);
+        break;
+      case 'rubricTitle':
+        placements.sort(this.sortPlacementByRubricTitle);
+        break;
+      case 'rubricPlacement':
+        placements.sort(this.sortPlacementByRubricPlacement);
+        break;
+      case 'rubricFeedback':
+        placements.sort(this.sortPlacementByRubricFeedback);
+        break;
+    }
+    this.setState({
+      placements: placements
+    })
+  };
+
+  sortPlacementByName = (a, b) => {
+    const nameA = a.student ? a.student.sortable_name.toUpperCase() : '';
+    const nameB = b.student ? b.student.sortable_name.toUpperCase() : '';
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+    return 0;
+  };
+
+  sortPlacementByNetID = (a, b) => {
+    const nameA = a.student ? a.student.login_id.toUpperCase() : '';
+    const nameB = b.student ? b.student.login_id.toUpperCase() : '';
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+    return 0;
+  };
+
+  sortPlacementByRubricTitle = (a, b) => {
+    const nameA = a.rubric ? a.rubric.title.toUpperCase() : '';
+    const nameB = b.rubric ? b.rubric.title.toUpperCase() : '';
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+    return 0;
+  };
+
+  sortPlacementByRubricPlacement = (a, b) => {
+    const nameA = a.rubric ? a.rubric.placement.toUpperCase() : '';
+    const nameB = b.rubric ? b.rubric.placement.toUpperCase() : '';
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+    return 0;
+  };
+
+  sortPlacementByRubricFeedback = (a, b) => {
+    const nameA = a.rubric ? a.rubric.feedback.toUpperCase() : '';
+    const nameB = b.rubric ? b.rubric.feedback.toUpperCase() : '';
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+    return 0;
   };
 
   calculatePlacements = (submissions, students, rubrics) => {
@@ -79,7 +177,7 @@ class PlacementSummary extends Component {
   }
 
   render() {
-    const {isLoaded, quiz, placements} = this.state;
+    const {isLoaded, quiz, placements, filterText, filterIncomplete} = this.state;
     const breadcrumbs = (
         <Breadcrumb size="large" label="You are here:">
           <Link to="/mathplacement"><BreadcrumbLink onClick={() => {
@@ -103,12 +201,19 @@ class PlacementSummary extends Component {
           >
             <NavigationBar breadcrumbs={breadcrumbs}/>
             <Loading isLoading={!isLoaded}/>
-            <PlacementCSV
-                placements={placements}
-                quizName={quiz && quiz.title}
+            <PlacementSummaryNavigation
+              placements={placements}
+              quizName={quiz && quiz.title}
+              filterText={filterText}
+              filterIncomplete={filterIncomplete}
+              onFilterTextChange={this.handleFilterTextChange}
+              onFilterIncompleteChange={this.handleFilterIncompleteChange}
             />
             <PlacementTable
                 placements={placements}
+                filterText={filterText}
+                filterIncomplete={filterIncomplete}
+                onColumnSort={this.handleSortPlacements}
                 onSpeedGraderClick={this.handleSpeedGraderClick.bind(this,quiz && quiz.speed_grader_url)}
             />
           </View>
