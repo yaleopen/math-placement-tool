@@ -27,6 +27,90 @@ class PlacementSummary extends Component {
     window.top.location.href = url;
   };
 
+  handleSortPlacements = (column) => {
+    const placements = this.state.placements.slice();
+    switch(column) {
+      case 'name':
+        placements.sort(this.sortPlacementByName);
+        break;
+      case 'netid':
+        placements.sort(this.sortPlacementByNetID);
+        break;
+      case 'rubricTitle':
+        placements.sort(this.sortPlacementByRubricTitle);
+        break;
+      case 'rubricPlacement':
+        placements.sort(this.sortPlacementByRubricPlacement);
+        break;
+      case 'rubricFeedback':
+        placements.sort(this.sortPlacementByRubricFeedback);
+        break;
+    }
+    this.setState({
+      placements: placements
+    })
+  };
+
+  sortPlacementByName = (a, b) => {
+    const nameA = a.student ? a.student.sortable_name.toUpperCase() : '';
+    const nameB = b.student ? b.student.sortable_name.toUpperCase() : '';
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+    return 0;
+  };
+
+  sortPlacementByNetID = (a, b) => {
+    const nameA = a.student ? a.student.login_id.toUpperCase() : '';
+    const nameB = b.student ? b.student.login_id.toUpperCase() : '';
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+    return 0;
+  };
+
+  sortPlacementByRubricTitle = (a, b) => {
+    const nameA = a.rubric ? a.rubric.title.toUpperCase() : '';
+    const nameB = b.rubric ? b.rubric.title.toUpperCase() : '';
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+    return 0;
+  };
+
+  sortPlacementByRubricPlacement = (a, b) => {
+    const nameA = a.rubric ? a.rubric.placement.toUpperCase() : '';
+    const nameB = b.rubric ? b.rubric.placement.toUpperCase() : '';
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+    return 0;
+  };
+
+  sortPlacementByRubricFeedback = (a, b) => {
+    const nameA = a.rubric ? a.rubric.feedback.toUpperCase() : '';
+    const nameB = b.rubric ? b.rubric.feedback.toUpperCase() : '';
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+    return 0;
+  };
+
   calculatePlacements = (submissions, students, rubrics) => {
     const placements = [];
     students.forEach((student) => {
@@ -109,6 +193,7 @@ class PlacementSummary extends Component {
             />
             <PlacementTable
                 placements={placements}
+                onColumnSort={this.handleSortPlacements}
                 onSpeedGraderClick={this.handleSpeedGraderClick.bind(this,quiz && quiz.speed_grader_url)}
             />
           </View>

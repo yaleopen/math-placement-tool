@@ -8,8 +8,7 @@ import Button from '@instructure/ui-buttons/lib/components/Button';
 import FeedbackPopover from "./FeedbackPopover";
 
 function PlacementTable(props) {
-  const {placements, speedGraderUrl, onSpeedGraderClick} = props;
-  console.log(speedGraderUrl);
+  const {placements, onSpeedGraderClick, onColumnSort} = props;
   return (
       <View
           as="div"
@@ -17,15 +16,16 @@ function PlacementTable(props) {
           margin="small"
       >
         <Table
+            striped="columns"
             caption={<ScreenReaderContent>List of Placements</ScreenReaderContent>}
         >
           <thead>
           <tr>
-            <th scope="col">Name</th>
-            <th scope="col">NetID</th>
-            <th scope="col">Rubric</th>
-            <th scope="col">Placement</th>
-            <th scope="col">Feedback</th>
+            <th scope="col" onClick={onColumnSort.bind(this,'name')} style={{cursor:'pointer'}}>Name</th>
+            <th scope="col" onClick={onColumnSort.bind(this,'netid')} style={{cursor:'pointer'}}>NetID</th>
+            <th scope="col" onClick={onColumnSort.bind(this,'rubricTitle')} style={{cursor:'pointer'}}>Rubric</th>
+            <th scope="col" onClick={onColumnSort.bind(this,'rubricPlacement')} style={{cursor:'pointer'}}>Placement</th>
+            <th scope="col" onClick={onColumnSort.bind(this,'rubricFeedback')} style={{cursor:'pointer'}}>Feedback</th>
             <th width="1"/>
           </tr>
           </thead>
