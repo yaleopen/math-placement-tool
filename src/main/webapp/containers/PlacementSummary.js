@@ -131,6 +131,13 @@ class PlacementSummary extends Component {
       const submission = submissions.find(submission => submission.user_id === student.id);
       if(submission){
         let placedRubric = rubrics ? rubrics[rubrics.length - 1] : null;
+        //set default rubric if existing
+        if(rubrics){
+          const defaultRubric = rubrics.find(rubric => rubric.isDefault);
+          if(defaultRubric){
+            placedRubric = defaultRubric
+          }
+        }
         for(const rubric of rubrics){
           let rubricSatisfied = null;
           rubric.equations.forEach((equation) => {

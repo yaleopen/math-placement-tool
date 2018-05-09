@@ -6,9 +6,10 @@ import IconEdit from '@instructure/ui-icons/lib/Line/IconEdit';
 import Tooltip from '@instructure/ui-overlays/lib/components/Tooltip';
 import Button from '@instructure/ui-buttons/lib/components/Button';
 import DeleteRubricPopover from "./DeleteRubricPopover";
+import IconMarkAsRead from '@instructure/ui-icons/lib/Solid/IconMarkAsRead';
 
 function RubricTable(props) {
-  const {rubrics, onEditRubricOpen, onRubricDelete} = props;
+  const {rubrics, onEditRubricOpen, onRubricDelete, onRubricDefault} = props;
   return (
       <View
           as="div"
@@ -20,6 +21,7 @@ function RubricTable(props) {
         >
           <thead>
           <tr>
+            <th width="1">Default</th>
             <th scope="col">Rubric Name</th>
             <th scope="col">Course Placement</th>
             <th width="1"/>
@@ -34,6 +36,7 @@ function RubricTable(props) {
                         rubric={rubric}
                         onEditRubricOpen={onEditRubricOpen}
                         onRubricDelete={onRubricDelete}
+                        onRubricDefault={onRubricDefault}
                     />
                 )
               })
@@ -45,14 +48,30 @@ function RubricTable(props) {
 }
 
 function RubricTableRow(props) {
-  const {rubric, onEditRubricOpen, onRubricDelete} = props;
+  const {rubric, onEditRubricOpen, onRubricDelete, onRubricDefault} = props;
+  const isDefaultRubric = rubric.isDefault;
   return (
       <tr>
+        <td style={{whiteSpace: "nowrap", textAlign: "center"}}>
+          <Button
+              variant="icon"
+              onClick={onRubricDefault.bind(this,rubric.id)}
+              readOnly={isDefaultRubric}
+          >
+            <IconMarkAsRead
+                style={{color: !isDefaultRubric && '#cccccc'}}
+                title={isDefaultRubric ? 'Default' : 'Make Default'}
+            />
+          </Button>
+        </td>
         <td>{rubric.title}</td>
         <td>{rubric.placement}</td>
         <td style={{whiteSpace: "nowrap", textAlign: "center"}}>
           <Tooltip tip="Edit">
-            <Button variant="icon" onClick={onEditRubricOpen.bind(this,rubric)}>
+            <Button
+                variant="icon"
+                onClick={onEditRubricOpen.bind(this,rubric)}
+            >
               <IconEdit />
             </Button>
           </Tooltip>
