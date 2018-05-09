@@ -155,6 +155,28 @@ class RubricEditor extends Component {
         })
   };
 
+  handleDefaultRubricClick = (rubricId) => {
+    this.setState({
+      isLoaded: false,
+      showAlert: false
+    });
+    api.makeRubricDefault(sessionStorage.courseId, this.state.quiz.id, rubricId)
+        .then((response) => {
+          this.setState({
+            rubrics: response.data,
+            isLoaded: true,
+            error:false
+          })
+        }).catch(() => {
+      this.setState({
+        isLoaded: true,
+        showAlert: true,
+        alertMessage: 'Error updating default rubric',
+        error: true
+      })
+    })
+  };
+
   render() {
     const {error, isLoaded, quiz, showEditRubricModal, showNewRubricModal, singleQuestions,
       rubrics, groupQuestions, targetRubric, newEquations, showAlert, alertMessage} = this.state;
@@ -226,6 +248,7 @@ class RubricEditor extends Component {
                 rubrics={rubrics}
                 onEditRubricOpen={this.handleEditRubricOpen}
                 onRubricDelete={this.handleDeleteRubricClick}
+                onRubricDefault={this.handleDefaultRubricClick}
             />
           </View>
         </ApplyTheme>

@@ -21,13 +21,14 @@ class RubricController {
             }
             [id: rubric.id, quizId: rubric.quizId, courseId: rubric.courseId,
              title: rubric.title, placement: rubric.placement, feedback: rubric.feedback,
-             equationJoinType: rubric.equationJoinType, equations: equations]
+             equationJoinType: rubric.equationJoinType, equations: equations, isDefault: rubric.isDefault]
         }
         respond collectedRubrics.groupBy {rubric -> rubric.quizId}
     }
 
     def create(ClientRubricWrapper createRubricRq) {
         def rubric = new Rubric()
+        def isFirstRubric = Rubric.findAllByCourseIdAndQuizId(params.courseId as String, params.quizId as String).isEmpty()
         rubric.with{
             quizId = params.quizId
             courseId = params.courseId
@@ -35,6 +36,7 @@ class RubricController {
             placement = createRubricRq.rubric.placement
             feedback = createRubricRq.rubric.feedback
             equationJoinType = createRubricRq.rubric.equationJoinType
+            isDefault = isFirstRubric
         }
         createRubricRq.rubric.newEquations.each{rule ->
             rubric.addToEquations(new Equation(rule: rule))
@@ -79,6 +81,18 @@ class RubricController {
         respond listRubrics(rubric.courseId, rubric.quizId)
     }
 
+    def makeDefault() {
+        def rubric = Rubric.get(params.rubricId as Integer)
+        def existingDefault = Rubric.findByCourseIdAndQuizIdAndIsDefault(rubric.courseId, rubric.quizId, true)
+        if(existingDefault){
+            existingDefault.isDefault = false
+            existingDefault.save(flush:true)
+        }
+        rubric.isDefault = true
+        rubric.save(flush:true)
+        respond listRubrics(rubric.courseId, rubric.quizId)
+    }
+
     private static def listRubrics(courseId, quizId){
         def jsonSlurper = new JsonSlurper()
         def rubrics = Rubric.findAllByCourseIdAndQuizId(courseId, quizId)
@@ -88,7 +102,7 @@ class RubricController {
             }
             [id: rubric.id, quizId: rubric.quizId, courseId: rubric.courseId,
              title: rubric.title, placement: rubric.placement, feedback: rubric.feedback,
-             equationJoinType: rubric.equationJoinType, equations: equations]
+             equationJoinType: rubric.equationJoinType, equations: equations, isDefault: rubric.isDefault]
         }
     }
 }

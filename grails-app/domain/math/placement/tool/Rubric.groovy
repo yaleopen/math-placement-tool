@@ -8,6 +8,7 @@ class Rubric {
     String placement
     String feedback
     String equationJoinType
+    Boolean isDefault
 
     static hasMany = [equations: Equation]
 

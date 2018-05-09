@@ -26,6 +26,7 @@ class UrlMappings {
                         "/"(controller:"rubric", action:"create", method: "POST")
                         group "/$rubricId", {
                             "/"(controller:"rubric", action:"update", method: "PUT")
+                            "/default"(controller:"rubric", action:"makeDefault", method: "PUT")
                             "/"(controller:"rubric", action:"delete", method: "DELETE")
                         }
                     }

@@ -44,5 +44,9 @@ export default {
   listSubmissionsForUser: (courseId, userId) => {
     return axios.get(`/mathplacement/courses/${courseId}/students/${userId}`)
         .then(response => response)
-  }
+  },
+  makeRubricDefault: (courseId, quizId, rubricId) => {
+    return axios.put(`/mathplacement/courses/${courseId}/quizzes/${quizId}/rubrics/${rubricId}/default`)
+        .then(response => response)
+  },
 };

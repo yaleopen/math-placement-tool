@@ -32,6 +32,13 @@ class StudentHome extends Component {
       const submission = submissions[quizId];
       if(submission.workflow_state === 'graded' && quizRubrics != null){
         let placedRubric = quizRubrics ? quizRubrics[quizRubrics.length - 1] : null;
+        //set default rubric if existing
+        if(quizRubrics){
+          const defaultRubric = quizRubrics.find(rubric => rubric.isDefault);
+          if(defaultRubric){
+            placedRubric = defaultRubric
+          }
+        }
         for(const quizRubric of quizRubrics){
           let rubricSatisfied = null;
           quizRubric.equations.forEach((equation) => {
