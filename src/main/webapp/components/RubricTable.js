@@ -2,14 +2,11 @@ import React from 'react';
 import View from '@instructure/ui-layout/lib/components/View';
 import ScreenReaderContent from '@instructure/ui-a11y/lib/components/ScreenReaderContent';
 import Table from '@instructure/ui-elements/lib/components/Table';
-import IconEdit from '@instructure/ui-icons/lib/Line/IconEdit';
-import Tooltip from '@instructure/ui-overlays/lib/components/Tooltip';
-import Button from '@instructure/ui-buttons/lib/components/Button';
-import DeleteRubricPopover from "./DeleteRubricPopover";
-import IconMarkAsRead from '@instructure/ui-icons/lib/Solid/IconMarkAsRead';
+import RubricTableRow from "./RubricTableRow";
 
 function RubricTable(props) {
-  const {rubrics, onEditRubricOpen, onRubricDelete, onRubricDefault} = props;
+  const {rubrics, onEditRubricOpen, onRubricDelete, onRubricDefault, onRubricMove, onRubricDrop, findRubric} = props;
+
   return (
       <View
           as="div"
@@ -37,6 +34,11 @@ function RubricTable(props) {
                         onEditRubricOpen={onEditRubricOpen}
                         onRubricDelete={onRubricDelete}
                         onRubricDefault={onRubricDefault}
+                        index={index}
+                        id={rubric.id}
+                        onRubricMove={onRubricMove}
+                        onRubricDrop={onRubricDrop}
+                        findRubric={findRubric}
                     />
                 )
               })
@@ -44,40 +46,6 @@ function RubricTable(props) {
           </tbody>
         </Table>
       </View>
-  )
-}
-
-function RubricTableRow(props) {
-  const {rubric, onEditRubricOpen, onRubricDelete, onRubricDefault} = props;
-  const isDefaultRubric = rubric.isDefault;
-  return (
-      <tr>
-        <td style={{whiteSpace: "nowrap", textAlign: "center"}}>
-          <Button
-              variant="icon"
-              onClick={onRubricDefault.bind(this,rubric.id)}
-              readOnly={isDefaultRubric}
-          >
-            <IconMarkAsRead
-                style={{color: !isDefaultRubric && '#cccccc'}}
-                title={isDefaultRubric ? 'Default' : 'Make Default'}
-            />
-          </Button>
-        </td>
-        <td>{rubric.title}</td>
-        <td>{rubric.placement}</td>
-        <td style={{whiteSpace: "nowrap", textAlign: "center"}}>
-          <Tooltip tip="Edit">
-            <Button
-                variant="icon"
-                onClick={onEditRubricOpen.bind(this,rubric)}
-            >
-              <IconEdit />
-            </Button>
-          </Tooltip>
-          <DeleteRubricPopover onContentSubmit={onRubricDelete.bind(this,rubric.id)} />
-        </td>
-      </tr>
   )
 }
 

@@ -24,6 +24,7 @@ class UrlMappings {
                     group "/rubrics", {
                         "/"(controller:"rubric", action:"list", method: "GET")
                         "/"(controller:"rubric", action:"create", method: "POST")
+                        "/order"(controller:"rubric", action:"reorder", method: "PUT")
                         group "/$rubricId", {
                             "/"(controller:"rubric", action:"update", method: "PUT")
                             "/default"(controller:"rubric", action:"makeDefault", method: "PUT")

@@ -10,4 +10,5 @@ class ClientRubric implements Validateable{
     List<String> newEquations
     List<String> existingEquations
     String equationJoinType
+    Integer priority
 }
