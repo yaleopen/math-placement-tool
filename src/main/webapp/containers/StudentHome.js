@@ -9,6 +9,7 @@ import Breadcrumb, {BreadcrumbLink} from '@instructure/ui-breadcrumb/lib/compone
 import StudentTable from "../components/StudentTable";
 import axios from "axios/index";
 import jsonLogic from "json-logic-js";
+import FeedbackModal from "../components/FeedbackModal";
 
 class StudentHome extends Component {
   constructor(props) {
@@ -18,9 +19,25 @@ class StudentHome extends Component {
       error: null,
       isLoaded: false,
       placements: [],
-      rubrics: []
+      rubrics: [],
+      showFeedbackModal: false,
+      feedbackModalText: ''
     }
   }
+
+  handleFeedbackModalOpen = (feedback) => {
+    this.setState({
+      showFeedbackModal: true,
+      feedbackModalText: feedback
+    })
+  };
+
+  handleFeedbackModalClose = () => {
+    this.setState({
+      showFeedbackModal: false,
+      feedbackModalText: ''
+    })
+  };
 
   calculatePlacements = (submissions, rubrics) => {
     const placements = [];
@@ -81,7 +98,7 @@ class StudentHome extends Component {
   }
 
   render() {
-    const {error, isLoaded, placements} = this.state;
+    const {error, isLoaded, placements, showFeedbackModal, feedbackModalText} = this.state;
     const breadcrumbs = (
         <Breadcrumb size="large" label="You are here:">
           <Link to="/mathplacement"><BreadcrumbLink onClick={() => {
@@ -103,7 +120,8 @@ class StudentHome extends Component {
           >
             <NavigationBar breadcrumbs={breadcrumbs}/>
             <Loading isLoading={!isLoaded}/>
-            <StudentTable placements={placements}/>
+            <FeedbackModal show={showFeedbackModal} feedback={feedbackModalText} onDismiss={this.handleFeedbackModalClose}/>
+            <StudentTable placements={placements} onFeedbackModalOpen={this.handleFeedbackModalOpen}/>
           </View>
         </ApplyTheme>
     );

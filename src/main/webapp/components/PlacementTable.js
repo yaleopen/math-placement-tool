@@ -5,10 +5,10 @@ import Table from '@instructure/ui-elements/lib/components/Table';
 import IconSpeedGrader from '@instructure/ui-icons/lib/Solid/IconSpeedGrader';
 import Tooltip from '@instructure/ui-overlays/lib/components/Tooltip';
 import Button from '@instructure/ui-buttons/lib/components/Button';
-import FeedbackPopover from "./FeedbackPopover";
+import IconFeedback from '@instructure/ui-icons/lib/Line/IconFeedback';
 
 function PlacementTable(props) {
-  const {placements, onSpeedGraderClick, onColumnSort, filterText, filterIncomplete} = props;
+  const {placements, onSpeedGraderClick, onColumnSort, filterText, filterIncomplete, onFeedbackModalOpen} = props;
   const rows = [];
   placements.forEach((placement, index) => {
     if(filterIncomplete && placement.rubric != null){
@@ -27,6 +27,7 @@ function PlacementTable(props) {
             key={`placement${index}`}
             placement={placement}
             onSpeedGraderClick={onSpeedGraderClick}
+            onFeedbackModalOpen={onFeedbackModalOpen}
         />
     )
   });
@@ -46,7 +47,6 @@ function PlacementTable(props) {
             <th scope="col" onClick={onColumnSort.bind(this,'netid')} style={{cursor:'pointer'}}>NetID</th>
             <th scope="col" onClick={onColumnSort.bind(this,'rubricTitle')} style={{cursor:'pointer'}}>Rubric</th>
             <th scope="col" onClick={onColumnSort.bind(this,'rubricPlacement')} style={{cursor:'pointer'}}>Placement</th>
-            <th scope="col" onClick={onColumnSort.bind(this,'rubricFeedback')} style={{cursor:'pointer'}}>Feedback</th>
             <th width="1"/>
           </tr>
           </thead>
@@ -59,21 +59,27 @@ function PlacementTable(props) {
 }
 
 function PlacementTableRow(props) {
-  const {placement, onSpeedGraderClick} = props;
+  const {placement, onSpeedGraderClick, onFeedbackModalOpen} = props;
   return (
       <tr>
         <td>{placement.student.sortable_name}</td>
         <td>{placement.student.login_id}</td>
         <td>{placement.rubric && placement.rubric.title}</td>
         <td>{placement.rubric && placement.rubric.placement}</td>
-        <td>{placement.rubric && <FeedbackPopover feedback={placement.rubric.feedback}/>}</td>
         <td style={{whiteSpace: "nowrap", textAlign: "center"}}>
           {placement.rubric &&
-          <Tooltip tip="Speed Grader">
-            <Button onClick={onSpeedGraderClick} variant="icon">
-              <IconSpeedGrader style={{color: '#00AC18'}}/>
-            </Button>
-          </Tooltip>
+          <React.Fragment>
+            <Tooltip tip="View Feedback">
+              <Button onClick={onFeedbackModalOpen.bind(this,placement.rubric.feedback)} variant="icon">
+                <IconFeedback/>
+              </Button>
+            </Tooltip>
+            <Tooltip tip="Speed Grader">
+              <Button onClick={onSpeedGraderClick} variant="icon">
+                <IconSpeedGrader style={{color: '#00AC18'}}/>
+              </Button>
+            </Tooltip>
+          </React.Fragment>
           }
         </td>
       </tr>

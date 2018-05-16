@@ -10,6 +10,7 @@ import axios from "axios";
 import jsonLogic from "json-logic-js";
 import PlacementTable from "../components/PlacementTable";
 import PlacementSummaryNavigation from "../components/PlacementSummaryNavigation";
+import FeedbackModal from "../components/FeedbackModal";
 
 class PlacementSummary extends Component {
   constructor(props) {
@@ -21,7 +22,9 @@ class PlacementSummary extends Component {
       students: [],
       isLoaded: false,
       filterText: '',
-      filterIncomplete: false
+      filterIncomplete: false,
+      showFeedbackModal: false,
+      feedbackModalText: ''
     }
   }
 
@@ -41,6 +44,20 @@ class PlacementSummary extends Component {
     });
   };
 
+  handleFeedbackModalOpen = (feedback) => {
+    this.setState({
+      showFeedbackModal: true,
+      feedbackModalText: feedback
+    })
+  };
+
+  handleFeedbackModalClose = () => {
+    this.setState({
+      showFeedbackModal: false,
+      feedbackModalText: ''
+    })
+  };
+
   handleSortPlacements = (column) => {
     const placements = this.state.placements.slice();
     switch(column) {
@@ -55,9 +72,6 @@ class PlacementSummary extends Component {
         break;
       case 'rubricPlacement':
         placements.sort(this.sortPlacementByRubricPlacement);
-        break;
-      case 'rubricFeedback':
-        placements.sort(this.sortPlacementByRubricFeedback);
         break;
     }
     this.setState({
@@ -104,18 +118,6 @@ class PlacementSummary extends Component {
   sortPlacementByRubricPlacement = (a, b) => {
     const nameA = a.rubric ? a.rubric.placement.toUpperCase() : '';
     const nameB = b.rubric ? b.rubric.placement.toUpperCase() : '';
-    if (nameA < nameB) {
-      return -1;
-    }
-    if (nameA > nameB) {
-      return 1;
-    }
-    return 0;
-  };
-
-  sortPlacementByRubricFeedback = (a, b) => {
-    const nameA = a.rubric ? a.rubric.feedback.toUpperCase() : '';
-    const nameB = b.rubric ? b.rubric.feedback.toUpperCase() : '';
     if (nameA < nameB) {
       return -1;
     }
@@ -184,7 +186,7 @@ class PlacementSummary extends Component {
   }
 
   render() {
-    const {isLoaded, quiz, placements, filterText, filterIncomplete} = this.state;
+    const {isLoaded, quiz, placements, filterText, filterIncomplete, feedbackModalText, showFeedbackModal} = this.state;
     const breadcrumbs = (
         <Breadcrumb size="large" label="You are here:">
           <Link to="/mathplacement"><BreadcrumbLink onClick={() => {
@@ -208,6 +210,7 @@ class PlacementSummary extends Component {
           >
             <NavigationBar breadcrumbs={breadcrumbs}/>
             <Loading isLoading={!isLoaded}/>
+            <FeedbackModal show={showFeedbackModal} feedback={feedbackModalText} onDismiss={this.handleFeedbackModalClose}/>
             <PlacementSummaryNavigation
               placements={placements}
               quizName={quiz && quiz.title}
@@ -222,6 +225,7 @@ class PlacementSummary extends Component {
                 filterIncomplete={filterIncomplete}
                 onColumnSort={this.handleSortPlacements}
                 onSpeedGraderClick={this.handleSpeedGraderClick.bind(this,quiz && quiz.speed_grader_url)}
+                onFeedbackModalOpen={this.handleFeedbackModalOpen}
             />
           </View>
         </ApplyTheme>
