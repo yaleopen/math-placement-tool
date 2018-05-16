@@ -228,7 +228,7 @@ class RubricModal extends Component {
 
   render() {
     const {show, onDismiss, heading, submitText, questions, questionGroups, onNewRubricSubmit, onSaveRubricSubmit,
-      isNewRubric} = this.props;
+      isNewRubric, priority} = this.props;
     const {title, placement, feedback, equations, newEquations, equationJoinType} = this.state;
     const existingEquations = equations.map((equation) => {
       const joinType = Object.keys(equation.rule)[0];
@@ -286,7 +286,8 @@ class RubricModal extends Component {
       placement: placement,
       feedback: feedback,
       newEquations: newEquations.map(equation => JSON.stringify(equation.rule)),
-      equationJoinType: equationJoinType
+      equationJoinType: equationJoinType,
+      priority: priority
     };
     const editRubric = {
       id: this.props.rubric ? this.props.rubric.id : null,

@@ -12,6 +12,10 @@ import IconPlus from '@instructure/ui-icons/lib/Line/IconPlus';
 import RubricTable from "../components/RubricTable";
 import axios from "axios";
 import Alert from '@instructure/ui-alerts/lib/components/Alert';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
+import update from 'immutability-helper';
+import _ from 'lodash';
 
 class RubricEditor extends Component {
   constructor(props) {
@@ -177,6 +181,49 @@ class RubricEditor extends Component {
     })
   };
 
+  handleRubricMove = (id, atIndex) => {
+    const { rubric, index } = this.findRubric(id);
+    this.setState(update(this.state, {
+      rubrics: {
+        $splice: [
+          [index, 1],
+          [atIndex, 0, rubric],
+        ],
+      },
+    }));
+  };
+
+  handleRubricDrop = (reRankedRubric) => {
+    this.setState({
+      isLoaded: false,
+      showAlert: false
+    });
+    api.swapRubricOrder(sessionStorage.courseId, this.state.quiz.id, reRankedRubric.droppedIndex, reRankedRubric.originalIndex)
+        .then((response) => {
+          this.setState({
+            rubrics: response.data,
+            isLoaded: true,
+            error:false
+          })
+        }).catch(() => {
+      this.setState({
+        isLoaded: true,
+        showAlert: true,
+        alertMessage: 'Error updating order',
+        error: true
+      })
+    })
+  };
+
+  findRubric = (id) => {
+    const{rubrics} = this.state;
+    const rubric = _.find(rubrics, c => c.id === id) || {};
+    return {
+      rubric,
+      index: rubrics.indexOf(rubric)
+    }
+  };
+
   render() {
     const {error, isLoaded, quiz, showEditRubricModal, showNewRubricModal, singleQuestions,
       rubrics, groupQuestions, targetRubric, newEquations, showAlert, alertMessage} = this.state;
@@ -221,6 +268,7 @@ class RubricEditor extends Component {
                 questionGroups={groupQuestions}
                 rubric={targetRubric}
                 newEquations={newEquations}
+                priority={rubrics.length}
                 submitText="Submit"
                 onDismiss={this.handleNewRubricClose}
                 onNewRubricSubmit={this.handleNewRubricSubmit}
@@ -249,6 +297,9 @@ class RubricEditor extends Component {
                 onEditRubricOpen={this.handleEditRubricOpen}
                 onRubricDelete={this.handleDeleteRubricClick}
                 onRubricDefault={this.handleDefaultRubricClick}
+                onRubricMove={this.handleRubricMove}
+                onRubricDrop={this.handleRubricDrop}
+                findRubric={this.findRubric}
             />
           </View>
         </ApplyTheme>
@@ -256,4 +307,4 @@ class RubricEditor extends Component {
   }
 }
 
-export default RubricEditor;
+export default DragDropContext(HTML5Backend)(RubricEditor);

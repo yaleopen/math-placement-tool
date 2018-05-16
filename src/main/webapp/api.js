@@ -49,4 +49,8 @@ export default {
     return axios.put(`/mathplacement/courses/${courseId}/quizzes/${quizId}/rubrics/${rubricId}/default`)
         .then(response => response)
   },
+  swapRubricOrder: (courseId, quizId, rubricAPriority, rubricBPriority) => {
+    return axios.put(`/mathplacement/courses/${courseId}/quizzes/${quizId}/rubrics/order`, {rubricAPriority: rubricAPriority, rubricBPriority: rubricBPriority})
+        .then(response => response)
+  },
 };

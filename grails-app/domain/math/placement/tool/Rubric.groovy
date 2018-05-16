@@ -9,6 +9,7 @@ class Rubric {
     String feedback
     String equationJoinType
     Boolean isDefault
+    Integer priority
 
     static hasMany = [equations: Equation]
 
@@ -18,5 +19,6 @@ class Rubric {
     static mapping = {
         version false
         feedback type: 'text'
+        sort "priority"
     }
 }

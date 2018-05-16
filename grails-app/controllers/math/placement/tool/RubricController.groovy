@@ -37,6 +37,7 @@ class RubricController {
             feedback = createRubricRq.rubric.feedback
             equationJoinType = createRubricRq.rubric.equationJoinType
             isDefault = isFirstRubric
+            priority = createRubricRq.rubric.priority
         }
         createRubricRq.rubric.newEquations.each{rule ->
             rubric.addToEquations(new Equation(rule: rule))
@@ -91,6 +92,20 @@ class RubricController {
         rubric.isDefault = true
         rubric.save(flush:true)
         respond listRubrics(rubric.courseId, rubric.quizId)
+    }
+
+    def reorder() {
+        def rqJson = request.JSON
+        String courseId = params.courseId
+        String quizId = params.quizId
+        def rubric1 = Rubric.findByCourseIdAndQuizIdAndPriority(courseId, quizId, rqJson.rubricAPriority as Integer)
+        def rubric2 = Rubric.findByCourseIdAndQuizIdAndPriority(courseId, quizId, rqJson.rubricBPriority as Integer)
+        def rubric2Priority = rubric1.priority
+        rubric1.priority = rubric2.priority
+        rubric2.priority = rubric2Priority
+        rubric1.save(flush:true)
+        rubric2.save(flush:true)
+        respond listRubrics(courseId, quizId)
     }
 
     private static def listRubrics(courseId, quizId){
