@@ -1,21 +1,24 @@
 import React from 'react';
 import {CSVLink} from 'react-csv';
-import Flex, {FlexItem} from '@instructure/ui-layout/lib/components/Flex';
+import View from '@instructure/ui-layout/lib/components/View';
 import IconDownload from '@instructure/ui-icons/lib/Line/IconDownload';
 import Button from '@instructure/ui-buttons/lib/components/Button';
 import TextInput from '@instructure/ui-forms/lib/components/TextInput';
 import Checkbox from '@instructure/ui-forms/lib/components/Checkbox';
 import ScreenReaderContent from '@instructure/ui-a11y/lib/components/ScreenReaderContent';
+import Grid, {GridCol,GridRow} from '@instructure/ui-layout/lib/components/Grid';
 
 function PlacementCSV(props) {
   const {quizName,placements} = props;
   const csvData =[
-    ['Name', 'NetID', 'Rubric', 'Placement', 'Feedback']
+    ['Login ID', 'Last Name', 'First Name', 'Rubric', 'Placement', 'Feedback']
   ];
   placements.forEach((placement) => {
+    const splitName = placement.student.sortable_name.split(',');
     csvData.push([
-      placement.student.sortable_name,
       placement.student.login_id,
+      splitName[0],
+      splitName[1],
       placement.rubric && placement.rubric.title,
       placement.rubric && placement.rubric.placement,
       placement.rubric && placement.rubric.feedback
@@ -56,21 +59,26 @@ function IncompleteFilter(props) {
 function PlacementSummaryNavigation(props) {
   const {quizName,placements,filterText,filterIncomplete,onFilterTextChange,onFilterIncompleteChange} = props;
   return (
-      <Flex margin="small">
-        <FlexItem grow shrink>
-          <Flex direction="column">
-            <FlexItem>
+      <View
+          as="div"
+          margin="small"
+      >
+        <Grid startAt="medium" vAlign="middle" colSpacing="none" rowSpacing="small">
+          <GridRow>
+            <GridCol>
               <SearchBox filterText={filterText} onFilterTextChange={onFilterTextChange}/>
-            </FlexItem>
-            <FlexItem margin="x-small 0 0 0">
-             <IncompleteFilter filterIncomplete={filterIncomplete} onFilterIncompleteChange={onFilterIncompleteChange}/>
-            </FlexItem>
-          </Flex>
-        </FlexItem>
-        <FlexItem>
-          <PlacementCSV quizName={quizName} placements={placements}/>
-        </FlexItem>
-      </Flex>
+            </GridCol>
+            <GridCol width="auto">
+              <PlacementCSV quizName={quizName} placements={placements}/>
+            </GridCol>
+          </GridRow>
+          <GridRow>
+            <GridCol>
+              <IncompleteFilter filterIncomplete={filterIncomplete} onFilterIncompleteChange={onFilterIncompleteChange}/>
+            </GridCol>
+          </GridRow>
+        </Grid>
+      </View>
   )
 }
 
