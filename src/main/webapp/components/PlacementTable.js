@@ -9,16 +9,17 @@ import IconFeedback from '@instructure/ui-icons/lib/Line/IconFeedback';
 
 function PlacementTable(props) {
   const {placements, onSpeedGraderClick, onColumnSort, filterText, filterIncomplete, onFeedbackModalOpen} = props;
+  const filterTextLC = filterText.toLowerCase();
   const rows = [];
   placements.forEach((placement, index) => {
-    if(filterIncomplete && placement.rubric != null){
+    if(filterIncomplete && placement.rubric){
       return;
     }
-    const noStudentMatch = placement.student.name.indexOf(filterText) === -1 &&
-        placement.student.login_id.indexOf(filterText) === -1;
-    const noRubricMatch = placement.rubric != null ? placement.rubric.title.indexOf(filterText) === -1 &&
-        placement.rubric.placement.indexOf(filterText) === -1 &&
-        placement.rubric.feedback.indexOf(filterText) === -1 : true;
+    const noStudentMatch = placement.student.name.toLowerCase().indexOf(filterTextLC) === -1 &&
+        (placement.student.login_id ? placement.student.login_id.toLowerCase().indexOf(filterTextLC) === -1 : true);
+    const noRubricMatch = placement.rubric ?
+        placement.rubric.title.toLowerCase().indexOf(filterTextLC) === -1 &&
+        placement.rubric.placement.toLowerCase().indexOf(filterTextLC) === -1 : true;
     if(noStudentMatch && noRubricMatch){
       return;
     }
