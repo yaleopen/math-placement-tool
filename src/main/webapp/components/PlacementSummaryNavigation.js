@@ -25,10 +25,12 @@ function PlacementCSV(props) {
     ])
   });
   return (
-      <Button variant="link">
-        <IconDownload />
-        <CSVLink data={csvData} filename={`placement-summary-${quizName}.csv`}>Download CSV</CSVLink>
-      </Button>
+      <React.Fragment>
+        <Button variant="icon" margin="0" readOnly>
+          <IconDownload title="Accessible Button Label" />
+        </Button>
+        <CSVLink uFEFF={false} data={csvData} filename={`placement-summary-${quizName}.csv`}>Download CSV</CSVLink>
+      </React.Fragment>
   );
 }
 
