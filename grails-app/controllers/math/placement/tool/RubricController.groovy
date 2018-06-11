@@ -98,13 +98,16 @@ class RubricController {
         def rqJson = request.JSON
         String courseId = params.courseId
         String quizId = params.quizId
-        def rubric1 = Rubric.findByCourseIdAndQuizIdAndPriority(courseId, quizId, rqJson.rubricAPriority as Integer)
-        def rubric2 = Rubric.findByCourseIdAndQuizIdAndPriority(courseId, quizId, rqJson.rubricBPriority as Integer)
-        def rubric2Priority = rubric1.priority
-        rubric1.priority = rubric2.priority
-        rubric2.priority = rubric2Priority
-        rubric1.save(flush:true)
-        rubric2.save(flush:true)
+        def droppedIndex = rqJson.rubricAPriority as Integer
+        def originalIndex = rqJson.rubricBPriority as Integer
+        def rubricToMove = Rubric.findByCourseIdAndQuizIdAndPriority(courseId, quizId, originalIndex)
+        rubricToMove.priority = droppedIndex
+        def rubricsToShift = Rubric.findAllByCourseIdAndQuizIdAndPriorityLessThanAndPriorityGreaterThanEquals(courseId, quizId, originalIndex,droppedIndex)
+        rubricsToShift.each{rubric ->
+            rubric.priority = rubric.priority + 1
+            rubric.save(flush:true)
+        }
+        rubricToMove.save(flush:true)
         respond listRubrics(courseId, quizId)
     }
 

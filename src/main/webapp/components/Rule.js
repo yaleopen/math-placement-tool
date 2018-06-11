@@ -168,7 +168,7 @@ function QuizQuestionSelect(props) {
   const {equationId, equationType, ruleIndex, ruleType, ruleOperator, ruleJoinType, questionIds, questions, questionGroups, onChange} = props;
   const options = [];
   questions.forEach((question) => {
-    options.push(<option key={`question_${question.id}`} value={ruleType === 'credit' ? `question_${question.id}.points` : `question_${question.id}.answer`}>{`Q${question.position}`}</option>);
+    options.push(<option key={`question_${question.id}`} value={ruleType === 'credit' ? `question_${question.id}.points` : `question_${question.id}.answer`}>{question.question_name}</option>);
     questionTips[`question_${question.id}.points`] =  question.points_possible
   });
   if(ruleType === 'credit'){
