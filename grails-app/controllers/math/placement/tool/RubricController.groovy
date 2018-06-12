@@ -78,6 +78,11 @@ class RubricController {
 
     def delete() {
         def rubric = Rubric.get(params.rubricId as Integer)
+        def rubricsForPriorityChange = Rubric.findAllByCourseIdAndQuizIdAndPriorityGreaterThan(rubric.courseId,rubric.quizId,rubric.priority)
+        rubricsForPriorityChange.each{rubricToUpdate ->
+            rubricToUpdate.priority = rubricToUpdate.priority - 1
+            rubricToUpdate.save(flush:true)
+        }
         rubric.delete(flush:true)
         respond listRubrics(rubric.courseId, rubric.quizId)
     }
