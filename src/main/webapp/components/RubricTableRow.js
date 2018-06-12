@@ -6,6 +6,7 @@ import DeleteRubricPopover from "./DeleteRubricPopover";
 import IconMarkAsRead from '@instructure/ui-icons/lib/Solid/IconMarkAsRead';
 import { DragSource, DropTarget } from 'react-dnd';
 import flow from 'lodash/flow';
+import IconCopy from '@instructure/ui-icons/lib/Line/IconCopy';
 
 const rubricSource = {
   beginDrag(props) {
@@ -46,7 +47,8 @@ class RubricTableRow extends Component {
       onRubricDelete,
       onRubricDefault,
       connectDragSource,
-      connectDropTarget} = this.props;
+      connectDropTarget,
+      onCloneRubric} = this.props;
     const isDefaultRubric = rubric.isDefault;
     return connectDragSource(connectDropTarget(
         <tr>
@@ -65,6 +67,14 @@ class RubricTableRow extends Component {
           <td>{rubric.title}</td>
           <td>{rubric.placement}</td>
           <td style={{whiteSpace: "nowrap", textAlign: "center"}}>
+            <Tooltip tip="Clone">
+              <Button
+                  variant="icon"
+                  onClick={onCloneRubric.bind(this,rubric.id)}
+              >
+                <IconCopy />
+              </Button>
+            </Tooltip>
             <Tooltip tip="Edit">
               <Button
                   variant="icon"

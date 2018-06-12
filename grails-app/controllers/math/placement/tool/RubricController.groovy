@@ -127,6 +127,27 @@ class RubricController {
         respond listRubrics(courseId, quizId)
     }
 
+    def clone() {
+        def rubric = Rubric.get(params.rubricId as Integer)
+        def quizRubricCount = Rubric.countByCourseIdAndQuizId(rubric.courseId, rubric.quizId)
+        def clonedRubric = new Rubric()
+        clonedRubric.with{
+            quizId = rubric.quizId
+            courseId = rubric.courseId
+            title = "${rubric.title} - CLONE"
+            placement = rubric.placement
+            feedback = rubric.feedback
+            equationJoinType = rubric.equationJoinType
+            isDefault = false
+            priority = quizRubricCount
+        }
+        rubric.equations.each{equation ->
+            clonedRubric.addToEquations(new Equation(rule: equation.rule))
+        }
+        clonedRubric.save(flush:true)
+        respond listRubrics(rubric.courseId, rubric.quizId)
+    }
+
     private static def listRubrics(courseId, quizId){
         def jsonSlurper = new JsonSlurper()
         def rubrics = Rubric.findAllByCourseIdAndQuizId(courseId, quizId)

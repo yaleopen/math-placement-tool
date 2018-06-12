@@ -5,7 +5,8 @@ import Table from '@instructure/ui-elements/lib/components/Table';
 import RubricTableRow from "./RubricTableRow";
 
 function RubricTable(props) {
-  const {rubrics, onEditRubricOpen, onRubricDelete, onRubricDefault, onRubricMove, onRubricDrop, findRubric} = props;
+  const {rubrics, onEditRubricOpen, onRubricDelete, onRubricDefault, onRubricMove, onRubricDrop, findRubric,
+    onCloneRubric} = props;
 
   return (
       <View
@@ -38,6 +39,7 @@ function RubricTable(props) {
                         id={rubric.id}
                         onRubricMove={onRubricMove}
                         onRubricDrop={onRubricDrop}
+                        onCloneRubric={onCloneRubric}
                         findRubric={findRubric}
                     />
                 )

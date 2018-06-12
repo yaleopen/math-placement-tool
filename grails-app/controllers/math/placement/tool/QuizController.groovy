@@ -47,7 +47,7 @@ class QuizController {
         //remove group questions
         quizQuestions.removeAll{it.quiz_group_id != null}
         if(quizQuestions != null){
-            respond([singles: quizQuestions, groups: quizGroups])
+            respond([singles: quizQuestions.sort{it.question_name}, groups: quizGroups.sort{it.name}])
         }
         else{
             respond([errorMessage: "Error Retrieving Quiz Questions"], status: 500)
