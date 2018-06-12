@@ -215,6 +215,28 @@ class RubricEditor extends Component {
     })
   };
 
+  handleCloneRubric = (rubricId) => {
+    this.setState({
+      isLoaded: false,
+      showAlert: false
+    });
+    api.cloneRubric(sessionStorage.courseId, this.state.quiz.id, rubricId)
+        .then((response) => {
+          this.setState({
+            rubrics: response.data,
+            isLoaded: true,
+            error:false
+          })
+        }).catch(() => {
+      this.setState({
+        isLoaded: true,
+        showAlert: true,
+        alertMessage: 'Error cloning rubric',
+        error: true
+      })
+    })
+  };
+
   findRubric = (id) => {
     const{rubrics} = this.state;
     const rubric = _.find(rubrics, c => c.id === id) || {};
@@ -299,6 +321,7 @@ class RubricEditor extends Component {
                 onRubricDefault={this.handleDefaultRubricClick}
                 onRubricMove={this.handleRubricMove}
                 onRubricDrop={this.handleRubricDrop}
+                onCloneRubric={this.handleCloneRubric}
                 findRubric={this.findRubric}
             />
           </View>

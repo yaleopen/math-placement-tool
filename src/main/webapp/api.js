@@ -53,4 +53,8 @@ export default {
     return axios.put(`/mathplacement/courses/${courseId}/quizzes/${quizId}/rubrics/order`, {rubricAPriority: rubricAPriority, rubricBPriority: rubricBPriority})
         .then(response => response)
   },
+  cloneRubric: (courseId, quizId, rubricId) => {
+    return axios.put(`/mathplacement/courses/${courseId}/quizzes/${quizId}/rubrics/${rubricId}/clone`)
+        .then(response => response)
+  },
 };

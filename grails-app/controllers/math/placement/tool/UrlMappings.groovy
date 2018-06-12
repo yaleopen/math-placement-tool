@@ -28,6 +28,7 @@ class UrlMappings {
                         group "/$rubricId", {
                             "/"(controller:"rubric", action:"update", method: "PUT")
                             "/default"(controller:"rubric", action:"makeDefault", method: "PUT")
+                            "/clone"(controller:"rubric", action:"clone", method: "PUT")
                             "/"(controller:"rubric", action:"delete", method: "DELETE")
                         }
                     }
