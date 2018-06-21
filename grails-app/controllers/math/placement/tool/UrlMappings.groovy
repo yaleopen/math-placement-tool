@@ -30,6 +30,7 @@ class UrlMappings {
                             "/default"(controller:"rubric", action:"makeDefault", method: "PUT")
                             "/clone"(controller:"rubric", action:"clone", method: "PUT")
                             "/"(controller:"rubric", action:"delete", method: "DELETE")
+                            "/equations/order"(controller:"rubric", action:"reorderEquations", method: "PUT")
                         }
                     }
                 }

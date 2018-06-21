@@ -12,8 +12,6 @@ import IconPlus from '@instructure/ui-icons/lib/Line/IconPlus';
 import RubricTable from "../components/RubricTable";
 import axios from "axios";
 import Alert from '@instructure/ui-alerts/lib/components/Alert';
-import { DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
 import update from 'immutability-helper';
 import _ from 'lodash';
 
@@ -306,6 +304,7 @@ class RubricEditor extends Component {
                 submitText="Save Changes"
                 onDismiss={this.handleEditRubricClose}
                 onSaveRubricSubmit={this.handleSaveRubricSubmit}
+                onEquationDrop={this.handleEquationDrop}
             />
             <Button
                 margin="small 0"
@@ -330,4 +329,4 @@ class RubricEditor extends Component {
   }
 }
 
-export default DragDropContext(HTML5Backend)(RubricEditor);
+export default RubricEditor;

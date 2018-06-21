@@ -7,6 +7,7 @@ import Equation from '../components/Equation';
 import CloseModalButton from "../components/CloseModalButton";
 import EquationHeader from "../components/EquationHeader";
 import RubricTextInputs from "../components/RubricTextInputs";
+import _ from "lodash";
 
 class RubricModal extends Component {
   constructor(props) {
@@ -204,6 +205,12 @@ class RubricModal extends Component {
       })
     }
     else if (equationType === 'existing') {
+      const equation = equations.find(equation => equation.id === equationId);
+      updatedEquations.forEach((eqToShift) => {
+        if(eqToShift.priority > equation.priority){
+          eqToShift.priority = eqToShift.priority - 1
+        }
+      });
       this.setState({
         equations: updatedEquations
       })
@@ -223,6 +230,24 @@ class RubricModal extends Component {
       this.setState({
         equations: updatedEquations
       })
+    }
+  };
+
+  handleEquationMove = (id, atIndex) => {
+    const { equation, index } = this.findEquation(id);
+    const equations = this.state.equations;
+    const updatedEquations = update(equations, {[index]: {priority: {$set: atIndex}}, [atIndex]: {priority: {$set: index}}});
+    this.setState({
+      equations: updatedEquations.sort((a,b) => a.priority - b.priority)
+    });
+  };
+
+  findEquation = (id) => {
+    const{equations} = this.state;
+    const equation = _.find(equations, c => c.id === id) || {};
+    return {
+      equation,
+      index: equations.indexOf(equation)
     }
   };
 
@@ -252,6 +277,9 @@ class RubricModal extends Component {
               onRuleJoinChange={this.handleRuleJoinChange}
               onDeleteEquationClick={this.handleDeleteEquationClick}
               onDeleteRuleClick={this.handleDeleteRuleClick}
+              id={equation.id}
+              onEquationMove={this.handleEquationMove}
+              findEquation={this.findEquation}
           />
       )
     });
