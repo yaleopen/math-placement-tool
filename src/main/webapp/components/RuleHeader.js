@@ -6,13 +6,13 @@ import IconPlus from '@instructure/ui-icons/lib/Line/IconPlus';
 
 function RuleHeader(props) {
   const {onNewCreditRuleClick, equation, equationType, ruleJoinType, onNewAnswerRuleClick,
-    onDeleteEquationClick} = props;
+    onDeleteEquationClick, isQuizPublished} = props;
   return (
       <Flex padding="xx-small">
         <FlexItem grow shrink>
           <Button
               onClick={onNewCreditRuleClick.bind(this, equation.id, equationType, ruleJoinType)}
-              disabled={sessionStorage.isCoursePublished === 'true'}
+              disabled={isQuizPublished}
               size="small"
               margin="0 xx-small 0 0"
           >
@@ -20,7 +20,7 @@ function RuleHeader(props) {
           </Button>
           <Button
               onClick={onNewAnswerRuleClick.bind(this, equation.id, equationType, ruleJoinType)}
-              disabled={sessionStorage.isCoursePublished === 'true'}
+              disabled={isQuizPublished}
               size="small"
               margin="0 xx-small 0 0"
           >
@@ -30,7 +30,7 @@ function RuleHeader(props) {
         <FlexItem>
           <Button
               onClick={onDeleteEquationClick.bind(this, equation.id, equationType)}
-              disabled={sessionStorage.isCoursePublished === 'true'}
+              disabled={isQuizPublished}
               variant="icon"
               margin="0"
           >

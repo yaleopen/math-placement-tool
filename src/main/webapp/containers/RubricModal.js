@@ -265,7 +265,7 @@ class RubricModal extends Component {
 
   render() {
     const {show, onDismiss, heading, submitText, questions, questionGroups, onNewRubricSubmit, onSaveRubricSubmit,
-      isNewRubric, priority} = this.props;
+      isNewRubric, priority, isQuizPublished} = this.props;
     const {title, placement, feedback, equations, newEquations, equationJoinType} = this.state;
     const existingEquations = equations.map((equation) => {
       const joinType = Object.keys(equation.rule)[0];
@@ -293,6 +293,7 @@ class RubricModal extends Component {
               onEquationMove={this.handleEquationMove}
               findEquation={this.findEquation}
               onRuleMove={this.handleRuleMove}
+              isQuizPublished={isQuizPublished}
           />
       )
     });
@@ -318,6 +319,7 @@ class RubricModal extends Component {
               onRuleJoinChange={this.handleRuleJoinChange}
               onDeleteEquationClick={this.handleDeleteEquationClick}
               onDeleteRuleClick={this.handleDeleteRuleClick}
+              isQuizPublished={isQuizPublished}
           />
       )
     });
@@ -358,6 +360,7 @@ class RubricModal extends Component {
                   title={title}
                   placement={placement}
                   feedback={feedback}
+                  isQuizPublished={isQuizPublished}
               />
               <EquationHeader
                   onNewEquationClick={this.handleNewEquationClick}
@@ -365,6 +368,7 @@ class RubricModal extends Component {
                   joinType={equationJoinType}
                   joinRadioName="equationHeaderRadio"
                   showJoinCondition={equationCount > 1}
+                  isQuizPublished={isQuizPublished}
               />
               {existingEquations}
               {pendingEquations}
@@ -375,7 +379,7 @@ class RubricModal extends Component {
                   onClick={isNewRubric ? onNewRubricSubmit.bind(this, newRubric):
                           onSaveRubricSubmit.bind(this, editRubric)}
                   variant="primary"
-                  disabled={sessionStorage.isCoursePublished === 'true'}
+                  disabled={isQuizPublished}
               >
                 {submitText}
               </Button>

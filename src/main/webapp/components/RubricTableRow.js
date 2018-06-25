@@ -48,7 +48,7 @@ class RubricTableRow extends Component {
       onRubricDefault,
       connectDragSource,
       connectDropTarget,
-      onCloneRubric} = this.props;
+      onCloneRubric, isQuizPublished} = this.props;
     const isDefaultRubric = rubric.isDefault;
     return connectDragSource(connectDropTarget(
         <tr>
@@ -83,7 +83,7 @@ class RubricTableRow extends Component {
                 <IconEdit />
               </Button>
             </Tooltip>
-            <DeleteRubricPopover onContentSubmit={onRubricDelete.bind(this,rubric.id)} />
+            <DeleteRubricPopover onContentSubmit={onRubricDelete.bind(this,rubric.id)} isQuizPublished={isQuizPublished} />
           </td>
         </tr>
     ))

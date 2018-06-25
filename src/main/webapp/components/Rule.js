@@ -35,7 +35,7 @@ const ruleTarget = {
 function Rule(props) {
   const {rule, equationId, equationType, ruleIndex, ruleJoinType, questions, questionGroups, onCreditRuleQuestionChange,
     onAnswerRuleQuestionChange, onOperatorChange, onAnswerSelectChange, onCreditInputChange, onDeleteRuleClick, connectDragSource,
-    connectDropTarget, connectDragPreview} = props;
+    connectDropTarget, connectDragPreview, isQuizPublished} = props;
   const ruleOperator = Object.keys(rule)[0];
   const ruleValue = rule[ruleOperator];
   const ruleVariable = ruleValue[0];
@@ -80,6 +80,7 @@ function Rule(props) {
                   questions={questions}
                   questionGroups={questionGroups}
                   onChange={ruleType === 'credit' ? onCreditRuleQuestionChange : onAnswerRuleQuestionChange}
+                  isQuizPublished={isQuizPublished}
               />
             </GridCol>
             <GridCol width={2}>
@@ -91,6 +92,7 @@ function Rule(props) {
                   ruleIndex={ruleIndex}
                   ruleJoinType={ruleJoinType}
                   onChange={onOperatorChange}
+                  isQuizPublished={isQuizPublished}
               />
             </GridCol>
             <GridCol width={2}>
@@ -103,6 +105,7 @@ function Rule(props) {
                       ruleOperator={ruleOperator}
                       ruleJoinType={ruleJoinType}
                       onChange={onCreditInputChange}
+                      isQuizPublished={isQuizPublished}
                   /> :
                   <RuleAnswerSelect
                       criteria={ruleCriteriaValue}
@@ -113,13 +116,14 @@ function Rule(props) {
                       ruleOperator={ruleOperator}
                       ruleJoinType={ruleJoinType}
                       onChange={onAnswerSelectChange}
+                      isQuizPublished={isQuizPublished}
                   />
               }
             </GridCol>
             <GridCol width="auto">
               <Button
                   onClick={onDeleteRuleClick.bind(this, equationId, equationType, ruleIndex, ruleJoinType)}
-                  disabled={sessionStorage.isCoursePublished === 'true'}
+                  disabled={isQuizPublished}
                   variant="icon"
                   margin="0"
               >
@@ -134,11 +138,11 @@ function Rule(props) {
 }
 
 function RuleOperatorSelect(props) {
-  const {ruleType, operator, equationId, equationType, ruleIndex, ruleJoinType, onChange} = props;
+  const {ruleType, operator, equationId, equationType, ruleIndex, ruleJoinType, onChange, isQuizPublished} = props;
   return (
       <Select
           value={operator}
-          readOnly={sessionStorage.isCoursePublished === 'true'}
+          readOnly={isQuizPublished}
           onChange={onChange.bind(this, equationId, equationType, ruleIndex, operator, ruleJoinType)}
           label={<ScreenReaderContent>Rule Operator Select</ScreenReaderContent>}
       >
@@ -150,12 +154,12 @@ function RuleOperatorSelect(props) {
 }
 
 function RuleCreditInput(props) {
-  const {criteria, equationId, equationType, ruleIndex, ruleOperator, ruleJoinType, onChange} = props;
+  const {criteria, equationId, equationType, ruleIndex, ruleOperator, ruleJoinType, onChange, isQuizPublished} = props;
   return (
       <NumberInput
           min={0}
           value={criteria}
-          readOnly={sessionStorage.isCoursePublished === 'true'}
+          readOnly={isQuizPublished}
           onChange={onChange.bind(this, equationId, equationType, ruleIndex, ruleOperator, ruleJoinType)}
           showArrows={false}
           label={<ScreenReaderContent>Rule Credit Input</ScreenReaderContent>}
@@ -164,14 +168,14 @@ function RuleCreditInput(props) {
 }
 
 function RuleAnswerSelect(props) {
-  const {criteria, answers, equationId, equationType, ruleIndex, ruleOperator, ruleJoinType, onChange} = props;
+  const {criteria, answers, equationId, equationType, ruleIndex, ruleOperator, ruleJoinType, onChange, isQuizPublished} = props;
   const options = answers.map((answer) => {
     return <option key={answer.id} value={`answer_${answer.id}`} icon={answer.weight === 100 ? GreenIconCheck : RedIconX}>{answer.text}</option>
   });
   return (
       <Select
           value={criteria}
-          readOnly={sessionStorage.isCoursePublished === 'true'}
+          readOnly={isQuizPublished}
           onChange={onChange.bind(this, equationId, equationType, ruleIndex, ruleOperator, ruleJoinType)}
           label={<ScreenReaderContent>Rule Answer Select</ScreenReaderContent>}
       >
@@ -194,7 +198,7 @@ function RedIconX(){
 
 function QuizQuestionSelect(props) {
   let questionTips = {};
-  const {equationId, equationType, ruleIndex, ruleType, ruleOperator, ruleJoinType, questionIds, questions, questionGroups, onChange} = props;
+  const {equationId, equationType, ruleIndex, ruleType, ruleOperator, ruleJoinType, questionIds, questions, questionGroups, onChange, isQuizPublished} = props;
   const options = [];
   questions.forEach((question) => {
     options.push(<option key={`question_${question.id}`} value={ruleType === 'credit' ? `question_${question.id}.points` : `question_${question.id}.answer`}>{question.question_name}</option>);
@@ -211,7 +215,7 @@ function QuizQuestionSelect(props) {
       <Select
           label={<ScreenReaderContent>Quiz Question Select</ScreenReaderContent>}
           value={value}
-          readOnly={sessionStorage.isCoursePublished === 'true'}
+          readOnly={isQuizPublished}
           editable
           formatSelectedOption={option => {
             return (

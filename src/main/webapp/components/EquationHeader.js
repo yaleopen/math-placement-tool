@@ -5,14 +5,14 @@ import IconPlus from '@instructure/ui-icons/lib/Line/IconPlus';
 import JoinConditionRadio from "./JoinConditionRadio";
 
 function EquationHeader(props) {
-  const {joinType, joinRadioName, showJoinCondition, onNewEquationClick, onEquationJoinConditionChange} = props;
+  const {joinType, joinRadioName, showJoinCondition, onNewEquationClick, onEquationJoinConditionChange, isQuizPublished} = props;
   return (
       <Flex padding="small 0">
         <FlexItem grow shrink>
           <Button
               onClick={onNewEquationClick}
               margin="0"
-              disabled={sessionStorage.isCoursePublished === 'true'}
+              disabled={isQuizPublished}
           >
             <IconPlus/> Equation
           </Button>
@@ -23,6 +23,7 @@ function EquationHeader(props) {
               joinType={joinType}
               name={joinRadioName}
               onChange={onEquationJoinConditionChange}
+              isQuizPublished={isQuizPublished}
           />
           }
         </FlexItem>
