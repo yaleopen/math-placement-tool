@@ -20,5 +20,6 @@ class Rubric {
         version false
         feedback type: 'text'
         sort "priority"
+        equations sort: 'priority'
     }
 }

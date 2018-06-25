@@ -17,7 +17,7 @@ class RubricController {
         def rubrics = Rubric.findAllByCourseId(params.courseId as String)
         def collectedRubrics = rubrics.collect{rubric ->
             def equations = rubric.equations.collect{equation ->
-                [id: equation.id, rule: jsonSlurper.parseText(equation.rule)]
+                [id: equation.id, rule: jsonSlurper.parseText(equation.rule), priority: equation.priority]
             }
             [id: rubric.id, quizId: rubric.quizId, courseId: rubric.courseId,
              title: rubric.title, placement: rubric.placement, feedback: rubric.feedback,
@@ -39,8 +39,8 @@ class RubricController {
             isDefault = isFirstRubric
             priority = createRubricRq.rubric.priority
         }
-        createRubricRq.rubric.newEquations.each{rule ->
-            rubric.addToEquations(new Equation(rule: rule))
+        createRubricRq.rubric.newEquations.each{rule, index ->
+            rubric.addToEquations(new Equation(rule: rule, priority: index))
         }
         def createdRubric = rubric.save(flush: true)
         respond listRubrics(createdRubric.courseId, createdRubric.quizId)
@@ -56,14 +56,15 @@ class RubricController {
             feedback = updateRubricRq.rubric.feedback
             equationJoinType = updateRubricRq.rubric.equationJoinType
         }
-        updateRubricRq.rubric.newEquations.each{rule ->
-            rubric.addToEquations(new Equation(rule: rule))
+        updateRubricRq.rubric.newEquations.eachWithIndex{rule, index ->
+            rubric.addToEquations(new Equation(rule: rule, priority: updateRubricRq.rubric.existingEquations.size() + index))
         }
         updateRubricRq.rubric.existingEquations.each{equation->
             def parsedEquation = jsonSlurper.parseText(equation)
             rubricEquationsToDelete.removeAll{it == parsedEquation.id as Integer}
             def equationToUpdate = Equation.get(parsedEquation.id as Integer)
             equationToUpdate.rule = JsonOutput.toJson(parsedEquation.rule)
+            equationToUpdate.priority = parsedEquation.priority as Integer
             equationToUpdate.save(flush: true)
         }
         //delete equations
@@ -127,6 +128,36 @@ class RubricController {
         respond listRubrics(courseId, quizId)
     }
 
+    def reorderEquations() {
+        def rqJson = request.JSON
+        String courseId = params.courseId
+        String quizId = params.quizId
+        def droppedIndex = rqJson.equationAPriority as Integer
+        def originalIndex = rqJson.equationBPriority as Integer
+        def equationId = rqJson.equationId as Integer
+        def equationToMove = Equation.get(equationId)
+        def rubric = equationToMove.rubric
+        equationToMove.priority = droppedIndex
+
+        if(originalIndex > droppedIndex){
+            def equationsToShift = Equation.findAllByRubricAndPriorityLessThanAndPriorityGreaterThanEquals(rubric, originalIndex,droppedIndex)
+            equationsToShift.each{equation ->
+                equation.priority = equation.priority + 1
+                equation.save(flush:true)
+            }
+        }
+        else{
+            def equationsToShift = Equation.findAllByRubricAndPriorityGreaterThanAndPriorityLessThanEquals(rubric, originalIndex,droppedIndex)
+            equationsToShift.each{equation ->
+                equation.priority = equation.priority - 1
+                equation.save(flush:true)
+            }
+        }
+
+        equationToMove.save(flush:true)
+        respond listRubrics(courseId, quizId)
+    }
+
     def clone() {
         def rubric = Rubric.get(params.rubricId as Integer)
         def quizRubricCount = Rubric.countByCourseIdAndQuizId(rubric.courseId, rubric.quizId)
@@ -142,7 +173,7 @@ class RubricController {
             priority = quizRubricCount
         }
         rubric.equations.each{equation ->
-            clonedRubric.addToEquations(new Equation(rule: equation.rule))
+            clonedRubric.addToEquations(new Equation(rule: equation.rule, priority: equation.priority))
         }
         clonedRubric.save(flush:true)
         respond listRubrics(rubric.courseId, rubric.quizId)
@@ -153,8 +184,9 @@ class RubricController {
         def rubrics = Rubric.findAllByCourseIdAndQuizId(courseId, quizId)
         return rubrics.collect{rubric ->
             def equations = rubric.equations.collect{equation ->
-                [id: equation.id, rule: jsonSlurper.parseText(equation.rule)]
+                [id: equation.id, rule: jsonSlurper.parseText(equation.rule), priority: equation.priority]
             }
+            equations.sort{it.priority}
             [id: rubric.id, quizId: rubric.quizId, courseId: rubric.courseId,
              title: rubric.title, placement: rubric.placement, feedback: rubric.feedback,
              equationJoinType: rubric.equationJoinType, equations: equations, isDefault: rubric.isDefault]

@@ -57,4 +57,8 @@ export default {
     return axios.put(`/mathplacement/courses/${courseId}/quizzes/${quizId}/rubrics/${rubricId}/clone`)
         .then(response => response)
   },
+  swapEquationOrder: (courseId, quizId, rubricId, equationId, equationAPriority, equationBPriority) => {
+    return axios.put(`/mathplacement/courses/${courseId}/quizzes/${quizId}/rubrics/${rubricId}/equations/order`, {equationAPriority: equationAPriority, equationBPriority: equationBPriority, equationId: equationId})
+        .then(response => response)
+  },
 };

@@ -7,8 +7,10 @@ class BootStrap {
         def quizIds = allRubrics.quizId
         quizIds.each{quizId ->
             def quizRubrics = allRubrics.findAll{it.quizId == quizId}
-            quizRubrics.eachWithIndex{rubric,index ->
-                rubric.priority = index
+            quizRubrics.each{rubric->
+                rubric.equations.eachWithIndex{ Equation equation, int i ->
+                    equation.priority = i
+                }
                 rubric.save(flush:true)
             }
         }

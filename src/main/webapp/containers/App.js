@@ -11,6 +11,8 @@ import {Link} from "react-router-dom";
 import Breadcrumb, {BreadcrumbLink} from '@instructure/ui-breadcrumb/lib/components/Breadcrumb';
 import PlacementSummary from "./PlacementSummary";
 import StudentHome from "./StudentHome";
+import HTML5Backend from "react-dnd-html5-backend";
+import { DragDropContext } from 'react-dnd';
 
 theme.use();
 
@@ -77,4 +79,4 @@ const UnauthorizedHome = () => {
   );
 };
 
-export default App;
+export default DragDropContext(HTML5Backend)(App);
