@@ -50,7 +50,7 @@ class DeleteRubricPopover extends Component {
                 <Button
                     variant="icon"
                     onClick={this.showPopover}
-                    disabled={sessionStorage.isCoursePublished === 'true'}
+                    disabled={this.props.isQuizPublished}
                 >
                   <IconTrash style={{color: '#EE0612'}}/>
                 </Button>
@@ -67,7 +67,7 @@ class DeleteRubricPopover extends Component {
                       <FlexItem>
                         <Button
                             onClick={this.handlePopoverSubmit.bind(this,this.props.onContentSubmit)}
-                            disabled={sessionStorage.isCoursePublished === 'true'}
+                            disabled={this.props.isQuizPublished}
                         >
                           OK
                         </Button>

@@ -305,10 +305,11 @@ class RubricEditor extends Component {
                 onDismiss={this.handleEditRubricClose}
                 onSaveRubricSubmit={this.handleSaveRubricSubmit}
                 onEquationDrop={this.handleEquationDrop}
+                isQuizPublished={quiz && quiz.published}
             />
             <Button
                 margin="small 0"
-                disabled={sessionStorage.isCoursePublished === 'true'}
+                disabled={quiz && quiz.published}
                 onClick={this.handleNewRubricOpen}
             >
               <IconPlus/> Rubric
@@ -322,6 +323,7 @@ class RubricEditor extends Component {
                 onRubricDrop={this.handleRubricDrop}
                 onCloneRubric={this.handleCloneRubric}
                 findRubric={this.findRubric}
+                isQuizPublished={quiz && quiz.published}
             />
           </View>
         </ApplyTheme>

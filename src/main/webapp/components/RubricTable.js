@@ -6,7 +6,7 @@ import RubricTableRow from "./RubricTableRow";
 
 function RubricTable(props) {
   const {rubrics, onEditRubricOpen, onRubricDelete, onRubricDefault, onRubricMove, onRubricDrop, findRubric,
-    onCloneRubric} = props;
+    onCloneRubric, isQuizPublished} = props;
 
   return (
       <View
@@ -41,6 +41,7 @@ function RubricTable(props) {
                         onRubricDrop={onRubricDrop}
                         onCloneRubric={onCloneRubric}
                         findRubric={findRubric}
+                        isQuizPublished={isQuizPublished}
                     />
                 )
               })

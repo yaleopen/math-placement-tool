@@ -3,7 +3,7 @@ import RadioInputGroup from '@instructure/ui-forms/lib/components/RadioInputGrou
 import RadioInput from '@instructure/ui-forms/lib/components/RadioInput';
 
 function JoinConditionRadio(props) {
-  const {joinType, disabled, name, onChange} = props;
+  const {joinType, disabled, name, onChange, isQuizPublished} = props;
   return (
       <RadioInputGroup
           layout="inline"
@@ -13,7 +13,7 @@ function JoinConditionRadio(props) {
           variant="toggle"
           disabled={disabled}
           onChange={onChange}
-          readOnly={sessionStorage.isCoursePublished === 'true'}
+          readOnly={isQuizPublished}
       >
         <RadioInput label="And" value="and"/>
         <RadioInput label="Or" value="or"/>

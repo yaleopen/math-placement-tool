@@ -36,7 +36,7 @@ const Equation = (props) => {
   const {equation, equationType, joinType, questions, questionGroups, rules, onCreditRuleQuestionChange,
     onAnswerRuleQuestionChange, onOperatorChange, onNewCreditRuleClick, onAnswerSelectChange, onCreditInputChange,
     onRuleJoinChange, onNewAnswerRuleClick, onDeleteEquationClick, onDeleteRuleClick, connectDragSource,
-    connectDropTarget, connectDragPreview, onRuleMove} = props;
+    connectDropTarget, connectDragPreview, onRuleMove, isQuizPublished} = props;
   return connectDragSource && connectDropTarget && connectDragPreview(connectDropTarget(
       <div style={window.chrome && {position:"relative"}}>
       <View
@@ -54,6 +54,7 @@ const Equation = (props) => {
             onNewCreditRuleClick={onNewCreditRuleClick}
             onNewAnswerRuleClick={onNewAnswerRuleClick}
             onDeleteEquationClick={onDeleteEquationClick}
+            isQuizPublished={isQuizPublished}
         />
         {rules.map((rule, index) => {
           return (
@@ -73,6 +74,7 @@ const Equation = (props) => {
                   onOperatorChange={onOperatorChange}
                   onDeleteRuleClick={onDeleteRuleClick}
                   onRuleMove={onRuleMove}
+                  isQuizPublished={isQuizPublished}
               />
           )
         })}
