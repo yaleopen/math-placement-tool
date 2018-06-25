@@ -8,10 +8,34 @@ import NumberInput from '@instructure/ui-forms/lib/components/NumberInput';
 import ScreenReaderContent from '@instructure/ui-a11y/lib/components/ScreenReaderContent';
 import Badge from '@instructure/ui-elements/lib/components/Badge';
 import IconCheck from '@instructure/ui-icons/lib/Line/IconCheck';
+import flow from "lodash/flow";
+import { DragSource, DropTarget } from 'react-dnd';
+import IconHamburger from '@instructure/ui-icons/lib/Line/IconHamburger';
+
+const ruleSource = {
+  beginDrag(props) {
+    return {
+      rule: props.rule,
+      originalIndex: props.ruleIndex,
+      equationId: props.equationId
+    }
+  }
+};
+
+const ruleTarget = {
+  hover(props, monitor) {
+    const { rule: draggedRule, originalIndex: atIndex } = monitor.getItem();
+    const { rule: overRule, ruleIndex: overIndex } = props;
+    if (draggedRule !== overRule && props.equationId === monitor.getItem().equationId) {
+      props.onRuleMove(props.equationId, overIndex, draggedRule, atIndex);
+    }
+  }
+};
 
 function Rule(props) {
   const {rule, equationId, equationType, ruleIndex, ruleJoinType, questions, questionGroups, onCreditRuleQuestionChange,
-    onAnswerRuleQuestionChange, onOperatorChange, onAnswerSelectChange, onCreditInputChange, onDeleteRuleClick} = props;
+    onAnswerRuleQuestionChange, onOperatorChange, onAnswerSelectChange, onCreditInputChange, onDeleteRuleClick, connectDragSource,
+    connectDropTarget, connectDragPreview} = props;
   const ruleOperator = Object.keys(rule)[0];
   const ruleValue = rule[ruleOperator];
   const ruleVariable = ruleValue[0];
@@ -31,7 +55,8 @@ function Rule(props) {
     const question = questions.find((question) => ruleVariableValue === `question_${question.id}.answer`);
     answers = question ? question.answers : [];
   }
-  return (
+  return connectDragSource && connectDropTarget && connectDragPreview(connectDropTarget(
+      <div style={window.chrome && {position:"relative"}}>
       <View
           as="div"
           margin="0"
@@ -40,6 +65,9 @@ function Rule(props) {
 
         <Grid vAlign="middle" rowSpacing="small" colSpacing="small">
           <GridRow>
+            <GridCol width="auto">
+              {connectDragSource(<div style={{display:"inline-block", cursor:"move"}}><IconHamburger/></div>)}
+            </GridCol>
             <GridCol>
               <QuizQuestionSelect
                   ruleType={ruleType}
@@ -101,7 +129,8 @@ function Rule(props) {
           </GridRow>
         </Grid>
       </View>
-  )
+      </div>
+  ))
 }
 
 function RuleOperatorSelect(props) {
@@ -201,4 +230,12 @@ function QuizQuestionSelect(props) {
   )
 }
 
-export default Rule;
+export default flow(
+    DragSource('rule', ruleSource, (connect, monitor) => ({
+      connectDragSource: connect.dragSource(),
+      connectDragPreview: connect.dragPreview(),
+      isDragging: monitor.isDragging(),
+    })),
+    DropTarget('rule', ruleTarget, connect => ({
+      connectDropTarget: connect.dropTarget(),
+    })))(Rule);

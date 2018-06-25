@@ -6,6 +6,7 @@ import Rule from "./Rule";
 import { DragSource, DropTarget } from 'react-dnd';
 import flow from 'lodash/flow';
 import IconHamburger from '@instructure/ui-icons/lib/Line/IconHamburger';
+import uniqid from 'uniqid';
 
 const equationSource = {
   beginDrag(props) {
@@ -35,7 +36,7 @@ const Equation = (props) => {
   const {equation, equationType, joinType, questions, questionGroups, rules, onCreditRuleQuestionChange,
     onAnswerRuleQuestionChange, onOperatorChange, onNewCreditRuleClick, onAnswerSelectChange, onCreditInputChange,
     onRuleJoinChange, onNewAnswerRuleClick, onDeleteEquationClick, onDeleteRuleClick, connectDragSource,
-    connectDropTarget, connectDragPreview} = props;
+    connectDropTarget, connectDragPreview, onRuleMove} = props;
   return connectDragSource && connectDropTarget && connectDragPreview(connectDropTarget(
       <div style={window.chrome && {position:"relative"}}>
       <View
@@ -57,7 +58,7 @@ const Equation = (props) => {
         {rules.map((rule, index) => {
           return (
               <Rule
-                  key={`rule${index}`}
+                  key={uniqid('rule-')}
                   rule={rule}
                   ruleIndex={index}
                   equationId={equation.id}
@@ -71,6 +72,7 @@ const Equation = (props) => {
                   onCreditInputChange={onCreditInputChange}
                   onOperatorChange={onOperatorChange}
                   onDeleteRuleClick={onDeleteRuleClick}
+                  onRuleMove={onRuleMove}
               />
           )
         })}

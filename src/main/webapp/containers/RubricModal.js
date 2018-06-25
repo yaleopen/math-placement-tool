@@ -234,7 +234,7 @@ class RubricModal extends Component {
   };
 
   handleEquationMove = (id, atIndex) => {
-    const { equation, index } = this.findEquation(id);
+    const { index } = this.findEquation(id);
     const equations = this.state.equations;
     const updatedEquations = update(equations, {[index]: {priority: {$set: atIndex}}, [atIndex]: {priority: {$set: index}}});
     this.setState({
@@ -249,6 +249,18 @@ class RubricModal extends Component {
       equation,
       index: equations.indexOf(equation)
     }
+  };
+
+  handleRuleMove = (equationId, atIndex, rule, ruleIndex) => {
+    const { equation, index : eqIndex } = this.findEquation(equationId);
+    const eqJoinType = Object.keys(equation.rule)[0];
+    const swapRule = equation.rule[eqJoinType][atIndex];
+    const updatedEquation = update(equation, {rule: {[eqJoinType]: {[atIndex]: {$set: rule}, [ruleIndex]: {$set: swapRule}}}});
+    const equations = this.state.equations;
+    const updatedEquations = update(equations, {[eqIndex]: {$set: updatedEquation}});
+    this.setState({
+      equations: updatedEquations
+    });
   };
 
   render() {
@@ -280,6 +292,7 @@ class RubricModal extends Component {
               id={equation.id}
               onEquationMove={this.handleEquationMove}
               findEquation={this.findEquation}
+              onRuleMove={this.handleRuleMove}
           />
       )
     });
