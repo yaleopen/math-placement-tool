@@ -39,7 +39,7 @@ class RubricController {
             isDefault = isFirstRubric
             priority = createRubricRq.rubric.priority
         }
-        createRubricRq.rubric.newEquations.each{rule, index ->
+        createRubricRq.rubric.newEquations.eachWithIndex{rule, index ->
             rubric.addToEquations(new Equation(rule: rule, priority: index))
         }
         def createdRubric = rubric.save(flush: true)
