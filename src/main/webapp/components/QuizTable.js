@@ -9,10 +9,19 @@ import {Link} from "react-router-dom";
 import UserSubmissionBadge from "./UserSubmissionBadge";
 
 function QuizTableRow(props) {
-  const {quiz} = props;
+  const {quiz, onQuizPublish} = props;
   return (
       <tr>
-        <td>{quiz.published && <IconPublish title="Published" style={{color: '#00AC18'}}/>}</td>
+        <td>
+          {
+              <Button
+                  variant="icon"
+                  onClick={onQuizPublish.bind(this,quiz.id,!quiz.published)}
+              >
+                <IconPublish title="Publish" style={quiz.published && {color: '#00AC18'}}/>
+              </Button>
+          }
+        </td>
         <td>
           <Link to={`/quizzes/${quiz.id}/rubrics`}>
             <Button variant="link">{quiz.title}</Button>
@@ -34,7 +43,7 @@ function QuizTableRow(props) {
 }
 
 function QuizTable(props) {
-  const {quizzes} = props;
+  const {quizzes, onQuizPublish} = props;
   return (
       <View
           as="div"
@@ -53,7 +62,7 @@ function QuizTable(props) {
           </tr>
           </thead>
           <tbody>
-          {quizzes.map((quiz) => <QuizTableRow key={quiz.id} quiz={quiz}/>)}
+          {quizzes.map((quiz) => <QuizTableRow key={quiz.id} quiz={quiz} onQuizPublish={onQuizPublish}/>)}
           </tbody>
         </Table>
       </View>
