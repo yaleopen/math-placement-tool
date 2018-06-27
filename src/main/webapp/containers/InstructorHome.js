@@ -7,6 +7,7 @@ import Loading from "../components/Loading";
 import NavigationBar from "../components/NavigationBar";
 import {Link} from "react-router-dom";
 import Breadcrumb, {BreadcrumbLink} from '@instructure/ui-breadcrumb/lib/components/Breadcrumb';
+import update from 'immutability-helper';
 
 class InstructorHome extends Component {
   constructor(props) {
@@ -33,6 +34,26 @@ class InstructorHome extends Component {
     })
   }
 
+  handlePublishQuiz = (quizId, publish) => {
+    this.setState({
+      isLoaded: false
+    });
+    api.publishQuiz(sessionStorage.courseId, quizId, publish).then((response) => {
+      const quizzes = this.state.quizzes;
+      const quizIndex = quizzes.findIndex(quiz => quiz.id === quizId);
+      const updatedQuizzes = update(quizzes,{[quizIndex]:{$set:response.data}});
+      this.setState({
+        isLoaded: true,
+        quizzes: updatedQuizzes
+      })
+    }).catch((error) => {
+      this.setState({
+        isLoaded: true,
+        error
+      })
+    })
+  };
+
   render() {
     const {error, isLoaded, quizzes} = this.state;
     const breadcrumbs = (
@@ -56,7 +77,7 @@ class InstructorHome extends Component {
           >
             <NavigationBar breadcrumbs={breadcrumbs}/>
             <Loading isLoading={!isLoaded}/>
-            <QuizTable quizzes={quizzes}/>
+            <QuizTable quizzes={quizzes} onQuizPublish={this.handlePublishQuiz}/>
           </View>
         </ApplyTheme>
     );

@@ -124,5 +124,14 @@ class QuizController {
         }
     }
 
-
+    def publishQuiz(){
+        def rqJson = request.JSON
+        def quiz = quizService.publishQuiz(params.courseId as String, params.quizId as String, rqJson.publish as Boolean)
+        if(quiz != null){
+            respond quiz
+        }
+        else{
+            respond([errorMessage: "Error Updating Quiz"], status: 500)
+        }
+    }
 }

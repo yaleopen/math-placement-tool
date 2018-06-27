@@ -61,4 +61,8 @@ export default {
     return axios.put(`/mathplacement/courses/${courseId}/quizzes/${quizId}/rubrics/${rubricId}/equations/order`, {equationAPriority: equationAPriority, equationBPriority: equationBPriority, equationId: equationId})
         .then(response => response)
   },
+  publishQuiz: (courseId, quizId, publish) => {
+    return axios.put(`/mathplacement/courses/${courseId}/quizzes/${quizId}/publish`, {publish: publish})
+        .then(response => response)
+  }
 };

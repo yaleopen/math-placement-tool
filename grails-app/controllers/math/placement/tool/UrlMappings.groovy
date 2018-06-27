@@ -21,6 +21,7 @@ class UrlMappings {
                     "/"(controller:"quiz", action:"getOne", method: "GET")
                     "/questions"(controller:"quiz", action:"listQuestions", method: "GET")
                     "/submissions"(controller:"quiz", action:"listSubmissions", method: "GET")
+                    "/publish"(controller:"quiz", action:"publishQuiz", method: "PUT")
                     group "/rubrics", {
                         "/"(controller:"rubric", action:"list", method: "GET")
                         "/"(controller:"rubric", action:"create", method: "POST")

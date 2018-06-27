@@ -1,5 +1,6 @@
 package com.instructure.canvas
 
+import grails.converters.JSON
 import grails.gorm.transactions.Transactional
 import org.grails.web.json.JSONArray
 
@@ -51,6 +52,23 @@ class QuizService extends CanvasAPIBaseService{
             processResponsePages(resp,resultList)
             resultList.removeAll{it.quiz_id == null}
             return resultList
+        }
+        null
+    }
+
+    Quiz publishQuiz(String courseId, String quizId, Boolean publish){
+        def url = "${canvasBaseURL}/api/v1/courses/{course_id}/quizzes/{quiz_id}"
+        def params = [course_id: courseId, quiz_id: quizId]
+        def rqBody = [quiz:[published:publish]]
+        def resp = restClient.put(url){
+            auth("Bearer ${oauthToken}")
+            urlVariables(params)
+            contentType('application/json')
+            body(rqBody as JSON)
+        }
+        log.debug("ACTION=External_API DESCRIPTION=Update Quiz REQUEST_URL=${url} HTTP_STATUS=${resp.status}")
+        if(resp.status == 200 && resp.json){
+            return CanvasAPIParser.quizFromJsonElement(resp.json)
         }
         null
     }
