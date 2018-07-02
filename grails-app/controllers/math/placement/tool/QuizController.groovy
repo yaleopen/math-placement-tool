@@ -59,6 +59,8 @@ class QuizController {
         def quizSubmissions = quizSubmissionService.listQuizSubmissions(params.courseId as String, params.quizId as String)
         def submissions = submissionService.listAssignmentSubmissions(params.courseId as String, quiz.assignment_id)
         if(quizSubmissions != null){
+            //only check complete submissions
+            quizSubmissions.retainAll{it.workflow_state == 'complete'}
             def submissionDataList = submissions.collect{it.submission_history[0]}
             quizSubmissions.each{quizSubmission->
                 def quizSubmissionQuestions = quizSubmissionQuestionService.listQuizSubmissionQuestions(quizSubmission.id as String)
