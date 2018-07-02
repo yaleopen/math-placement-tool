@@ -1,5 +1,7 @@
 package math.placement.tool
 
+import groovyx.gpars.GParsPool
+
 class QuizController {
 
     static responseFormats = ['json', 'html']
@@ -62,25 +64,29 @@ class QuizController {
             //only check complete submissions
             quizSubmissions.retainAll{it.workflow_state == 'complete'}
             def submissionDataList = submissions.collect{it.submission_history[0]}
-            quizSubmissions.each{quizSubmission->
-                def quizSubmissionQuestions = quizSubmissionQuestionService.listQuizSubmissionQuestions(quizSubmission.id as String)
-                quizSubmission.questions = quizSubmissionQuestions
-                quizSubmission.submission_data = submissionDataList.find{it.id == quizSubmission.id}.submission_data
-                def placementData = [:]
-                quizSubmission.submission_data.each{submissionItem->
-                    //check if group question
-                    def question = quizSubmission.questions.find{it.id == submissionItem.question_id}
-                    if(question.quiz_group_id){
-                        def existingData = placementData["question_group_${question.quiz_group_id}"]
-                        placementData["question_group_${question.quiz_group_id}"] =  existingData ? existingData + submissionItem.points : submissionItem.points
+            GParsPool.withPool {
+                final def result = quizSubmissions.collectParallel {quizSubmission ->
+                    def quizSubmissionQuestions = quizSubmissionQuestionService.listQuizSubmissionQuestions(quizSubmission.id as String)
+                    quizSubmission.questions = quizSubmissionQuestions
+                    quizSubmission.submission_data = submissionDataList.find{it.id == quizSubmission.id}.submission_data
+                    def placementData = [:]
+                    quizSubmission.submission_data.each{submissionItem->
+                        //check if group question
+                        def question = quizSubmission.questions.find{it.id == submissionItem.question_id}
+                        if(question.quiz_group_id){
+                            def existingData = placementData["question_group_${question.quiz_group_id}"]
+                            placementData["question_group_${question.quiz_group_id}"] =  existingData ? existingData + submissionItem.points : submissionItem.points
+                        }
+                        else{
+                            placementData["question_${question.id}"] = [answer: "answer_${submissionItem.answer_id}", points: submissionItem.points]
+                        }
                     }
-                    else{
-                        placementData["question_${question.id}"] = [answer: "answer_${submissionItem.answer_id}", points: submissionItem.points]
-                    }
+                    quizSubmission.placement_data = placementData
+                    quizSubmission
                 }
-                quizSubmission.placement_data = placementData
+                respond result
             }
-            respond quizSubmissions
+
         }
         else{
             respond([errorMessage: "Error Retrieving Quiz Submissions"], status: 500)
