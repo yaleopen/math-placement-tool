@@ -64,7 +64,7 @@ class QuizController {
             //only check complete submissions
             quizSubmissions.retainAll{it.workflow_state == 'complete'}
             def submissionDataList = submissions.collect{it.submission_history[0]}
-            GParsPool.withPool {
+            GParsPool.withPool(15) {
                 final def result = quizSubmissions.collectParallel {quizSubmission ->
                     def quizSubmissionQuestions = quizSubmissionQuestionService.listQuizSubmissionQuestions(quizSubmission.id as String)
                     quizSubmission.questions = quizSubmissionQuestions
