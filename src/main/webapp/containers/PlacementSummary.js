@@ -11,6 +11,7 @@ import jsonLogic from "json-logic-js";
 import PlacementTable from "../components/PlacementTable";
 import PlacementSummaryNavigation from "../components/PlacementSummaryNavigation";
 import FeedbackModal from "../components/FeedbackModal";
+import Alert from '@instructure/ui-alerts/lib/components/Alert';
 
 class PlacementSummary extends Component {
   constructor(props) {
@@ -24,7 +25,10 @@ class PlacementSummary extends Component {
       filterText: '',
       filterIncomplete: false,
       showFeedbackModal: false,
-      feedbackModalText: ''
+      feedbackModalText: '',
+      showAlert: false,
+      alertMessage: '',
+      error: false
     }
   }
 
@@ -182,11 +186,20 @@ class PlacementSummary extends Component {
             placements: this.calculatePlacements(submissions.data, students.data, rubrics.data),
             isLoaded: true
           })
-        }));
+        }))
+        .catch(() => {
+          this.setState({
+            isLoaded: true,
+            showAlert: true,
+            alertMessage: 'Error Loading Placement Results',
+            error: true
+          })
+        });
   }
 
   render() {
-    const {isLoaded, quiz, placements, filterText, filterIncomplete, feedbackModalText, showFeedbackModal} = this.state;
+    const {isLoaded, quiz, placements, filterText, filterIncomplete, feedbackModalText, showFeedbackModal,
+    showAlert, alertMessage, error} = this.state;
     const breadcrumbs = (
         <Breadcrumb size="large" label="You are here:">
           <Link to="/mathplacement"><BreadcrumbLink onClick={() => {
@@ -210,6 +223,15 @@ class PlacementSummary extends Component {
           >
             <NavigationBar breadcrumbs={breadcrumbs}/>
             <Loading isLoading={!isLoaded}/>
+            {showAlert &&
+            <Alert
+                variant={error ? 'error' : 'success'}
+                margin="small"
+                timeout={5000}
+            >
+              {alertMessage}
+            </Alert>
+            }
             <FeedbackModal show={showFeedbackModal} feedback={feedbackModalText} onDismiss={this.handleFeedbackModalClose}/>
             <PlacementSummaryNavigation
               placements={placements}

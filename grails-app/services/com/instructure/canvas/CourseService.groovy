@@ -7,7 +7,7 @@ import org.grails.web.json.JSONArray
 class CourseService extends CanvasAPIBaseService {
 
     List<User> listStudentsInCourse(String courseId){
-        def url = "${canvasBaseURL}/api/v1/courses/{course_id}/users?enrollment_type[]=student_view&enrollment_type[]=student"
+        def url = "${canvasBaseURL}/api/v1/courses/{course_id}/users?enrollment_type[]=student_view&enrollment_type[]=student&per_page={per_page_limit}"
         def params = [course_id: courseId, per_page_limit: perPageLimit]
         def resp = restClient.get(url){
             auth("Bearer ${oauthToken}")
