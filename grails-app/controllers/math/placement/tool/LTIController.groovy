@@ -31,7 +31,7 @@ class LTIController {
                 if(roleList.contains('Instructor') || roleList.contains('Sandbox Instructor')){
                     role = 'instructor'
                 }
-                else if(roleList.contains('StudentEnrollment')){
+                else if(roleList.contains('StudentEnrollment') || roleList.contains('Guest Student') || roleList.contains('Auditor')){
                     role = 'student'
                 }
 
