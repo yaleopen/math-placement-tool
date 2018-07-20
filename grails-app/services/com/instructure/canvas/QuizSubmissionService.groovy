@@ -1,6 +1,7 @@
 package com.instructure.canvas
 
 import grails.gorm.transactions.Transactional
+import grails.plugins.rest.client.RestResponse
 import org.grails.web.json.JSONArray
 
 @Transactional
@@ -21,5 +22,18 @@ class QuizSubmissionService extends CanvasAPIBaseService {
             return resultList
         }
         null
+    }
+
+    @Override
+    <T> void processResponsePages(RestResponse resp, List<T> firstPage){
+        def nextPage = canvasNextPage(resp)
+        while(nextPage != null){
+            resp = restClient.get(nextPage){
+                auth('Bearer ' + oauthToken)
+            }
+            log.info("ACTION=External_API DESCRIPTION=Paging REQUEST_URL=${nextPage} HTTP_STATUS=${resp.status}")
+            firstPage.addAll((JSONArray) resp.json.quiz_submissions)
+            nextPage = canvasNextPage(resp)
+        }
     }
 }
