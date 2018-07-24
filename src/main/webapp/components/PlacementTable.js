@@ -69,7 +69,7 @@ function PlacementTableRow(props) {
         <td>{placement.rubric && placement.rubric.placement}</td>
         <td style={{whiteSpace: "nowrap", textAlign: "center"}}>
           {placement.rubric &&
-          <React.Fragment>
+          <div>
             <Tooltip tip="View Feedback">
               <Button onClick={onFeedbackModalOpen.bind(this,placement.rubric.feedback)} variant="icon">
                 <IconFeedback/>
@@ -80,7 +80,7 @@ function PlacementTableRow(props) {
                 <IconSpeedGrader style={{color: '#00AC18'}}/>
               </Button>
             </Tooltip>
-          </React.Fragment>
+          </div>
           }
         </td>
       </tr>
