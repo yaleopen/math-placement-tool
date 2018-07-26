@@ -18,7 +18,7 @@ class QuizController {
         if(quizzes != null){
             quizzes.each{quiz->
                 def quizSubmissions = quizSubmissionService.listQuizSubmissions(params.courseId as String, quiz.id as String)
-                quiz.submission_count = quizSubmissions.user_id.unique().size()
+                quiz.submission_count = quizSubmissions.findAll{it.workflow_state == 'complete'}.user_id.unique().size()
             }
             respond quizzes
         }
