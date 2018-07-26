@@ -1,7 +1,7 @@
 var path = require('path');
 
 module.exports = {
-  entry: './src/main/webapp/index.js',
+  entry: ['babel-polyfill','./src/main/webapp/index.js'],
   output: {
     path: path.join(__dirname, 'grails-app/assets/javascripts'),
     publicPath: '/assets/',
