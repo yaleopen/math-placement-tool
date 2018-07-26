@@ -101,8 +101,8 @@ class QuizController {
             assignments.each{assignment->
                 def quizSubmission = assignment.submission
                 if(quizSubmission && quizSubmission.workflow_state != 'unsubmitted'){
-                    def submissions = submissionService.listAssignmentSubmissions(params.courseId as String, assignment.id as String)
-                    def submissionHistory = submissions.find{it.id == quizSubmission.id}.submission_history[0]
+                    def submission = submissionService.getSingleSubmission(params.courseId as String, assignment.id as String, params.userId as String)
+                    def submissionHistory = submission.submission_history[0]
                     def quizSubmissionQuestions = quizSubmissionQuestionService.listQuizSubmissionQuestions(submissionHistory.id as String)
                     quizSubmission.questions = quizSubmissionQuestions
                     quizSubmission.submission_data = submissionHistory.submission_data

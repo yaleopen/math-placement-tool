@@ -22,4 +22,18 @@ class SubmissionService extends CanvasAPIBaseService {
         }
         null
     }
+
+    QuizSubmission getSingleSubmission(String courseId, String assignmentId, String userId) {
+        def url = "${canvasBaseURL}/api/v1/courses/{course_id}/assignments/{assignment_id}/submissions/{user_id}?include[]=submission_history"
+        def params = [course_id: courseId, assignment_id: assignmentId, user_id: userId]
+        def resp = restClient.get(url){
+            auth("Bearer ${oauthToken}")
+            urlVariables(params)
+        }
+        log.debug("ACTION=External_API DESCRIPTION=Get Single Submission REQUEST_URL=${url} HTTP_STATUS=${resp.status}")
+        if(resp.status == 200 && resp.json){
+            return CanvasAPIParser.quizSubmissionFromJsonElement(resp.json)
+        }
+        null
+    }
 }

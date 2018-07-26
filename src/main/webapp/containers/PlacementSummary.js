@@ -134,7 +134,7 @@ class PlacementSummary extends Component {
   calculatePlacements = (submissions, students, rubrics) => {
     const placements = [];
     students.forEach((student) => {
-      const submission = submissions.find(submission => submission.user_id === student.id);
+      const submission = submissions.find(submission => submission.data[this.state.quiz.id].user_id === student.id).data[this.state.quiz.id];
       if(submission){
         let placedRubric = rubrics ? rubrics[rubrics.length - 1] : null;
         //set default rubric if existing
@@ -172,19 +172,18 @@ class PlacementSummary extends Component {
     return placements;
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     const {quizId} = this.props.match.params;
-    axios.all(
-        [api.fetchSingleQuiz(sessionStorage.courseId, quizId), api.listRubrics(sessionStorage.courseId, quizId),
-          api.listStudents(sessionStorage.courseId), api.listSubmissions(sessionStorage.courseId, quizId)
+    await axios.all(
+        [api.fetchSingleQuiz(sessionStorage.courseId, quizId),
+          api.listRubrics(sessionStorage.courseId, quizId),
+          api.listStudents(sessionStorage.courseId)
         ])
         .then(axios.spread((quiz,rubrics,students,submissions) => {
           this.setState({
             quiz: quiz.data,
             rubrics: rubrics.data,
-            students: students.data,
-            placements: this.calculatePlacements(submissions.data, students.data, rubrics.data),
-            isLoaded: true
+            students: students.data
           })
         }))
         .catch(() => {
@@ -195,6 +194,22 @@ class PlacementSummary extends Component {
             error: true
           })
         });
+    axios.all(this.state.students.map(student => api.listSubmissionsForUser(sessionStorage.courseId,student.id)))
+        .then(axios.spread((...res) => {
+          // all requests are now complete
+          this.setState({
+            placements: this.calculatePlacements(res, this.state.students, this.state.rubrics),
+            isLoaded: true
+          })
+        })).catch(() => {
+      this.setState({
+        isLoaded: true,
+        showAlert: true,
+        alertMessage: 'Error Loading Placement Results',
+        error: true
+      })
+    });
+
   }
 
   render() {

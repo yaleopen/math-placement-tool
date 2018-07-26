@@ -36,4 +36,16 @@ class CanvasAPIParser {
         }
         quizGroup
     }
+
+    @CompileDynamic
+    static QuizSubmission quizSubmissionFromJsonElement(JSONElement json){
+        QuizSubmission quizSubmission = new QuizSubmission()
+        quizSubmission.with{
+            id = json.id
+            user_id = json.user_id
+            workflow_state = json.workflow_state
+            submission_history = json.submission_history
+        }
+        quizSubmission
+    }
 }
