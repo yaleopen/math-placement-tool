@@ -135,7 +135,7 @@ class PlacementSummary extends Component {
     const placements = [];
     students.forEach((student) => {
       const submission = submissions.find(submission => submission.data[this.state.quiz.id].user_id === student.id).data[this.state.quiz.id];
-      if(submission){
+      if(submission && submission.workflow_state === 'graded'){
         let placedRubric = rubrics ? rubrics[rubrics.length - 1] : null;
         //set default rubric if existing
         if(rubrics){
@@ -179,7 +179,7 @@ class PlacementSummary extends Component {
           api.listRubrics(sessionStorage.courseId, quizId),
           api.listStudents(sessionStorage.courseId)
         ])
-        .then(axios.spread((quiz,rubrics,students,submissions) => {
+        .then(axios.spread((quiz,rubrics,students) => {
           this.setState({
             quiz: quiz.data,
             rubrics: rubrics.data,
@@ -201,14 +201,15 @@ class PlacementSummary extends Component {
             placements: this.calculatePlacements(res, this.state.students, this.state.rubrics),
             isLoaded: true
           })
-        })).catch(() => {
-      this.setState({
-        isLoaded: true,
-        showAlert: true,
-        alertMessage: 'Error Loading Placement Results',
-        error: true
-      })
-    });
+        }))
+        .catch(() => {
+          this.setState({
+            isLoaded: true,
+            showAlert: true,
+            alertMessage: 'Error Loading Placement Results',
+            error: true
+          })
+        });
 
   }
 

@@ -10,11 +10,12 @@ class QuizSubmissionService extends CanvasAPIBaseService {
     List<QuizSubmission> listQuizSubmissions(String courseId, String quizId) {
         def url = "${canvasBaseURL}/api/v1/courses/{course_id}/quizzes/{quiz_id}/submissions?per_page={per_page_limit}"
         def params = [course_id: courseId, quiz_id: quizId, per_page_limit: perPageLimit]
+        def start = System.currentTimeMillis()
         def resp = restClient.get(url){
             auth("Bearer ${oauthToken}")
             urlVariables(params)
         }
-        log.debug("ACTION=External_API DESCRIPTION=List Quiz Submissions REQUEST_URL=${url} HTTP_STATUS=${resp.status}")
+        log.debug("ACTION=External_API DESCRIPTION=List Quiz Submissions REQUEST_URL=${url} HTTP_STATUS=${resp.status} RESP_TIME=${System.currentTimeMillis() - start}")
         if(resp.status == 200 && resp.json){
             JSONArray respArr = (JSONArray) resp.json.quiz_submissions
             List<QuizSubmission> resultList = new ArrayList<QuizSubmission>(respArr)
