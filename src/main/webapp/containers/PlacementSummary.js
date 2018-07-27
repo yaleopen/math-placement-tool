@@ -134,8 +134,9 @@ class PlacementSummary extends Component {
   calculatePlacements = (submissions, students, rubrics) => {
     const placements = [];
     students.forEach((student) => {
-      const submission = submissions.find(submission => submission.data[this.state.quiz.id].user_id === student.id).data[this.state.quiz.id];
-      if(submission && submission.workflow_state === 'graded'){
+      const findSubmission = submissions.find(submission => submission.data[this.state.quiz.id].user_id === student.id);
+      if(findSubmission){
+        const submission = findSubmission.data[this.state.quiz.id];
         let placedRubric = rubrics ? rubrics[rubrics.length - 1] : null;
         //set default rubric if existing
         if(rubrics){
@@ -194,7 +195,7 @@ class PlacementSummary extends Component {
             error: true
           })
         });
-    axios.all(this.state.students.map(student => api.listSubmissionsForUser(sessionStorage.courseId,student.id)))
+    axios.all(this.state.quiz.complete_userids.map(userid => api.listSubmissionsForUser(sessionStorage.courseId,userid)))
         .then(axios.spread((...res) => {
           // all requests are now complete
           this.setState({

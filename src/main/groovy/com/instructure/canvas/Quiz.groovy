@@ -44,5 +44,6 @@ class Quiz {
     List<String> question_types
     Boolean anonymous_submissions
     Integer submission_count
+    List<String> complete_userids
     String assignment_id
 }
