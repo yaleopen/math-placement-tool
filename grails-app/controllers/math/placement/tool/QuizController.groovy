@@ -30,6 +30,8 @@ class QuizController {
     def getOne(){
         def quiz = quizService.getSingleQuiz(params.courseId as String, params.quizId as String)
         if(quiz != null){
+            def quizSubmissions = quizSubmissionService.listQuizSubmissions(params.courseId as String, quiz.id as String)
+            quiz.complete_userids = quizSubmissions.findAll{it.workflow_state == 'complete'}.user_id.unique()
             respond quiz
         }
         else{
