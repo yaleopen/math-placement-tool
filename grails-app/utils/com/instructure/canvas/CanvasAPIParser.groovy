@@ -48,4 +48,14 @@ class CanvasAPIParser {
         }
         quizSubmission
     }
+
+    @CompileDynamic
+    static QuizQuestion quizQuestionFromJsonElement(JSONElement json){
+        QuizQuestion quizQuestion = new QuizQuestion()
+        quizQuestion.with{
+            id = json.id
+            quiz_group_id = json.quiz_group_id
+        }
+        quizQuestion
+    }
 }

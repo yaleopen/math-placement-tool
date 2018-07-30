@@ -1,7 +1,5 @@
 package math.placement.tool
 
-import groovyx.gpars.GParsPool
-
 class QuizController {
 
     static responseFormats = ['json', 'html']
@@ -30,8 +28,6 @@ class QuizController {
     def getOne(){
         def quiz = quizService.getSingleQuiz(params.courseId as String, params.quizId as String)
         if(quiz != null){
-            def quizSubmissions = quizSubmissionService.listQuizSubmissions(params.courseId as String, quiz.id as String)
-            quiz.complete_userids = quizSubmissions.findAll{it.workflow_state == 'complete'}.user_id.unique()
             respond quiz
         }
         else{
@@ -66,29 +62,31 @@ class QuizController {
             //only check complete submissions
             quizSubmissions.retainAll{it.workflow_state == 'complete'}
             def submissionDataList = submissions.collect{it.submission_history[0]}
-            GParsPool.withPool(25) {
-                final def result = quizSubmissions.collectParallel {quizSubmission ->
-                    def quizSubmissionQuestions = quizSubmissionQuestionService.listQuizSubmissionQuestions(quizSubmission.id as String)
-                    quizSubmission.questions = quizSubmissionQuestions
-                    quizSubmission.submission_data = submissionDataList.find{it.id == quizSubmission.id}.submission_data
-                    def placementData = [:]
-                    GParsPool.withPool(10) {
-                        quizSubmission.placement_data = quizSubmission.submission_data.collectParallel { submissionItem ->
-                            //check if group question
-                            def question = quizSubmission.questions.find { it.id == submissionItem.question_id }
-                            if (question.quiz_group_id) {
-                                def existingData = placementData["question_group_${question.quiz_group_id}"]
-                                placementData["question_group_${question.quiz_group_id}"] = existingData ? existingData + submissionItem.points : submissionItem.points
-                            } else {
-                                placementData["question_${question.id}"] = [answer: "answer_${submissionItem.answer_id}", points: submissionItem.points]
-                            }
-                            placementData
-                        }
-                    }
-                    quizSubmission
-                }
-                respond result
+            def quizQuestions = quizQuestionService.listQuizQuestions(params.courseId as String, params.quizId as String)
+            //workaround for canvas api bug returning wrong dataset
+            def allSubmissionQuestionIds = submissionDataList.submission_data.question_id.flatten().unique()
+            allSubmissionQuestionIds.removeAll{quizQuestions.id.unique().contains(it)}
+            allSubmissionQuestionIds.each{missingQuestionId ->
+                def missingQuestion = quizQuestionService.getSingleQuizQuestion(params.courseId as String, params.quizId as String, missingQuestionId as String)
+                quizQuestions.add(missingQuestion)
             }
+            final def result = quizSubmissions.collect {quizSubmission ->
+                def submissionData = submissionDataList.find{it.id == quizSubmission.id}.submission_data
+                def placementData = [:]
+                submissionData.each { submissionItem ->
+                    //check if group question
+                    def question = quizQuestions.find { it.id as String == submissionItem.question_id as String }
+                    if (question.quiz_group_id) {
+                        def existingData = placementData["question_group_${question.quiz_group_id}"]
+                        placementData["question_group_${question.quiz_group_id}"] = existingData ? existingData + submissionItem.points : submissionItem.points
+                    } else {
+                        placementData["question_${question.id}"] = [answer: "answer_${submissionItem.answer_id}", points: submissionItem.points]
+                    }
+                }
+                quizSubmission.placement_data = placementData
+                quizSubmission
+            }
+            respond result
 
         }
         else{

@@ -96,8 +96,8 @@ class PlacementSummary extends Component {
   };
 
   sortPlacementByNetID = (a, b) => {
-    const nameA = a.student ? a.student.login_id.toUpperCase() : '';
-    const nameB = b.student ? b.student.login_id.toUpperCase() : '';
+    const nameA = (a.student && a.student.login_id) ? a.student.login_id.toUpperCase() : '';
+    const nameB = (b.student && b.student.login_id) ? b.student.login_id.toUpperCase() : '';
     if (nameA < nameB) {
       return -1;
     }
@@ -134,9 +134,8 @@ class PlacementSummary extends Component {
   calculatePlacements = (submissions, students, rubrics) => {
     const placements = [];
     students.forEach((student) => {
-      const findSubmission = submissions.find(submission => submission.data[this.state.quiz.id].user_id === student.id);
-      if(findSubmission){
-        const submission = findSubmission.data[this.state.quiz.id];
+      const submission = submissions.find(submission => submission.user_id === student.id);
+      if(submission){
         let placedRubric = rubrics ? rubrics[rubrics.length - 1] : null;
         //set default rubric if existing
         if(rubrics){
@@ -173,45 +172,31 @@ class PlacementSummary extends Component {
     return placements;
   };
 
-  async componentDidMount() {
+  componentDidMount() {
     const {quizId} = this.props.match.params;
-    await axios.all(
-        [api.fetchSingleQuiz(sessionStorage.courseId, quizId),
-          api.listRubrics(sessionStorage.courseId, quizId),
-          api.listStudents(sessionStorage.courseId)
-        ])
-        .then(axios.spread((quiz,rubrics,students) => {
-          this.setState({
-            quiz: quiz.data,
-            rubrics: rubrics.data,
-            students: students.data
-          })
-        }))
-        .catch(() => {
-          this.setState({
-            isLoaded: true,
-            showAlert: true,
-            alertMessage: 'Error Loading Placement Results',
-            error: true
-          })
-        });
-    axios.all(this.state.quiz.complete_userids.map(userid => api.listSubmissionsForUser(sessionStorage.courseId,userid)))
-        .then(axios.spread((...res) => {
-          // all requests are now complete
-          this.setState({
-            placements: this.calculatePlacements(res, this.state.students, this.state.rubrics),
-            isLoaded: true
-          })
-        }))
-        .catch(() => {
-          this.setState({
-            isLoaded: true,
-            showAlert: true,
-            alertMessage: 'Error Loading Placement Results',
-            error: true
-          })
-        });
-
+    axios.all(
+      [ api.fetchSingleQuiz(sessionStorage.courseId, quizId),
+        api.listRubrics(sessionStorage.courseId, quizId),
+        api.listStudents(sessionStorage.courseId),
+        api.listSubmissions(sessionStorage.courseId, quizId)
+      ])
+      .then(axios.spread((quiz,rubrics,students,submissions) => {
+        this.setState({
+          quiz: quiz.data,
+          rubrics: rubrics.data,
+          students: students.data,
+          placements: this.calculatePlacements(submissions.data, students.data, rubrics.data),
+          isLoaded: true
+        })
+      }))
+      .catch(() => {
+        this.setState({
+          isLoaded: true,
+          showAlert: true,
+          alertMessage: 'Error Loading Placement Results',
+          error: true
+        })
+      });
   }
 
   render() {
