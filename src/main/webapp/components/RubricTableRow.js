@@ -71,6 +71,7 @@ class RubricTableRow extends Component {
               <Button
                   variant="icon"
                   onClick={onCloneRubric.bind(this,rubric.id)}
+                  disabled={isQuizPublished}
               >
                 <IconCopy />
               </Button>

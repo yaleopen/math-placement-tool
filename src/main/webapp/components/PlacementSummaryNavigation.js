@@ -38,7 +38,7 @@ function SearchBox(props) {
   return(
       <TextInput
           label={<ScreenReaderContent>Search placements...</ScreenReaderContent>}
-          placeholder="Search appt groups..."
+          placeholder="Search placements..."
           value={props.filterText}
           onChange={props.onFilterTextChange}
           inline
