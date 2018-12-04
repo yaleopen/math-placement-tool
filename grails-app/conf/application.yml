@@ -103,7 +103,7 @@ dataSources:
 
 canvas:
     oauthToken: '${CANVAS_API_TOKEN}'
-    canvasBaseUrl: 'https://yale.beta.instructure.com'
+    canvasBaseUrl: '${CANVAS_BASE_URL}'
     ltiSecret: '${MATH_PLACEMENT_SECRET}'
     perPageLimit: 100
 
@@ -112,6 +112,6 @@ environments:
         dataSources:
             dataSource:
                 dbCreate: update
-                username: root
-                password: abcd1234
+                username: '${DB_USERNAME}'
+                password: '${DB_PASSWORD}'
                 url: jdbc:mysql://localhost:3306/canvas-mathplacement?useSSL=false

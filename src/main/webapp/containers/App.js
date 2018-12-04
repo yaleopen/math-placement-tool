@@ -42,7 +42,7 @@ const Home = () => {
     homeForRole = <InstructorHome/>;
   }
   else if(role === 'student'){
-    homeForRole = <StudentHome userId={sessionStorage.userId}/>;
+    homeForRole = <StudentHome/>;
   }
   return homeForRole;
 };

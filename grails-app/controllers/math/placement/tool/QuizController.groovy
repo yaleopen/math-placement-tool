@@ -95,13 +95,13 @@ class QuizController {
     }
 
     def listPlacementDataForUser(){
-        def assignments = quizService.listQuizAssignmentsForUser(params.courseId as String, params.userId as String)
+        def assignments = quizService.listQuizAssignmentsForUser(params.courseId as String, session.userId as String)
         if(assignments != null){
             def result = [:]
             assignments.each{assignment->
                 def quizSubmission = assignment.submission
                 if(quizSubmission && quizSubmission.workflow_state != 'unsubmitted'){
-                    def submission = submissionService.getSingleSubmission(params.courseId as String, assignment.id as String, params.userId as String)
+                    def submission = submissionService.getSingleSubmission(params.courseId as String, assignment.id as String, session.userId as String)
                     def submissionHistory = submission.submission_history[0]
                     def quizSubmissionQuestions = quizSubmissionQuestionService.listQuizSubmissionQuestions(submissionHistory.id as String)
                     quizSubmission.questions = quizSubmissionQuestions

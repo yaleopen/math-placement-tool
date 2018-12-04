@@ -85,7 +85,7 @@ class StudentHome extends Component {
 
   componentDidMount() {
     axios.all(
-        [api.listSubmissionsForUser(sessionStorage.courseId, sessionStorage.userId),
+        [api.listSubmissionsForUser(sessionStorage.courseId),
           api.listRubricsForCourse(sessionStorage.courseId)
         ])
         .then(axios.spread((submissions,rubrics) => {

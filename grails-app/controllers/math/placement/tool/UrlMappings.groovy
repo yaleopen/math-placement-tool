@@ -13,7 +13,7 @@ class UrlMappings {
 
         group "/courses/$courseId", {
             "/students"(controller:"course", action:"listStudents", method: "GET")
-            "/students/$userId"(controller:"quiz", action:"listPlacementDataForUser", method: "GET")
+            "/submission"(controller:"quiz", action:"listPlacementDataForUser", method: "GET")
             "/rubrics"(controller:"rubric", action:"listForCourse", method: "GET")
             group "/quizzes", {
                 "/"(controller:"quiz", action:"list", method: "GET")

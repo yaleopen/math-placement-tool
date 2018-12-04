@@ -9,7 +9,6 @@
     <body>
         <div id="root"></div>
         <g:javascript>
-            sessionStorage.userId = ${session.userId};
             sessionStorage.courseId = ${session.courseId};
             sessionStorage.userRole = '${session.userRole}';
             sessionStorage.isCoursePublished = ${session.isCoursePublished};
