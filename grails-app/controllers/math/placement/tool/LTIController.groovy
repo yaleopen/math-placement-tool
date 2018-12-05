@@ -40,6 +40,7 @@ class LTIController {
                 session["courseId"] = params.custom_canvas_course_id
                 session["userRole"] = role
                 session["isCoursePublished"] = params.custom_canvas_workflow_state == 'available'
+                session["oauthSignature"] = params.oauth_signature
                 render(view: "/index")
             }
             else{

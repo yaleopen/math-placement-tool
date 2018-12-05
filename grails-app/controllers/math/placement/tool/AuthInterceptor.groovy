@@ -4,7 +4,9 @@ package math.placement.tool
 class AuthInterceptor {
 
     AuthInterceptor() {
-        matchAll().excludes(uri: "/launch/**").excludes(uri: "/")
+        matchAll()
+                .excludes(controller: 'LTI')
+                .excludes(uri: "/")
     }
 
     boolean before() {
