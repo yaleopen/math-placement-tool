@@ -111,6 +111,7 @@ environments:
             canvasBaseUrl: ${canvas_url}
             ltiSecret: ${lti_secret}
             perPageLimit: ${per_page_limit}
+            placementCourseId: ${placement_course_id}
         dataSources:
             dataSource:
                 dbCreate: update

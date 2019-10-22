@@ -1,37 +1,18 @@
 import React from 'react';
-import View from '@instructure/ui-layout/lib/components/View';
-import ScreenReaderContent from '@instructure/ui-a11y/lib/components/ScreenReaderContent';
-import Table from '@instructure/ui-elements/lib/components/Table';
-import IconSpeedGrader from '@instructure/ui-icons/lib/Solid/IconSpeedGrader';
-import Tooltip from '@instructure/ui-overlays/lib/components/Tooltip';
-import Button from '@instructure/ui-buttons/lib/components/Button';
-import IconFeedback from '@instructure/ui-icons/lib/Line/IconFeedback';
+import { View } from '@instructure/ui-layout';
+import { Button } from '@instructure/ui-buttons';
+import { Table } from '@instructure/ui-table';
+import { Tooltip } from '@instructure/ui-overlays';
+import { IconFeedbackLine, IconSpeedGraderLine } from '@instructure/ui-icons';
+import { Pagination } from '@instructure/ui-pagination';
 
 function PlacementTable(props) {
-  const {placements, onSpeedGraderClick, onColumnSort, filterText, filterIncomplete, onFeedbackModalOpen} = props;
+  const {placements, onSpeedGraderClick, onColumnSort, filterText, filterIncomplete, onFeedbackModalOpen, page, onNextPageClick} = props;
   const filterTextLC = filterText.toLowerCase();
-  const rows = [];
-  placements.forEach((placement, index) => {
-    if(filterIncomplete && placement.rubric){
-      return;
-    }
-    const noStudentMatch = placement.student.name.toLowerCase().indexOf(filterTextLC) === -1 &&
-        (placement.student.login_id ? placement.student.login_id.toLowerCase().indexOf(filterTextLC) === -1 : true);
-    const noRubricMatch = placement.rubric ?
-        placement.rubric.title.toLowerCase().indexOf(filterTextLC) === -1 &&
-        placement.rubric.placement.toLowerCase().indexOf(filterTextLC) === -1 : true;
-    if(noStudentMatch && noRubricMatch){
-      return;
-    }
-    rows.push(
-        <PlacementTableRow
-            key={`placement${index}`}
-            placement={placement}
-            onSpeedGraderClick={onSpeedGraderClick}
-            onFeedbackModalOpen={onFeedbackModalOpen}
-        />
-    )
-  });
+  const perPage = 20;
+  const startIndex = page * perPage;
+  const slicedPlacements = placements.slice(startIndex, startIndex + perPage);
+  const pageCount = perPage && Math.ceil(placements.length / perPage);
   return (
       <View
           as="div"
@@ -40,50 +21,77 @@ function PlacementTable(props) {
       >
         <Table
             striped="columns"
-            caption={<ScreenReaderContent>List of Placements</ScreenReaderContent>}
+            caption="List of Placements"
         >
-          <thead>
-          <tr>
-            <th scope="col" onClick={onColumnSort.bind(this,'name')} style={{cursor:'pointer'}}>Name</th>
-            <th scope="col" onClick={onColumnSort.bind(this,'netid')} style={{cursor:'pointer'}}>NetID</th>
-            <th scope="col" onClick={onColumnSort.bind(this,'rubricTitle')} style={{cursor:'pointer'}}>Rubric</th>
-            <th scope="col" onClick={onColumnSort.bind(this,'rubricPlacement')} style={{cursor:'pointer'}}>Placement</th>
-            <th width="1"/>
-          </tr>
-          </thead>
-          <tbody>
-          {rows}
-          </tbody>
-        </Table>
-      </View>
-  )
-}
-
-function PlacementTableRow(props) {
-  const {placement, onSpeedGraderClick, onFeedbackModalOpen} = props;
-  return (
-      <tr>
-        <td>{placement.student.sortable_name}</td>
-        <td>{placement.student.login_id}</td>
-        <td>{placement.rubric && placement.rubric.title}</td>
-        <td>{placement.rubric && placement.rubric.placement}</td>
-        <td style={{whiteSpace: "nowrap", textAlign: "center"}}>
-          {placement.rubric &&
-          <div>
-            <Tooltip tip="View Feedback">
-              <Button onClick={onFeedbackModalOpen.bind(this,placement.rubric.feedback)} variant="icon">
-                <IconFeedback/>
-              </Button>
-            </Tooltip>
-            <Tooltip tip="Speed Grader">
-              <Button onClick={onSpeedGraderClick} variant="icon">
-                <IconSpeedGrader style={{color: '#00AC18'}}/>
-              </Button>
-            </Tooltip>
-          </div>
+          <Table.Head>
+          <Table.Row>
+            <Table.ColHeader id="Name" onClick={onColumnSort.bind(this,'name')} style={{cursor:'pointer'}}>Name</Table.ColHeader>
+            <Table.ColHeader id="NetID" onClick={onColumnSort.bind(this,'netid')} style={{cursor:'pointer'}}>NetID</Table.ColHeader>
+            <Table.ColHeader id="Rubric" onClick={onColumnSort.bind(this,'rubricTitle')} style={{cursor:'pointer'}}>Rubric</Table.ColHeader>
+            <Table.ColHeader id="Placement" onClick={onColumnSort.bind(this,'rubricPlacement')} style={{cursor:'pointer'}}>Placement</Table.ColHeader>
+            <Table.ColHeader id="PlacementOptions" width="1"/>
+          </Table.Row>
+          </Table.Head>
+          <Table.Body>
+          {(slicedPlacements || []).map((placement, index) => {
+              if(filterIncomplete && placement.rubric){
+                return;
+              }
+              const noStudentMatch = placement.student.name.toLowerCase().indexOf(filterTextLC) === -1 &&
+                  (placement.student.login_id ? placement.student.login_id.toLowerCase().indexOf(filterTextLC) === -1 : true);
+              const noRubricMatch = placement.rubric ?
+                  placement.rubric.title.toLowerCase().indexOf(filterTextLC) === -1 &&
+                  placement.rubric.placement.toLowerCase().indexOf(filterTextLC) === -1 : true;
+              if(noStudentMatch && noRubricMatch){
+                return;
+              }
+              return(
+                <Table.Row key={`placement${index}`}>
+                  <Table.Cell>{placement.student.sortable_name}</Table.Cell>
+                  <Table.Cell>{placement.student.login_id}</Table.Cell>
+                  <Table.Cell>{placement.rubric && placement.rubric.title}</Table.Cell>
+                  <Table.Cell>{placement.rubric && placement.rubric.placement}</Table.Cell>
+                  <Table.Cell style={{whiteSpace: "nowrap", textAlign: "center"}}>
+                    {placement.rubric &&
+                    <div>
+                      <Tooltip tip="View Feedback">
+                        <Button onClick={onFeedbackModalOpen.bind(this,placement.rubric.feedback)} variant="icon">
+                          <IconFeedbackLine/>
+                        </Button>
+                      </Tooltip>
+                      <Tooltip tip="Speed Grader">
+                        <Button onClick={onSpeedGraderClick} variant="icon">
+                          <IconSpeedGraderLine style={{color: '#00AC18'}}/>
+                        </Button>
+                      </Tooltip>
+                    </div>
+                    }
+                  </Table.Cell>
+                </Table.Row> 
+              )
+            })
           }
-        </td>
-      </tr>
+          </Table.Body>
+        </Table>
+        {pageCount > 1 && (
+          <Pagination
+            variant='compact'
+            labelNext='Next Page'
+            labelPrev='Previous Page'
+            margin='large'
+          >
+            {Array.from(Array(pageCount), (item, index) => (
+              <Pagination.Page
+                key={index}
+                onClick={() => onNextPageClick(index)}
+                current={index === page}
+              >
+                {index + 1}
+              </Pagination.Page>
+            ))}
+          </Pagination>
+        )}
+      </View>
   )
 }
 

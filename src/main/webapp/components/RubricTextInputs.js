@@ -1,13 +1,13 @@
 import React from 'react';
-import TextInput from '@instructure/ui-forms/lib/components/TextInput';
-import Grid, {GridRow, GridCol} from '@instructure/ui-layout/lib/components/Grid';
+import { TextInput } from '@instructure/ui-text-input';
+import { Grid } from '@instructure/ui-layout';
 
 function RubricTextInputs(props) {
   const {title, placement, feedback, onTextChange, isQuizPublished} = props;
   return (
       <Grid colSpacing="large" rowSpacing="small">
-        <GridRow>
-          <GridCol>
+        <Grid.Row>
+          <Grid.Col>
             <TextInput
                 onChange={onTextChange}
                 readOnly={isQuizPublished}
@@ -15,8 +15,8 @@ function RubricTextInputs(props) {
                 label="Title"
                 value={title}
             />
-          </GridCol>
-          <GridCol>
+          </Grid.Col>
+          <Grid.Col>
             <TextInput
                 onChange={onTextChange}
                 readOnly={isQuizPublished}
@@ -24,10 +24,10 @@ function RubricTextInputs(props) {
                 label="Course Placement"
                 value={placement}
             />
-          </GridCol>
-        </GridRow>
-        <GridRow>
-          <GridCol>
+          </Grid.Col>
+        </Grid.Row>
+        <Grid.Row>
+          <Grid.Col>
             <TextInput
                 onChange={onTextChange}
                 readOnly={isQuizPublished}
@@ -35,8 +35,8 @@ function RubricTextInputs(props) {
                 label="Feedback"
                 value={feedback}
             />
-          </GridCol>
-        </GridRow>
+          </Grid.Col>
+        </Grid.Row>
       </Grid>
   );
 }

@@ -1,7 +1,6 @@
 import React from 'react';
-import Spinner from '@instructure/ui-elements/lib/components/Spinner';
-import Overlay from '@instructure/ui-overlays/lib/components/Overlay';
-import Mask from '@instructure/ui-overlays/lib/components/Mask';
+import { Spinner } from '@instructure/ui-elements';
+import { Overlay, Mask } from '@instructure/ui-overlays';
 
 function Loading(props) {
   const {isLoading} = props;
@@ -15,8 +14,8 @@ function Loading(props) {
           label="Loading"
           shouldReturnFocus
       >
-        <Mask>
-          <div style={{textAlign: "center"}}><Spinner title="Loading" size="large" margin="0 0 0 medium"/></div>
+        <Mask fullscreen={true}>
+          <div style={{textAlign: "center"}}><Spinner renderTitle="Loading" size="large" margin="0 0 0 medium"/></div>
         </Mask>
       </Overlay>
   )

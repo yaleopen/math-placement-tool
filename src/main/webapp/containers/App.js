@@ -1,20 +1,19 @@
 import React, {Component} from 'react';
 import {Switch, Route, BrowserRouter} from 'react-router-dom';
 import InstructorHome from './InstructorHome';
-import theme from '@instructure/ui-themes/lib/canvas';
 import RubricEditor from "./RubricEditor";
-import ApplyTheme from '@instructure/ui-themeable/lib/components/ApplyTheme';
-import View from '@instructure/ui-layout/lib/components/View';
-import Alert from '@instructure/ui-alerts/lib/components/Alert';
+import { ApplyTheme } from '@instructure/ui-themeable';
+import { View } from '@instructure/ui-layout';
+import { Alert } from '@instructure/ui-alerts';
 import NavigationBar from "../components/NavigationBar";
 import {Link} from "react-router-dom";
-import Breadcrumb, {BreadcrumbLink} from '@instructure/ui-breadcrumb/lib/components/Breadcrumb';
+import { Breadcrumb } from '@instructure/ui-breadcrumb';
 import PlacementSummary from "./PlacementSummary";
 import StudentHome from "./StudentHome";
 import HTML5Backend from "react-dnd-html5-backend";
 import { DragDropContext } from 'react-dnd';
+import '@instructure/canvas-theme';
 
-theme.use();
 
 class App extends Component {
   render() {
@@ -50,8 +49,8 @@ const Home = () => {
 const UnauthorizedHome = () => {
   const breadcrumbs = (
       <Breadcrumb size="large" label="You are here:">
-        <Link to="/mathplacement"><BreadcrumbLink onClick={() => {
-        }}>Placement Calculator</BreadcrumbLink></Link>
+        <Link to="/mathplacement"><Breadcrumb.Link onClick={() => {
+        }}>Placement Calculator</Breadcrumb.Link></Link>
       </Breadcrumb>
   );
   return (

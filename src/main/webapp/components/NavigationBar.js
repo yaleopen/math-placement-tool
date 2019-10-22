@@ -1,16 +1,16 @@
 import React from 'react';
-import Grid, {GridRow, GridCol} from '@instructure/ui-layout/lib/components/Grid';
+import { Grid } from '@instructure/ui-layout';
 
 function NavigationBar(props) {
   const {breadcrumbs} = props;
   return (
       <Grid vAlign="middle" colSpacing="none">
         <div style={{borderBottom: "0.0625rem solid #C7CDD1", paddingBottom: "0.125rem"}}>
-          <GridRow>
-            <GridCol>
+          <Grid.Row>
+            <Grid.Col>
               {breadcrumbs}
-            </GridCol>
-          </GridRow>
+            </Grid.Col>
+          </Grid.Row>
         </div>
       </Grid>
   )

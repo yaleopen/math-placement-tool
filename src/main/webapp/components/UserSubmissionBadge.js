@@ -1,7 +1,7 @@
 import React from 'react';
-import Badge from '@instructure/ui-elements/lib/components/Badge';
-import Button from '@instructure/ui-buttons/lib/components/Button';
-import IconUser from '@instructure/ui-icons/lib/Line/IconUser';
+import { Button } from '@instructure/ui-buttons';
+import { IconUserLine } from '@instructure/ui-icons';
+import { Badge } from '@instructure/ui-elements';
 
 function UserSubmissionBadge(props) {
   return (
@@ -14,7 +14,7 @@ function UserSubmissionBadge(props) {
             variant="icon"
             disabled={props.count === 0}
         >
-          <IconUser />
+          <IconUserLine />
         </Button>
       </Badge>
   );

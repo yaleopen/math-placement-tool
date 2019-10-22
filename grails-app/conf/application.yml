@@ -106,6 +106,7 @@ canvas:
     canvasBaseUrl: '${CANVAS_BASE_URL}'
     ltiSecret: '${MATH_PLACEMENT_SECRET}'
     perPageLimit: 100
+    placementCourseId: '38652'
 
 environments:
     development:
@@ -114,4 +115,4 @@ environments:
                 dbCreate: update
                 username: '${DB_USERNAME}'
                 password: '${DB_PASSWORD}'
-                url: jdbc:mysql://localhost:3306/canvas-mathplacement?useSSL=false
+                url: jdbc:mysql://localhost:3306/canvas-mathplacement?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC

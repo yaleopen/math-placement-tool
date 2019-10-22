@@ -1,17 +1,17 @@
 import React, {Component} from "react";
-import ApplyTheme from "@instructure/ui-themeable/lib/components/ApplyTheme/index";
-import View from '@instructure/ui-layout/lib/components/View';
-import Button from '@instructure/ui-buttons/lib/components/Button';
+import { ApplyTheme } from '@instructure/ui-themeable';
+import { View } from '@instructure/ui-layout';
+import { Alert } from '@instructure/ui-alerts';
+import { Button } from '@instructure/ui-buttons';
 import RubricModal from "./RubricModal";
 import api from "../api";
 import Loading from "../components/Loading";
 import NavigationBar from "../components/NavigationBar";
 import {Link} from "react-router-dom";
-import Breadcrumb, {BreadcrumbLink} from '@instructure/ui-breadcrumb/lib/components/Breadcrumb';
-import IconPlus from '@instructure/ui-icons/lib/Line/IconPlus';
+import { Breadcrumb } from '@instructure/ui-breadcrumb';
+import { IconPlusLine } from '@instructure/ui-icons';
 import RubricTable from "../components/RubricTable";
 import axios from "axios";
-import Alert from '@instructure/ui-alerts/lib/components/Alert';
 import update from 'immutability-helper';
 import _ from 'lodash';
 
@@ -249,10 +249,10 @@ class RubricEditor extends Component {
       rubrics, groupQuestions, targetRubric, newEquations, showAlert, alertMessage} = this.state;
     const breadcrumbs = (
         <Breadcrumb size="large" label="You are here:">
-          <Link to="/mathplacement"><BreadcrumbLink onClick={() => {
-          }}>Placement Calculator</BreadcrumbLink></Link>
-          <BreadcrumbLink onClick={function () {
-          }}>{quiz ? quiz.title : ''}</BreadcrumbLink>
+          <Link to="/mathplacement"><Breadcrumb.Link onClick={() => {
+          }}>Placement Calculator</Breadcrumb.Link></Link>
+          <Breadcrumb.Link onClick={function () {
+          }}>{quiz ? quiz.title : ''}</Breadcrumb.Link>
         </Breadcrumb>
     );
     return (
@@ -312,7 +312,7 @@ class RubricEditor extends Component {
                 disabled={quiz && quiz.published}
                 onClick={this.handleNewRubricOpen}
             >
-              <IconPlus/> Rubric
+              <IconPlusLine/> Rubric
             </Button>
             <RubricTable
                 rubrics={rubrics}

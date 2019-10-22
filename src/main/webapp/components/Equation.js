@@ -1,11 +1,11 @@
 import React from 'react';
-import View from '@instructure/ui-layout/lib/components/View';
+import { View } from '@instructure/ui-layout';
 import RuleHeader from "./RuleHeader";
 import RuleFooter from "./RuleFooter";
 import Rule from "./Rule";
 import { DragSource, DropTarget } from 'react-dnd';
 import flow from 'lodash/flow';
-import IconHamburger from '@instructure/ui-icons/lib/Line/IconHamburger';
+import { IconHamburgerLine } from '@instructure/ui-icons';
 import uniqid from 'uniqid';
 
 const equationSource = {
@@ -46,7 +46,7 @@ const Equation = (props) => {
           background={"default"}
           borderWidth="small"
       >
-        {connectDragSource(<div style={{display:"inline-block", cursor:"move"}}><IconHamburger/></div>)}
+        {connectDragSource(<div style={{display:"inline-block", cursor:"move"}}><IconHamburgerLine/></div>)}
         <RuleHeader
             equation={equation}
             equationType={equationType}

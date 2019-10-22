@@ -1,17 +1,17 @@
 import React, {Component} from "react";
-import ApplyTheme from "@instructure/ui-themeable/lib/components/ApplyTheme/index";
-import View from '@instructure/ui-layout/lib/components/View';
+import { View } from '@instructure/ui-layout';
+import { ApplyTheme } from '@instructure/ui-themeable';
 import api from "../api";
 import Loading from "../components/Loading";
 import NavigationBar from "../components/NavigationBar";
 import {Link} from "react-router-dom";
-import Breadcrumb, {BreadcrumbLink} from '@instructure/ui-breadcrumb/lib/components/Breadcrumb';
+import { Breadcrumb } from '@instructure/ui-breadcrumb';
 import axios from "axios";
 import jsonLogic from "json-logic-js";
 import PlacementTable from "../components/PlacementTable";
 import PlacementSummaryNavigation from "../components/PlacementSummaryNavigation";
 import FeedbackModal from "../components/FeedbackModal";
-import Alert from '@instructure/ui-alerts/lib/components/Alert';
+import { Alert } from '@instructure/ui-alerts';
 
 class PlacementSummary extends Component {
   constructor(props) {
@@ -28,7 +28,8 @@ class PlacementSummary extends Component {
       feedbackModalText: '',
       showAlert: false,
       alertMessage: '',
-      error: false
+      error: false,
+      page: 0
     }
   }
 
@@ -162,14 +163,23 @@ class PlacementSummary extends Component {
             break;
           }
         }
-        placements.push({student: student, rubric: placedRubric});
+        placements.push({student: student, finishedAt: submission.finishedAt, rubric: placedRubric});
       }
       //no submissions
       else{
-        placements.push({student: student, rubric: null});
+        placements.push({student: student, finishedAt: null, rubric: null});
       }
     });
-    return placements;
+    this.setState({
+      placements: placements,
+      isLoaded: true
+    });
+  };
+
+  handleNextPageClick = (page) => {
+    this.setState({
+      page,
+    })
   };
 
   componentDidMount() {
@@ -184,11 +194,13 @@ class PlacementSummary extends Component {
         this.setState({
           quiz: quiz.data,
           rubrics: rubrics.data,
-          students: students.data,
-          placements: this.calculatePlacements(submissions.data, students.data, rubrics.data),
+          students: students.data
+        }, this.calculatePlacements.bind(this,submissions.data,students.data,rubrics.data))
+      })).then(() => {
+        this.setState({
           isLoaded: true
         })
-      }))
+      })
       .catch(() => {
         this.setState({
           isLoaded: true,
@@ -201,13 +213,14 @@ class PlacementSummary extends Component {
 
   render() {
     const {isLoaded, quiz, placements, filterText, filterIncomplete, feedbackModalText, showFeedbackModal,
-    showAlert, alertMessage, error} = this.state;
+    showAlert, alertMessage, error, page} = this.state;
     const breadcrumbs = (
         <Breadcrumb size="large" label="You are here:">
-          <Link to="/mathplacement"><BreadcrumbLink onClick={() => {
-          }}>Placement Calculator</BreadcrumbLink></Link>
-          <BreadcrumbLink onClick={function () {
-          }}>{quiz ? quiz.title : ''}</BreadcrumbLink>
+          <Link to="/mathplacement">
+            <Breadcrumb.Link onClick={() => {
+          }}>Placement Calculator</Breadcrumb.Link></Link>
+          <Breadcrumb.Link onClick={function () {
+          }}>{quiz ? quiz.title : ''}</Breadcrumb.Link>
         </Breadcrumb>
     );
     return (
@@ -250,6 +263,8 @@ class PlacementSummary extends Component {
                 onColumnSort={this.handleSortPlacements}
                 onSpeedGraderClick={this.handleSpeedGraderClick.bind(this,quiz && quiz.speed_grader_url)}
                 onFeedbackModalOpen={this.handleFeedbackModalOpen}
+                onNextPageClick={this.handleNextPageClick}
+                page={page}
             />
           </View>
         </ApplyTheme>

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import Button from '@instructure/ui-buttons/lib/components/Button';
-import Modal, {ModalHeader, ModalBody, ModalFooter} from '@instructure/ui-overlays/lib/components/Modal';
-import Heading from '@instructure/ui-elements/lib/components/Heading';
+import { Button } from '@instructure/ui-buttons';
+import { Modal } from '@instructure/ui-overlays';
+import { Heading } from '@instructure/ui-elements';
 import update from 'immutability-helper';
 import Equation from '../components/Equation';
 import CloseModalButton from "../components/CloseModalButton";
@@ -162,10 +162,10 @@ class RubricModal extends Component {
     }
   };
 
-  handleCreditInputChange = (equationId, equationType, ruleIndex, ruleOperator, ruleJoinType, event, numberAsString, parsedNumber) => {
+  handleCreditInputChange = (equationId, equationType, ruleIndex, ruleOperator, ruleJoinType, event, numberAsString) => {
     const equations = equationType === 'new' ? this.state.newEquations : this.state.equations;
     const equationIndex = equations.findIndex(equation => equation.id === equationId);
-    const updatedEquations = update(equations, {[equationIndex]: {rule: {[ruleJoinType]: {[ruleIndex]: {[ruleOperator]: {1: {$set: parsedNumber ? parsedNumber : 0}}}}}}});
+    const updatedEquations = update(equations, {[equationIndex]: {rule: {[ruleJoinType]: {[ruleIndex]: {[ruleOperator]: {1: {$set: numberAsString ? parseInt(numberAsString) : 0}}}}}}});
     if (equationType === 'new') {
       this.setState({
         newEquations: updatedEquations
@@ -350,11 +350,11 @@ class RubricModal extends Component {
               label="Rubric Modal"
               shouldCloseOnDocumentClick={false}
           >
-            <ModalHeader>
+            <Modal.Header>
               <CloseModalButton onDismiss={onDismiss}/>
               <Heading>{heading}</Heading>
-            </ModalHeader>
-            <ModalBody>
+            </Modal.Header>
+            <Modal.Body>
               <RubricTextInputs
                   onTextChange={this.handleTextChange}
                   title={title}
@@ -372,8 +372,8 @@ class RubricModal extends Component {
               />
               {existingEquations}
               {pendingEquations}
-            </ModalBody>
-            <ModalFooter>
+            </Modal.Body>
+            <Modal.Footer>
               <Button onClick={onDismiss}>Close</Button>&nbsp;
               <Button
                   onClick={isNewRubric ? onNewRubricSubmit.bind(this, newRubric):
@@ -383,7 +383,7 @@ class RubricModal extends Component {
               >
                 {submitText}
               </Button>
-            </ModalFooter>
+            </Modal.Footer>
           </Modal>
         </div>
     );

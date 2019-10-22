@@ -1,8 +1,8 @@
 import React from 'react';
-import View from '@instructure/ui-layout/lib/components/View';
-import ScreenReaderContent from '@instructure/ui-a11y/lib/components/ScreenReaderContent';
-import Table from '@instructure/ui-elements/lib/components/Table';
+import { View } from '@instructure/ui-layout';
+import { Table } from '@instructure/ui-elements';
 import RubricTableRow from "./RubricTableRow";
+import { ScreenReaderContent } from '@instructure/ui-a11y';
 
 function RubricTable(props) {
   const {rubrics, onEditRubricOpen, onRubricDelete, onRubricDefault, onRubricMove, onRubricDrop, findRubric,

@@ -12,4 +12,5 @@ class User {
     String integration_id
     String sis_import_id
     String login_id
+    String email
 }

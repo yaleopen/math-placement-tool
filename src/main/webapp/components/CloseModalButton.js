@@ -1,5 +1,5 @@
 import React from 'react';
-import CloseButton from '@instructure/ui-buttons/lib/components/CloseButton';
+import { CloseButton } from '@instructure/ui-buttons';
 
 function CloseModalButton(props) {
   const {onDismiss} = props;
