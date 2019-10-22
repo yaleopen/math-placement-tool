@@ -1,16 +1,13 @@
 import React from 'react';
-import Button from '@instructure/ui-buttons/lib/components/Button';
-import View from '@instructure/ui-layout/lib/components/View';
-import IconX from '@instructure/ui-icons/lib/Line/IconX';
-import Grid, {GridRow, GridCol} from '@instructure/ui-layout/lib/components/Grid';
-import Select from '@instructure/ui-forms/lib/components/Select';
-import NumberInput from '@instructure/ui-forms/lib/components/NumberInput';
-import ScreenReaderContent from '@instructure/ui-a11y/lib/components/ScreenReaderContent';
-import Badge from '@instructure/ui-elements/lib/components/Badge';
-import IconCheck from '@instructure/ui-icons/lib/Line/IconCheck';
+import { View, Grid } from '@instructure/ui-layout';
+import { Button } from '@instructure/ui-buttons';
+import { ScreenReaderContent } from '@instructure/ui-a11y';
+import { Badge } from '@instructure/ui-elements';
+import { IconXLine, IconCheckLine, IconHamburgerLine } from '@instructure/ui-icons';
+import { Select } from '@instructure/ui-forms';
+import { NumberInput } from '@instructure/ui-number-input';
 import flow from "lodash/flow";
 import { DragSource, DropTarget } from 'react-dnd';
-import IconHamburger from '@instructure/ui-icons/lib/Line/IconHamburger';
 
 const ruleSource = {
   beginDrag(props) {
@@ -64,11 +61,11 @@ function Rule(props) {
       >
 
         <Grid vAlign="middle" rowSpacing="small" colSpacing="small">
-          <GridRow>
-            <GridCol width="auto">
-              {connectDragSource(<div style={{display:"inline-block", cursor:"move"}}><IconHamburger/></div>)}
-            </GridCol>
-            <GridCol>
+          <Grid.Row>
+            <Grid.Col width="auto">
+              {connectDragSource(<div style={{display:"inline-block", cursor:"move"}}><IconHamburgerLine/></div>)}
+            </Grid.Col>
+            <Grid.Col>
               <QuizQuestionSelect
                   ruleType={ruleType}
                   questionIds={questionIds}
@@ -82,8 +79,8 @@ function Rule(props) {
                   onChange={ruleType === 'credit' ? onCreditRuleQuestionChange : onAnswerRuleQuestionChange}
                   isQuizPublished={isQuizPublished}
               />
-            </GridCol>
-            <GridCol width={2}>
+            </Grid.Col>
+            <Grid.Col width={2}>
               <RuleOperatorSelect
                   ruleType={ruleType}
                   operator={ruleOperator}
@@ -94,8 +91,8 @@ function Rule(props) {
                   onChange={onOperatorChange}
                   isQuizPublished={isQuizPublished}
               />
-            </GridCol>
-            <GridCol width={2}>
+            </Grid.Col>
+            <Grid.Col width={2}>
               {ruleType === 'credit' ?
                   <RuleCreditInput
                       criteria={ruleCriteriaValue}
@@ -119,18 +116,18 @@ function Rule(props) {
                       isQuizPublished={isQuizPublished}
                   />
               }
-            </GridCol>
-            <GridCol width="auto">
+            </Grid.Col>
+            <Grid.Col width="auto">
               <Button
                   onClick={onDeleteRuleClick.bind(this, equationId, equationType, ruleIndex, ruleJoinType)}
                   disabled={isQuizPublished}
                   variant="icon"
                   margin="0"
               >
-                <IconX/>
+                <IconXLine/>
               </Button>
-            </GridCol>
-          </GridRow>
+            </Grid.Col>
+          </Grid.Row>
         </Grid>
       </View>
       </div>
@@ -158,7 +155,7 @@ function RuleCreditInput(props) {
   return (
       <NumberInput
           min={0}
-          value={criteria}
+          value={criteria.toString()}
           readOnly={isQuizPublished}
           onChange={onChange.bind(this, equationId, equationType, ruleIndex, ruleOperator, ruleJoinType)}
           showArrows={false}
@@ -186,13 +183,13 @@ function RuleAnswerSelect(props) {
 
 function GreenIconCheck(){
   return(
-      <IconCheck title="Correct" style={{color: '#00AC18'}}/>
+      <IconCheckLine title="Correct" style={{color: '#00AC18'}}/>
   )
 }
 
 function RedIconX(){
   return(
-      <IconX title="Incorrect" style={{color: '#EE0612'}}/>
+      <IconXLine title="Incorrect" style={{color: '#EE0612'}}/>
   )
 }
 

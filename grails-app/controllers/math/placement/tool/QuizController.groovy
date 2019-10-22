@@ -6,7 +6,6 @@ class QuizController {
 
     def quizService
     def quizQuestionService
-    def quizSubmissionService
     def quizQuestionGroupService
     def quizSubmissionQuestionService
     def submissionService
@@ -15,8 +14,8 @@ class QuizController {
         def quizzes = quizService.listQuizzesInCourse(params.courseId as String)
         if(quizzes != null){
             quizzes.each{quiz->
-                def quizSubmissions = quizSubmissionService.listQuizSubmissions(params.courseId as String, quiz.id as String)
-                quiz.submission_count = quizSubmissions.findAll{it.workflow_state == 'complete'}.user_id.unique().size()
+                def submissionSummary = submissionService.getSubmissionSummary(params.courseId as String, quiz.assignment_id as String)
+                quiz.submission_count = submissionSummary ? submissionSummary.graded : 0
             }
             respond quizzes
         }
@@ -35,63 +34,46 @@ class QuizController {
         }
     }
 
-    def listQuestions(){
+    def listQuestions() {
         def quizQuestions = quizQuestionService.listQuizQuestions(params.courseId as String, params.quizId as String)
         quizQuestions = quizQuestions ? quizQuestions : []
         //find group questions
         def quizGroupIds = quizQuestions.quiz_group_id ? quizQuestions.quiz_group_id.unique() : []
-        quizGroupIds.removeAll{it == null}
-        def quizGroups = quizGroupIds.collect{quizGroupId ->
+        quizGroupIds.removeAll { it == null }
+        def quizGroups = quizGroupIds.collect { quizGroupId ->
             quizQuestionGroupService.getSingleQuizGroup(params.courseId as String, params.quizId as String, quizGroupId as String)
         }
         //remove group questions
-        quizQuestions.removeAll{it.quiz_group_id != null}
-        if(quizQuestions != null){
-            respond([singles: quizQuestions.sort{it.question_name}, groups: quizGroups.sort{it.name}])
-        }
-        else{
+        quizQuestions.removeAll { it.quiz_group_id != null }
+        if (quizQuestions != null) {
+            respond([singles: quizQuestions.sort { it.question_name }, groups: quizGroups.sort { it.name }])
+        } else {
             respond([errorMessage: "Error Retrieving Quiz Questions"], status: 500)
         }
     }
 
     def listSubmissions(){
-        def quiz = quizService.getSingleQuiz(params.courseId as String, params.quizId as String)
-        def quizSubmissions = quizSubmissionService.listQuizSubmissions(params.courseId as String, params.quizId as String)
-        def submissions = submissionService.listAssignmentSubmissions(params.courseId as String, quiz.assignment_id)
-        if(quizSubmissions != null){
-            //only check complete submissions
-            quizSubmissions.retainAll{it.workflow_state == 'complete'}
-            def submissionDataList = submissions.collect{it.submission_history[0]}
-            def quizQuestions = quizQuestionService.listQuizQuestions(params.courseId as String, params.quizId as String)
-            //workaround for canvas api bug returning wrong dataset
-            def allSubmissionQuestionIds = submissionDataList.submission_data.question_id.flatten().unique()
-            allSubmissionQuestionIds.removeAll{quizQuestions.id.unique().contains(it)}
-            allSubmissionQuestionIds.each{missingQuestionId ->
-                def missingQuestion = quizQuestionService.getSingleQuizQuestion(params.courseId as String, params.quizId as String, missingQuestionId as String)
-                quizQuestions.add(missingQuestion)
-            }
-            final def result = quizSubmissions.collect {quizSubmission ->
-                def submissionData = submissionDataList.find{it.id == quizSubmission.id}.submission_data
-                def placementData = [:]
-                submissionData.each { submissionItem ->
-                    //check if group question
-                    def question = quizQuestions.find { it.id as String == submissionItem.question_id as String }
-                    if (question.quiz_group_id) {
-                        def existingData = placementData["question_group_${question.quiz_group_id}"]
-                        placementData["question_group_${question.quiz_group_id}"] = existingData ? existingData + submissionItem.points : submissionItem.points
-                    } else {
-                        placementData["question_${question.id}"] = [answer: "answer_${submissionItem.answer_id}", points: submissionItem.points]
-                    }
+        def userPlacementData = PlacementData.findAllByQuizId(params.quizId as String)
+        def formattedPlacementData = userPlacementData.collect{pd ->
+            def formattedPD = [:]
+            formattedPD.user_id = pd.userId as Long
+            formattedPD.finishedAt = pd.finishedAt
+            formattedPD.placement_data = [:]
+            pd.userPlacements.each{entry ->
+                def key = entry.key as String
+                def value = entry.value as String
+                if(!key.endsWith("_answer") && !key.endsWith("_points")){
+                    formattedPD.placement_data[key] = value as Double
                 }
-                quizSubmission.placement_data = placementData
-                quizSubmission
+                else if(key.endsWith("_answer")){
+                    def formattedKey = key[0..-8]
+                    def formattedPointsKey = formattedKey + "_points"
+                    formattedPD.placement_data[formattedKey] = [answer: value, points: pd.userPlacements[formattedPointsKey] as Double]
+                }
             }
-            respond result
-
+            formattedPD
         }
-        else{
-            respond([errorMessage: "Error Retrieving Quiz Submissions"], status: 500)
-        }
+        respond formattedPlacementData
     }
 
     def listPlacementDataForUser(){

@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
-import View from '@instructure/ui-layout/lib/components/View';
-import ApplyTheme from '@instructure/ui-themeable/lib/components/ApplyTheme';
+import { ApplyTheme } from '@instructure/ui-themeable';
+import { View } from '@instructure/ui-layout';
 import api from "../api";
 import Loading from "../components/Loading";
 import NavigationBar from "../components/NavigationBar";
 import {Link} from "react-router-dom";
-import Breadcrumb, {BreadcrumbLink} from '@instructure/ui-breadcrumb/lib/components/Breadcrumb';
+import { Breadcrumb } from '@instructure/ui-breadcrumb';
 import StudentTable from "../components/StudentTable";
 import axios from "axios/index";
 import jsonLogic from "json-logic-js";
@@ -20,24 +20,8 @@ class StudentHome extends Component {
       isLoaded: false,
       placements: [],
       rubrics: [],
-      showFeedbackModal: false,
-      feedbackModalText: ''
     }
   }
-
-  handleFeedbackModalOpen = (feedback) => {
-    this.setState({
-      showFeedbackModal: true,
-      feedbackModalText: feedback
-    })
-  };
-
-  handleFeedbackModalClose = () => {
-    this.setState({
-      showFeedbackModal: false,
-      feedbackModalText: ''
-    })
-  };
 
   calculatePlacements = (submissions, rubrics) => {
     const placements = [];
@@ -98,11 +82,11 @@ class StudentHome extends Component {
   }
 
   render() {
-    const {error, isLoaded, placements, showFeedbackModal, feedbackModalText} = this.state;
+    const {error, isLoaded, placements} = this.state;
     const breadcrumbs = (
         <Breadcrumb size="large" label="You are here:">
-          <Link to="/mathplacement"><BreadcrumbLink onClick={() => {
-          }}>Placement Calculator</BreadcrumbLink></Link>
+          <Link to="/mathplacement"><Breadcrumb.Link onClick={() => {
+          }}>Placement Calculator</Breadcrumb.Link></Link>
         </Breadcrumb>
     );
     return (
@@ -120,8 +104,7 @@ class StudentHome extends Component {
           >
             <NavigationBar breadcrumbs={breadcrumbs}/>
             <Loading isLoading={!isLoaded}/>
-            <FeedbackModal show={showFeedbackModal} feedback={feedbackModalText} onDismiss={this.handleFeedbackModalClose}/>
-            <StudentTable placements={placements} onFeedbackModalOpen={this.handleFeedbackModalOpen}/>
+            <StudentTable placements={placements}/>
           </View>
         </ApplyTheme>
     );

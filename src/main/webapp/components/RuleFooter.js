@@ -1,18 +1,18 @@
 import React from 'react';
-import Flex, {FlexItem} from '@instructure/ui-layout/lib/components/Flex';
+import { Flex } from '@instructure/ui-layout'
 import JoinConditionRadio from "./JoinConditionRadio";
 
 function RuleFooter(props) {
   const {joinType, joinRadioName, equationId, equationType, onRuleJoinChange} = props;
   return (
       <Flex justifyItems="end" padding="xx-small">
-        <FlexItem>
+        <Flex.Item>
           <JoinConditionRadio
               joinType={joinType}
               name={joinRadioName}
               onChange={onRuleJoinChange.bind(this, equationId, equationType, joinType)}
           />
-        </FlexItem>
+        </Flex.Item>
       </Flex>
   )
 }

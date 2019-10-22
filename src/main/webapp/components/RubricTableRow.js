@@ -1,12 +1,10 @@
 import React, {Component} from 'react';
-import IconEdit from '@instructure/ui-icons/lib/Line/IconEdit';
-import Tooltip from '@instructure/ui-overlays/lib/components/Tooltip';
-import Button from '@instructure/ui-buttons/lib/components/Button';
+import { Button } from '@instructure/ui-buttons';
+import { Tooltip } from '@instructure/ui-overlays';
+import { IconEditLine, IconMarkAsReadSolid, IconCopyLine } from '@instructure/ui-icons';
 import DeleteRubricPopover from "./DeleteRubricPopover";
-import IconMarkAsRead from '@instructure/ui-icons/lib/Solid/IconMarkAsRead';
 import { DragSource, DropTarget } from 'react-dnd';
 import flow from 'lodash/flow';
-import IconCopy from '@instructure/ui-icons/lib/Line/IconCopy';
 
 const rubricSource = {
   beginDrag(props) {
@@ -58,7 +56,7 @@ class RubricTableRow extends Component {
                 onClick={onRubricDefault.bind(this,rubric.id)}
                 readOnly={isDefaultRubric}
             >
-              <IconMarkAsRead
+              <IconMarkAsReadSolid
                   style={{color: !isDefaultRubric && '#cccccc'}}
                   title={isDefaultRubric ? 'Default' : 'Make Default'}
               />
@@ -73,7 +71,7 @@ class RubricTableRow extends Component {
                   onClick={onCloneRubric.bind(this,rubric.id)}
                   disabled={isQuizPublished}
               >
-                <IconCopy />
+                <IconCopyLine />
               </Button>
             </Tooltip>
             <Tooltip tip="Edit">
@@ -81,7 +79,7 @@ class RubricTableRow extends Component {
                   variant="icon"
                   onClick={onEditRubricOpen.bind(this,rubric)}
               >
-                <IconEdit />
+                <IconEditLine />
               </Button>
             </Tooltip>
             <DeleteRubricPopover onContentSubmit={onRubricDelete.bind(this,rubric.id)} isQuizPublished={isQuizPublished} />

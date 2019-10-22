@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
-import View from '@instructure/ui-layout/lib/components/View';
-import ApplyTheme from '@instructure/ui-themeable/lib/components/ApplyTheme';
+import { View } from '@instructure/ui-layout';
+import { ApplyTheme } from '@instructure/ui-themeable';
 import QuizTable from "../components/QuizTable";
 import api from "../api";
 import Loading from "../components/Loading";
 import NavigationBar from "../components/NavigationBar";
 import {Link} from "react-router-dom";
-import Breadcrumb, {BreadcrumbLink} from '@instructure/ui-breadcrumb/lib/components/Breadcrumb';
+import { Breadcrumb } from '@instructure/ui-breadcrumb';
 import update from 'immutability-helper';
 
 class InstructorHome extends Component {
@@ -58,8 +58,8 @@ class InstructorHome extends Component {
     const {error, isLoaded, quizzes} = this.state;
     const breadcrumbs = (
         <Breadcrumb size="large" label="You are here:">
-          <Link to="/mathplacement"><BreadcrumbLink onClick={() => {
-          }}>Placement Calculator</BreadcrumbLink></Link>
+          <Link to="/mathplacement"><Breadcrumb.Link onClick={() => {
+          }}>Placement Calculator</Breadcrumb.Link></Link>
         </Breadcrumb>
     );
     return (

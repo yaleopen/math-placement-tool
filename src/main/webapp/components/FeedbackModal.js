@@ -1,8 +1,7 @@
 import React from 'react';
-import Text from '@instructure/ui-elements/lib/components/Text';
-import Modal, {ModalHeader, ModalBody, ModalFooter} from '@instructure/ui-overlays/lib/components/Modal';
-import Heading from '@instructure/ui-elements/lib/components/Heading';
-import Button from '@instructure/ui-buttons/lib/components/Button';
+import { Text, Heading } from '@instructure/ui-elements';
+import { Modal } from '@instructure/ui-overlays';
+import { Button } from '@instructure/ui-buttons';
 
 function FeedbackModal(props){
   return(
@@ -13,15 +12,15 @@ function FeedbackModal(props){
           label="Feedback Modal"
           shouldCloseOnDocumentClick={false}
       >
-        <ModalHeader>
+        <Modal.Header>
           <Heading>Placement Feedback</Heading>
-        </ModalHeader>
-        <ModalBody>
+        </Modal.Header>
+        <Modal.Body>
           <Text>{props.feedback}</Text>
-        </ModalBody>
-        <ModalFooter>
+        </Modal.Body>
+        <Modal.Footer>
           <Button onClick={props.onDismiss}>Close</Button>
-        </ModalFooter>
+        </Modal.Footer>
       </Modal>
   )
 }

@@ -1,10 +1,10 @@
 import React from 'react';
-import View from '@instructure/ui-layout/lib/components/View';
-import Table from '@instructure/ui-elements/lib/components/Table';
-import ScreenReaderContent from '@instructure/ui-a11y/lib/components/ScreenReaderContent';
-import IconPublish from '@instructure/ui-icons/lib/Solid/IconPublish';
-import Button from '@instructure/ui-buttons/lib/components/Button';
-import Badge from '@instructure/ui-elements/lib/components/Badge';
+import { View } from '@instructure/ui-layout';
+import { Button } from '@instructure/ui-buttons';
+import { ScreenReaderContent } from '@instructure/ui-a11y';
+import { Table } from '@instructure/ui-elements';
+import { IconPublishSolid } from '@instructure/ui-icons';
+import { Badge } from '@instructure/ui-elements';
 import {Link} from "react-router-dom";
 import UserSubmissionBadge from "./UserSubmissionBadge";
 
@@ -18,7 +18,7 @@ function QuizTableRow(props) {
                   variant="icon"
                   onClick={onQuizPublish.bind(this,quiz.id,!quiz.published)}
               >
-                <IconPublish title="Publish" style={quiz.published && {color: '#00AC18'}}/>
+                <IconPublishSolid title="Publish" style={quiz.published && {color: '#00AC18'}}/>
               </Button>
           }
         </td>

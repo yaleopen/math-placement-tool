@@ -1,6 +1,5 @@
 import React from 'react';
-import RadioInputGroup from '@instructure/ui-forms/lib/components/RadioInputGroup';
-import RadioInput from '@instructure/ui-forms/lib/components/RadioInput';
+import { RadioInput, RadioInputGroup } from '@instructure/ui-forms';
 
 function JoinConditionRadio(props) {
   const {joinType, disabled, name, onChange, isQuizPublished} = props;

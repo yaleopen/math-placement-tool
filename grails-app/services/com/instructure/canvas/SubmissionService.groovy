@@ -38,4 +38,19 @@ class SubmissionService extends CanvasAPIBaseService {
         }
         null
     }
+
+    SubmissionSummary getSubmissionSummary(String courseId, String assignmentId){
+        def url = "${canvasBaseURL}/api/v1/courses/{course_id}/assignments/{assignment_id}/submission_summary"
+        def params = [course_id: courseId, assignment_id: assignmentId]
+        def start = System.currentTimeMillis()
+        def resp = restClient.get(url){
+            auth("Bearer ${oauthToken}")
+            urlVariables(params)
+        }
+        log.debug("ACTION=External_API DESCRIPTION=Get Submission Summary REQUEST_URL=${url} HTTP_STATUS=${resp.status} RESP_TIME=${System.currentTimeMillis() - start}")
+        if(resp.status == 200 && resp.json){
+            return CanvasAPIParser.submissionSummaryFromJsonElement(resp.json)
+        }
+        null
+    }
 }

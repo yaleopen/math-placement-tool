@@ -58,4 +58,15 @@ class CanvasAPIParser {
         }
         quizQuestion
     }
+
+    @CompileDynamic
+    static SubmissionSummary submissionSummaryFromJsonElement(JSONElement json){
+        SubmissionSummary submissionSummary = new SubmissionSummary()
+        submissionSummary.with{
+            graded = json.graded
+            ungraded = json.ungraded
+            not_submitted = json.not_submitted
+        }
+        submissionSummary
+    }
 }

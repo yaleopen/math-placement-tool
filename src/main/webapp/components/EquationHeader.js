@@ -1,23 +1,23 @@
 import React from 'react';
-import Button from '@instructure/ui-buttons/lib/components/Button';
-import Flex, {FlexItem} from '@instructure/ui-layout/lib/components/Flex';
-import IconPlus from '@instructure/ui-icons/lib/Line/IconPlus';
+import { Button } from '@instructure/ui-buttons';
+import { Flex } from '@instructure/ui-layout';
+import { IconPlusLine } from '@instructure/ui-icons';
 import JoinConditionRadio from "./JoinConditionRadio";
 
 function EquationHeader(props) {
   const {joinType, joinRadioName, showJoinCondition, onNewEquationClick, onEquationJoinConditionChange, isQuizPublished} = props;
   return (
       <Flex padding="small 0">
-        <FlexItem grow shrink>
+        <Flex.Item grow shrink>
           <Button
               onClick={onNewEquationClick}
               margin="0"
               disabled={isQuizPublished}
           >
-            <IconPlus/> Equation
+            <IconPlusLine/> Equation
           </Button>
-        </FlexItem>
-        <FlexItem>
+        </Flex.Item>
+        <Flex.Item>
           {showJoinCondition &&
           <JoinConditionRadio
               joinType={joinType}
@@ -26,7 +26,7 @@ function EquationHeader(props) {
               isQuizPublished={isQuizPublished}
           />
           }
-        </FlexItem>
+        </Flex.Item>
       </Flex>
   )
 }
