@@ -26,7 +26,7 @@
     "@instructure/ui-text-input": "^6.2.0",
     "@instructure/ui-themeable": "^6.2.0",
     "@instructure/ui-themes": "^6.2.0",
-    "axios": "0.18.0",
+    "axios": "1.6.0",
     "immutability-helper": "^2.7.0",
     "jsdom": "11.10.0",
     "json-logic-js": "1.2.2",
